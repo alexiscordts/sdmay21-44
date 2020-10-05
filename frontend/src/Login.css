@@ -1,0 +1,26 @@
+.Login-LoginUI {
+  font-family: "AdelleSemiBold";
+}
+
+.Login-loginform {
+  font-family: "AdelleSemiBold";
+}
+
+.Login input {
+  font-family: "AdelleSemiBold";
+  width: 250px;
+  height: 25px;
+}
+
+.Login button {
+  font-family: "AdelleSemiBold";
+  width: 100px;
+}
+
+@font-face {
+  font-family: "AdelleSemiBold";
+  font-style: normal;
+  src: local("Adelle")
+    url(./UnityPointHealthSources/Fonts//Adelle/Adelle_Semibold.otf)
+    format("otf");
+}

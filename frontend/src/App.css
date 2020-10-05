@@ -2,6 +2,10 @@
   text-align: center;
 }
 
+body {
+  font-family: "Adelle_Semibold";
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -14,7 +18,7 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #00529b;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -26,6 +30,14 @@
 
 .App-link {
   color: #61dafb;
+}
+
+@font-face {
+  font-family: "AdelleSemiBold";
+  font-style: normal;
+  src: local("Adelle")
+    url(./UnityPointHealthSources/Fonts//Adelle/Adelle_Semibold.otf)
+    format("otf");
 }
 
 @keyframes App-logo-spin {
