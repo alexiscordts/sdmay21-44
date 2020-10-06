@@ -8,13 +8,17 @@
 
 .Login input {
   font-family: "AdelleSemiBold";
-  width: 250px;
-  height: 25px;
+  width: 100%;
+  height: 100%;
 }
 
 .Login button {
   font-family: "AdelleSemiBold";
-  width: 100px;
+  width: 100%;
+}
+
+.Login img {
+  width: 100%;
 }
 
 @font-face {
