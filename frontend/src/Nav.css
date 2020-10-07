@@ -1,0 +1,106 @@
+body    {
+    font-family: Arial, Sans-serif;
+}
+
+#topNav {
+    height: 50px;
+    width: 100%;
+    background-color: #00529b;
+    color: white;
+    transition: 0.5s;
+    position: absolute;
+    z-index: 2;
+}
+
+#userinfo   {
+    width: 8%;
+    margin-top: 8px;
+    vertical-align: middle;
+    float: right;
+}
+
+#username   {
+    font-size: 1em;
+}
+
+#role   {
+    font-size: 0.8em;
+    padding-left: 20px;
+}
+
+#collapseMenuToggle   {
+    float: left;
+    font-size: 1.5em;
+    margin-top: 8px;
+    text-align: center;
+    width: 4%;
+}
+
+#topNav img   {
+    height: 40px;
+    margin-top: 5px;
+}
+
+#sideNav    {
+    height: 100%;
+    width: 12%;
+    background-color: #E6E7E9;
+    min-width: 220px;
+    float: left;
+    transition: 0.5s;
+    position: absolute;
+    z-index: 1;
+}
+
+#collapseMenuToggle:hover  {
+    cursor: pointer;
+}
+
+.menuItem   {
+    height: 50px;
+    width: 100%;
+    font-size: 1em;
+    color: black;
+    overflow: hidden;
+    transition: 0.5s;
+    cursor: pointer;
+}
+
+.menuItem img   {
+    width: 40px;
+    opacity: 70%;
+    margin-top: 5px;
+    margin-left: 5px;
+    float: left;
+}
+
+.menuItem:hover   {
+    background-color: #D1D2D4;
+}
+
+.menuLabel  {
+    float: left;
+    margin-top: 17px;
+    margin-left: 15px;
+}
+
+#topLeft    {
+    height: 100px;
+    width: 100%;
+}
+
+#signout    {
+    float: right;
+    width: 50px;
+    height: 50px;
+}
+
+#signout img    {
+    margin-left: 12px;
+    margin-top: 10px;
+    height: 30px;
+}
+
+#signout img:hover  {
+    cursor: pointer;
+}

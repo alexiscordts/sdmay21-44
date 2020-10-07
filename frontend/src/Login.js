@@ -41,36 +41,40 @@ class Login extends React.Component {
 
   render() {
     return (
-      <div className="Login">
-        <header className="Login-UI">
-          <img src="https://www.unitypoint.org/images/unitypoint/UnityPointHealthLogo.svg"></img>
-          <form type="loginform" onSubmit={this.handleLoginAttempt}>
-            <input
-              type="email"
-              name="email"
-              placeholder="Enter Email"
-              value={this.state.email}
-              onChange={this.handleChange}
-              required
-            />
+      <div className="App">
+        <header className="App-header">
+          <div className="Login">
+            <header className="Login-UI">
+              <img src="https://www.unitypoint.org/images/unitypoint/UnityPointHealthLogo.svg"></img>
+              <form type="loginform" onSubmit={this.handleLoginAttempt}>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Enter Email"
+                  value={this.state.email}
+                  onChange={this.handleChange}
+                  required
+                />
 
-            <br></br>
+                <br></br>
 
-            <input
-              type="password"
-              name="password"
-              placeholder="Enter Password"
-              value={this.state.password}
-              onChange={this.handleChange}
-              required
-            />
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="Enter Password"
+                  value={this.state.password}
+                  onChange={this.handleChange}
+                  required
+                />
 
-            <br></br>
+                <br></br>
 
-            <button className="LoginButton" type="submit">
-              Login
-            </button>
-          </form>
+                <button className="LoginButton" type="submit">
+                  Login
+                </button>
+              </form>
+            </header>
+          </div>
         </header>
       </div>
     );

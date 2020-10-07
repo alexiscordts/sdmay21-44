@@ -1,0 +1,115 @@
+#schedule   {
+    background-color: white;
+    width: 70%;
+    margin-left: 20%;
+    float: clear;
+    border: 1px solid #D1D2D4;
+    position: absolute;
+    margin-top: 100px;
+    
+}
+
+#scheduleContainer  {
+    overflow-y: scroll;
+    max-height: 600px;
+}
+
+.day    {
+    width: 18.5%;
+    float: left;
+    text-align: center;
+    border-right: 1px solid #D1D2D4;
+    position: relative;
+}
+
+.dayLabel   {
+    width: 18.5%;
+    float: left;
+    text-align: center;
+    border-right: 1px solid  #00A9D8;
+    line-height: 20px;
+    color: white;
+}
+
+#hourColumn    {
+    width: 5%;
+    float: left;
+    border-right: 1px solid #D1D2D4;
+    text-align: center;
+}
+
+.label  {
+    height: 40px;
+    background-color: #00A9D8;
+}
+
+.hour   {
+    height: 80px;
+    background-color: white;
+    line-height: 80px;
+    vertical-align: middle;
+    border-bottom: 1px solid #D1D2D4;
+    border-top: 1px solid white;
+}
+
+.halfHour   {
+    height: 40px;
+    background-color: white;
+    line-height: 80px;
+    vertical-align: middle;
+    border-bottom: 1px solid #D1D2D4;
+}
+
+::-webkit-scrollbar {
+    width: 15px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888; 
+    border-radius: 7px;
+  }
+
+  #days {
+      height: 40px;
+      width: 100%;
+      background-color: #00A9D8;
+  }
+
+  #topRow   {
+      width: 5%;
+      height: 40px;
+      float: left;
+  }
+
+  .appointment  {
+      height: 82px;
+      width: 100%;
+      background-color: #00529b;
+      position: absolute;
+      top: 82px;
+      text-align: left;
+      color: white;
+  }
+
+  .appointment:hover    {
+      cursor: pointer;
+  }
+
+  .name {
+      font-weight: bold;
+      font-size: 1.1em;
+      margin-top: 5px;
+      margin-left: 5px;
+  }
+
+  .time  {
+    font-size: 0.8em;
+    margin-top: 2px;
+    margin-left: 5px;
+  }
