@@ -7,7 +7,7 @@ class Dashboard extends React.Component {
   constructor(props) {
     super(props);
     this.username = {value : 'Username123'};
-    role = "Nurse";
+    role = "Therapist";
     this.role = {value : role};
     this.menuItems = {values: loadMenuItems()};
   }
@@ -61,7 +61,7 @@ function closeNav() {
     
     const items = [];
         //loads menu depending on user
-        if (role == "Nurse")
+        if (role == "Therapist")
             items.push(
                 <div class="menuItem">
                 <img src={require("./Icons/icons8-calendar-48.png")} />

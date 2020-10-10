@@ -5,10 +5,12 @@ import Nav from "./Nav";
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
+    this.lines = {values: loadLines()};
     this.hours = {values: loadHours()};
-  }
-
-
+    var d = new Date();
+    this.time = {value: loadTimeLine()};
+    this.days = {values: getDays()};
+  } 
 
   render() {
     return (
@@ -17,104 +19,34 @@ class Dashboard extends React.Component {
         <div id="schedule">
             <div id="days">
                 <div id="topRow"></div>
-                <div class="dayLabel">               
-                    <div class="label">
-                        Monday<br />
-                        10/5
-                    </div>
-                </div>
-                <div class="dayLabel">
-                <div class="label">
-                    Tuesday<br />
-                    10/6
-                </div>
-                </div> 
-                <div class="dayLabel">
-                <div class="label">
-                    Wednesday<br />
-                    10/7
-                </div>
-                </div> 
-                <div class="dayLabel">
-                <div class="label">
-                    Thursday<br />
-                    10/8
-                </div>
-                </div> 
-                <div class="dayLabel">
-                <div class="label">
-                    Friday<br />
-                    10/9
-                </div> 
-                </div> 
+                {this.days.values}
                 
             </div>
             <div id="scheduleContainer">
                 <div id="hourColumn">
-                    <div class="hour">
-                        5 AM
-                    </div>
-                    <div class="hour">
-                        6 AM
-                    </div>
-                    <div class="hour">
-                        7 AM
-                    </div>
-                    <div class="hour">
-                        8 AM
-                    </div>
-                    <div class="hour">
-                        9 AM
-                    </div>
-                    <div class="hour">
-                        10 AM
-                    </div>
-                    <div class="hour">
-                        11 AM
-                    </div>
-                    <div class="hour">
-                        12 PM
-                    </div>
-                    <div class="hour">
-                        1 PM
-                    </div>
-                    <div class="hour">
-                        2 PM
-                    </div>
-                    <div class="hour">
-                        3 PM
-                    </div>
-                    <div class="hour">
-                        4 PM
-                    </div>
-                    <div class="hour">
-                        5 PM
-                    </div>
-                    <div class="hour">
-                        6 PM
-                    </div>
-                    <div class="hour">
-                        7 PM
-                    </div>
+                    {this.hours.values}
                 </div>
                 <div class="day">                   
-                    {this.hours.values}
-                    <div class="appointment">
-                        <div class="name">Morning Therapy</div>
+                    {this.lines.values}
+                    <div class="appointment" id="appt1">
+                        <div class="name">Patient Name / Appt name</div>
                         <div class="time">6 AM - 7 AM</div>
+                        <div class="time">Room 123</div>
+                        <div class="notes">Notes: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vehicula volutpat mauris, eu luctus turpis viverra a. Class aptent taciti.</div>
                     </div>
+                    {this.time.value}
                 </div>
                 <div class="day">
-                    {this.hours.values}
+                    {this.lines.values}
                 </div>
                 <div class="day">
-                    {this.hours.values}
+                    {this.lines.values}
                 </div>
                 <div class="day">
-                    {this.hours.values}
+                    {this.lines.values}
                 </div>
                 <div class="day">
-                    {this.hours.values}
+                    {this.lines.values}
                 </div>
             </div>
         </div>           
@@ -123,7 +55,7 @@ class Dashboard extends React.Component {
   }
 }
 
-function loadHours()
+function loadLines()
 {
     const items = [];
     for (var i = 0; i < 30; i++)
@@ -132,9 +64,66 @@ function loadHours()
             <div class="halfHour"></div>
         );
     }
-
-
     return items;
+}
+
+function loadHours()
+{
+    const hours = [];
+    var AMPM = "AM"
+    for (var i = 5; i < 20; i++)
+    {
+        var time = i;
+        if (i == 12)
+            AMPM = "PM"
+        else if (i > 12)
+            time = i - 12;
+        hours.push(
+            <div class="hour">{time} {AMPM}</div>
+        );
+    }
+    return hours;
+}
+
+function loadTimeLine()  
+{
+    //console.log("Clicked");
+    var d = new Date();
+    var hour = d.getHours() - 5;
+    var minute = d.getMinutes();
+    var position = hour * 82 + minute * 82/60;
+    console.log(position);
+    const timeStyle = {
+        top: position,
+      };
+    if (position > 0 && position < 1230)
+        return <div id="timeLine" style={timeStyle}></div>;
+    else
+      return
+}
+
+function getDays()
+{
+    var d = new Date();
+    while (d.getDay() != 1) //get Monday
+    {
+        d.setDate(d.getDate() - 1);
+    }
+    const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+    const dayElements = [];
+    for (var i = 0; i < 5; i++)
+    {
+        dayElements.push(
+            <div class="dayLabel"> 
+                <div class="label">
+                    {days[i]}<br />
+                    {d.getMonth() + 1}/{d.getDate()}
+                </div>
+            </div>
+            );
+        d.setDate(d.getDate() + 1);
+    }
+    return dayElements;
 }
 
 export default Dashboard;
