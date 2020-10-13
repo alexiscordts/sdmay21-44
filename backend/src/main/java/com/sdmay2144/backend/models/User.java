@@ -87,6 +87,10 @@ public class User {
         this.password = password;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public void sha1Password() {
         try {
             MessageDigest msgDigest = MessageDigest.getInstance("SHA-1");

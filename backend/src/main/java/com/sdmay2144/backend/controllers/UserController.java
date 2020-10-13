@@ -67,4 +67,13 @@ public class UserController {
     public @ResponseBody Iterable<User> getAllUsers() {
         return userService.getAllUsers();
     }
+
+    @PostMapping("/login")
+    public @ResponseBody boolean login(@RequestParam String username, @RequestParam String password) {
+        User loginUser = new User();
+        loginUser.setUsername(username);
+        loginUser.setPassword(password);
+        loginUser.sha1Password();
+        return userService.login(loginUser) != null;
+    }
 }

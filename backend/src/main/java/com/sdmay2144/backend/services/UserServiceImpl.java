@@ -24,4 +24,9 @@ public class UserServiceImpl implements UserService {
     public User addUser(User u) {
         return userRepository.save(u);
     }
+
+    @Override
+    public User login(User u) {
+        return userRepository.findByUsernameAndPassword(u.getUsername(), u.getPassword());
+    }
 }
