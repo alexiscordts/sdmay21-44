@@ -21,7 +21,7 @@ body    {
 }
 
 .day    {
-    width: 18.5%;
+    width: 13%;
     float: left;
     text-align: center;
     border-right: 1px solid #D1D2D4;
@@ -29,10 +29,9 @@ body    {
 }
 
 .dayLabel   {
-    width: 18.5%;
+    width: 13%;
     float: left;
     text-align: center;
-    border-right: 1px solid  #00A9D8;
     line-height: 20px;
     color: white;
     height: 40px;
@@ -154,7 +153,7 @@ body    {
   }
 
   #toggle   {
-      width: 200px;
+      width: 280px;
       margin: auto;
       display: none;
   }
@@ -184,6 +183,9 @@ body    {
     .dayLabel   {
         width: 90%;
     }
+    .Monday  {
+        display: none;
+    }
     .Tuesday  {
         display: none;
     }
@@ -196,7 +198,10 @@ body    {
     .Friday  {
         display: none;
     }
-    #MondayToggle   {
+    .Saturday  {
+        display: none;
+    }
+    #SundayToggle   {
         background-color: #EA7600;
     }
     #hourColumn {

@@ -22,7 +22,7 @@ class Dashboard extends React.Component {
   updateDimensions = () => {
     if (window.innerWidth > 550)
         {
-            const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+            const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
              days.forEach(day => {
                 document.getElementById(day + "Toggle").style.backgroundColor = null;
                 document.getElementsByClassName(day)[0].style.display = null;
@@ -39,14 +39,17 @@ class Dashboard extends React.Component {
   componentDidMount() {
     window.addEventListener('resize', this.updateDimensions);
     window.addEventListener('load', this.load);
+    this.interval = setInterval(() => this.setState({ time: Date.now() }), 60000); //Render every minute
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.updateDimensions);
     window.removeEventListener('size', this.load);
+    clearInterval(this.interval);
   }
 
   render() {
+    this.time = {value: loadTimeLine()} //Update timeline
     return (
     <div id="screen" onResize>
         <Nav />
@@ -59,6 +62,9 @@ class Dashboard extends React.Component {
                 {this.time.value}
                 <div id="hourColumn">
                     {this.hours.values}
+                </div>
+                <div class="day Sunday">                   
+                    {this.lines.values}
                 </div>
                 <div class="day Monday">                   
                     {this.lines.values}
@@ -76,8 +82,14 @@ class Dashboard extends React.Component {
                 <div class="day Friday">
                     {this.lines.values}
                 </div>
+                <div class="day Saturday">                   
+                    {this.lines.values}
+                </div>
             </div>
             <div id="toggle">
+                <div id="SundayToggle" class="daytoggle" onClick={() => toggleDay("Sunday")}>
+                    Su
+                </div>
                 <div id="MondayToggle" class="daytoggle" onClick={() => toggleDay("Monday")}>
                     M
                 </div>
@@ -92,6 +104,9 @@ class Dashboard extends React.Component {
                 </div>
                 <div id="FridayToggle" class="daytoggle" onClick={() => toggleDay("Friday")}>
                     F
+                </div>
+                <div id="SaturdayToggle" class="daytoggle" onClick={() => toggleDay("Saturday")}>
+                    Sa
                 </div>
             </div>
         </div>           
@@ -133,7 +148,6 @@ function loadHours()
 function loadTimeLine()  
 {
     var position = getPositionForTimeLine();
-    console.log(position);
     const timeStyle = {
         top: position,
       };
@@ -143,6 +157,7 @@ function loadTimeLine()
       return
 }
 
+var position = 0;
 function getPositionForTimeLine()
 {
     var d = new Date();
@@ -154,13 +169,13 @@ function getPositionForTimeLine()
 function getDays()
 {
     var d = new Date();
-    while (d.getDay() != 1) //get Monday
+    while (d.getDay() != 0) //get Monday
     {
         d.setDate(d.getDate() - 1);
     }
-    const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     const dayElements = [];
-    for (var i = 0; i < 5; i++)
+    for (var i = 0; i < 7; i++)
     {
         dayElements.push(
             <div className={'dayLabel ' + days[i]}> 
@@ -182,16 +197,14 @@ function getAppointments(date) {
     //placeholder appointments
     d.setHours(13,0,0,0);
     var appointment1 = { title: "Patient 1", room: "123", notes: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin porta sem ut ipsum dictum bibendum. Curabitur sodales interdum lorem, ac.", date: new Date(d), length: 1 };
-    //d.setDate(d.getDate() + 1);
     d.setHours(8,0,0,0);
     var appointment2 = { title: "Patient 2", room: "123", notes: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque egestas, lectus in congue scelerisque.", date: new Date(d), length: 1 };
-    //d.setDate(d.getDate() + 1);
     d.setHours(9,0,0,0);
     var appointment3 = { title: "Patient 3", room: "123", notes: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sed mauris at nisi consequat eleifend. Sed nulla quam, vehicula at turpis a, cursus aliquet justo. Donec et erat sed mauris semper.", date: new Date(d), length: 2 };
+    d.setHours(19,0,0,0);
+    var appointment4 = { title: "Patient 3", room: "123", notes: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sed mauris at nisi consequat eleifend. Sed nulla quam, vehicula at turpis a, cursus aliquet justo. Donec et erat sed mauris semper.", date: new Date(d), length: 1 };
     var appointments = [];
-    appointments.push(appointment1);
-    appointments.push(appointment2);
-    appointments.push(appointment3);
+    appointments.push(appointment1, appointment2, appointment3, appointment4);
     return appointments;
 }
 
@@ -259,7 +272,7 @@ function seeNotes(id)   {
 function toggleDay(toggleDay)
 {
     console.log(toggleDay);
-    const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     days.forEach(day => {
         if (day != toggleDay)
         {
