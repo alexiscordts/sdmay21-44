@@ -39,7 +39,7 @@ class Dashboard extends React.Component {
 }
 
 var role;
-var closed = false;
+var closed = true;
 function closeNav() {
     if (closed == false)
     {
@@ -49,7 +49,7 @@ function closeNav() {
     }
     else
     {
-        document.getElementById('sideNav').style.minWidth = '220px';
+        document.getElementById('sideNav').style.minWidth = '230px';
         document.getElementById('sideNav').style.width = '12%';
         //document.getElementById('topNav').style.float = 'none';      
     }
