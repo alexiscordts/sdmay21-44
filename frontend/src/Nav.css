@@ -31,8 +31,9 @@ body    {
 #collapseMenuToggle   {
     float: left;
     font-size: 1.5em;
+    margin-left: 12px;
     margin-top: 8px;
-    text-align: center;
+    text-align: left;
     width: 4%;
     min-width: 30px;
 }
