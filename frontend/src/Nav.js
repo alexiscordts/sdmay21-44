@@ -45,13 +45,11 @@ function closeNav() {
     {
         document.getElementById('sideNav').style.minWidth = '50px';
         document.getElementById('sideNav').style.width = '50px';
-        //document.getElementById('topNav').style.float = 'left';
     }
     else
     {
         document.getElementById('sideNav').style.minWidth = '230px';
-        document.getElementById('sideNav').style.width = '12%';
-        //document.getElementById('topNav').style.float = 'none';      
+        document.getElementById('sideNav').style.width = '18%';    
     }
     closed = (closed == false) ? true : false;
   }
@@ -60,26 +58,24 @@ function closeNav() {
   {
     
     const items = [];
-        //loads menu depending on user
-        if (role == "Therapist")
-            items.push(
-                <div class="menuItem">
-                <img src={require("./Icons/icons8-calendar-48.png")} />
-                <div class="menuLabel">View Schedule</div>
-            </div>,
-            <div class="menuItem">
-                <img src={require("./Icons/icons8-clock-48.png")} />
-                <div class="menuLabel">Manage Appointments</div>
-            </div>,
-            <div class="menuItem">
-                <img src={require("./Icons/icons8-female-user-48.png")} />
-                <div class="menuLabel">Manage Patients</div>
-            </div>,
-            <div class="menuItem">
-                <img src={require("./Icons/icons8-info-48.png")} />
-                <div class="menuLabel">View Metrics</div>
-            </div>
-            );
+    items.push(
+        <button class="menuButton">
+            <img class="menuButtonImg" src={require("./Icons/icons8-calendar-48.png")} />
+            <div class="menuLabel">View Schedule</div>
+        </button>,
+        <button class="menuButton">
+            <img class="menuButtonImg" src={require("./Icons/icons8-clock-48.png")} />
+            <div class="menuLabel">Appointments</div>
+        </button>,
+        <button class="menuButton">
+            <img class="menuButtonImg" src={require("./Icons/icons8-female-user-48.png")} />
+            <div class="menuLabel">Manage Patients</div>
+        </button>,
+        <button class="menuButton">
+            <img class="menuButtonImg" src={require("./Icons/icons8-info-48.png")} />
+            <div class="menuLabel">View Metrics</div>
+        </button>
+    );
     return items;
     
   }

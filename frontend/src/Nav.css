@@ -58,32 +58,36 @@ body    {
     cursor: pointer;
 }
 
-.menuItem   {
+.menuButton {
     height: 50px;
     width: 100%;
-    font-size: 1em;
-    color: black;
+    font-size: 18px;
+    color: #57585A;
     overflow: hidden;
     transition: 0.5s;
     cursor: pointer;
+    border: none;
+    text-align: center;
+    background: transparent;
 }
 
-.menuItem img   {
-    width: 40px;
+.menuButtonImg   {
+    height: 35px;
     opacity: 70%;
     margin-top: 5px;
     margin-left: 5px;
     float: left;
 }
 
-.menuItem:hover   {
+.menuButton:hover   {
     background-color: #D1D2D4;
+    cursor: pointer;
 }
 
 .menuLabel  {
     float: left;
-    margin-top: 17px;
-    margin-left: 15px;
+    margin-top: 12px;
+    margin-left: 12px;
 }
 
 #topLeft    {
