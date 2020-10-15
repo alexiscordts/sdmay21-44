@@ -2,6 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./App.css";
 import Login from "./Login";
+import Dashboard from "./Dashboard";
+import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
 
 class App extends React.Component {
   constructor(props) {
@@ -22,12 +24,13 @@ class App extends React.Component {
   }
 
   render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <Login handleLogin={this.handleLogin} />
-        </header>
-      </div>
+    return (  
+          <Router>
+            <Switch>
+               <Route path="/dashboard" component={Dashboard} />
+               <Route path="/" component={Login} handleLogin={this.handleLogin} />
+            </Switch>
+          </Router>
     );
   }
 }
