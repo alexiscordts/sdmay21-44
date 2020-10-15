@@ -52,11 +52,9 @@ function closeNav() {
         document.getElementById('sideNav').style.width = '18%';    
     }
     closed = (closed == false) ? true : false;
-  }
+}
 
-  function loadMenuItems()
-  {
-    
+function loadMenuItems() {
     const items = [];
     items.push(
         <button class="menuButton">
@@ -74,10 +72,13 @@ function closeNav() {
         <button class="menuButton">
             <img class="menuButtonImg" src={require("./Icons/icons8-info-48.png")} />
             <div class="menuLabel">View Metrics</div>
+        </button>,
+        <button class="menuButton">
+            <img class="menuButtonImg" src={require("./Icons/icons8-plus-48.png")} />
+            <div class="menuLabel">Edit Therapist</div>
         </button>
     );
     return items;
-    
-  }
+}
 
 export default Dashboard;
