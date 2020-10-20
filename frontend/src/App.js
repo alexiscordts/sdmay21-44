@@ -3,6 +3,9 @@ import ReactDOM from "react-dom";
 import "./App.css";
 import Login from "./Login";
 import Dashboard from "./Dashboard";
+import AddTherapist from "./AddTherapist"
+import EditTherapist from "./EditTherapist"
+import ViewTherapist from "./ViewTherapist"
 import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
 
 class App extends React.Component {
@@ -28,6 +31,9 @@ class App extends React.Component {
           <Router>
             <Switch>
                <Route path="/dashboard" component={Dashboard} />
+               <Route path="/add_therapist" component={AddTherapist} />
+               <Route path="/edit_therapist" component={EditTherapist} />
+               <Route path="/view_therapist" component={ViewTherapist} />
                <Route path="/" component={Login} handleLogin={this.handleLogin} />
             </Switch>
           </Router>
