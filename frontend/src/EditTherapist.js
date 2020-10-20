@@ -2,14 +2,14 @@ import React from "react";
 import "./FormStyles.css";
 import Nav from "./Nav";
 
-class AddTherapist extends React.Component {
+class EditTherapist extends React.Component {
 
     
       render() {
         return (
           <div >
             <Nav/>
-            <div class="addTherapistScreen">
+            <div class="formScreen">
               <div class="form-style">
                 <div class="form-style-heading"> Edit Therapist Information</div>
                   <form action="" method="post">
@@ -24,4 +24,4 @@ class AddTherapist extends React.Component {
         );
       }
     }
-export default AddTherapist;
+export default EditTherapist;

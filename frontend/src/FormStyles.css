@@ -1,13 +1,14 @@
-.addTherapistScreen{
-  padding-left: 75px;
+.formScreen{
+  	padding-left: 55px;
 }
 .form-style{
 	max-width: 500px;
 	padding: 20px 12px 10px 20px;
-  font: 13px;
+	font: 13px;
 }
 .form-style-heading{
 	font-weight: bold;
+	color: #3E3E3F;
 	border-bottom: 2px solid #ddd;
 	margin-bottom: 20px;
 	font-size: 25px;
@@ -20,6 +21,7 @@
 .form-style label > span{
 	width: 100px;
 	font-weight: bold;
+	color: #3E3E3F;
 	float: left;
 	padding-top: 8px;
 	padding-right: 5px;
@@ -80,6 +82,7 @@
 .submitLabel{
   width: 100%;
   text-align: center;
+  color: #3E3E3F;
 
 }
 @font-face {

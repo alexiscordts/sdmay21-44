@@ -9,7 +9,7 @@ class AddTherapist extends React.Component {
         return (
           <div >
             <Nav/>
-            <div class="addTherapistScreen">
+            <div class="formScreen">
               <div class="form-style">
                 <div class="form-style-heading"> Add a Therapist </div>
                   <form action="" method="post">
