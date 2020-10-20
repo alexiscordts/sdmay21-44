@@ -18,7 +18,11 @@ class ViewTherapist extends React.Component {
           <td>{therapist.fname}</td>
           <td>{therapist.lname}</td>
           <td>{therapist.email}</td>
-          <td> <img class="icon" src={require("./Icons/icons8-edit-64.png")} /></td>
+          <td> 
+            <a href="edit_therapist" >
+              <img src={require("./Icons/icons8-edit-64.png")} alt="edit" className="icon" />
+            </a>
+          </td>
           <td> <img class="icon" src={require("./Icons/icons8-delete-64.png")} /></td>
         </tr>
       );
