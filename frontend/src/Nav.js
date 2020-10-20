@@ -43,13 +43,11 @@ var closed = true;
 function closeNav() {
     if (closed == false)
     {
-        document.getElementById('sideNav').style.minWidth = '50px';
         document.getElementById('sideNav').style.width = '50px';
     }
     else
     {
-        document.getElementById('sideNav').style.minWidth = '230px';
-        document.getElementById('sideNav').style.width = '18%';    
+        document.getElementById('sideNav').style.width = '250px';    
     }
     closed = (closed == false) ? true : false;
   }

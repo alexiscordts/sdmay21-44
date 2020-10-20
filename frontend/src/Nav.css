@@ -19,6 +19,12 @@ body    {
     float: right;
 }
 
+@media only screen and (max-width: 550px) {
+    #userinfo   {
+        display: none;
+    }
+}
+
 #username   {
     font-size: 1em;
 }

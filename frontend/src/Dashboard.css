@@ -7,7 +7,7 @@ body    {
     float: clear;
     border: 1px solid #D1D2D4;
     position: relative;
-    margin-top: 50px;
+    margin-top: 20px;
     width: calc(100% - 300px);
     margin-left: 250px;
     margin-right: 50px;
@@ -209,5 +209,11 @@ body    {
     }
     #toggle {
         display: block;
+    }
+  }
+
+  @media only screen and (max-height: 800px) {
+    #scheduleContainer  {
+        max-height: 70vh;
     }
   }
