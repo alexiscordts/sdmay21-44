@@ -1,4 +1,9 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Running the code
+
+Navigate to the frontend folder<br />
+Type `npm start`
+
+
 
 ## Available Scripts
 
