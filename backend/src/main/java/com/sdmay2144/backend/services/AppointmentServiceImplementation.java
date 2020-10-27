@@ -2,12 +2,14 @@ package com.sdmay2144.backend.services;
 
 
 import com.sdmay2144.backend.models.Appointment;
-import com.sdmay2144.backend.models.User;
 import com.sdmay2144.backend.repositories.AppointmentRepository;
 import com.sdmay2144.backend.services.interfaces.AppointmentService;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class AppointmentServiceImplementation implements AppointmentService {
 
     private AppointmentRepository appointmentRepository;
@@ -17,7 +19,7 @@ public class AppointmentServiceImplementation implements AppointmentService {
 
     @Override
     public Appointment findAppointment(Appointment a) {
-        return appointmentRepository.findByTherapistIdAndPatientIdAndEndDatetimeAndStartDatetime(a.getTherapistId(),a.getPatientId(), a.getEndDatetime(), a.getStartDatetime());
+        return appointmentRepository.findByTherapistIdAndPatientIdAndEndDateTimeAndStartDateTime(a.getTherapistId(),a.getPatientId(), a.getEndDateTime(), a.getStartDateTime());
     }
 
     @Override

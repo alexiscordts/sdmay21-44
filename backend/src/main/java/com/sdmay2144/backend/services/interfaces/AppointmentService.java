@@ -1,8 +1,7 @@
 package com.sdmay2144.backend.services.interfaces;
 
 import com.sdmay2144.backend.models.Appointment;
-import com.sdmay2144.backend.models.User;
-
+import org.springframework.context.annotation.Bean;
 import java.util.List;
 
 public interface AppointmentService {

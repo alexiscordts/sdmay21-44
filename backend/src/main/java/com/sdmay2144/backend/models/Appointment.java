@@ -1,11 +1,9 @@
 package com.sdmay2144.backend.models;
 
 import lombok.*;
-import lombok.Builder;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+
+import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 
@@ -16,14 +14,16 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Appointment {
+@IdClass(AppointmentId.class)
+public class Appointment implements Serializable {
+
     @Id
     @Column(name="start_date_time")
-    private Date startDatetime;
+    private Date startDateTime;
 
     @Id
     @Column(name="end_date_time")
-    private Date endDatetime;
+    private Date endDateTime;
 
     @Id
     @Column(name="therapist_id")

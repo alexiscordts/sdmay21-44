@@ -3,16 +3,16 @@ package com.sdmay2144.backend.controllers;
 import com.sdmay2144.backend.models.Appointment;
 import com.sdmay2144.backend.services.interfaces.AppointmentService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import lombok.Builder;
 
 import java.util.Date;
-@AllArgsConstructor
 @RestController
+@AllArgsConstructor
 @RequestMapping("/appointment")
 public class AppointmentController {
 
-    private AppointmentService appointmentService;
+   private final AppointmentService appointmentService;
 
     @PostMapping(path="/add")
     public @ResponseBody String addAppointment(@RequestParam Date startDateTime,
@@ -59,8 +59,8 @@ public class AppointmentController {
         }
         Appointment newAppointment = Appointment
                 .builder()
-                .startDatetime(startDateTime)
-                .endDatetime(endDateTime)
+                .startDateTime(startDateTime)
+                .endDateTime(endDateTime)
                 .therapistId(therapistId)
                 .patientId(patientId)
                 .roomNumber(roomNumber)

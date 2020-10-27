@@ -8,5 +8,5 @@ import java.util.Date;
 
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Integer> {
-    Appointment findByTherapistIdAndPatientIdAndEndDatetimeAndStartDatetime(Integer therapistId, Integer patientId, Date endDateTime, Date startDateTime);
+    Appointment findByTherapistIdAndPatientIdAndEndDateTimeAndStartDateTime(Integer therapistId, Integer patientId, Date endDateTime, Date startDateTime);
 }
