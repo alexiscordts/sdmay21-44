@@ -61,6 +61,11 @@ h2{
     opacity: 100%;
 }
 
+.editButton {
+    border: none;
+    background: none;
+}
+
 @font-face {
   font-family: "AdelleSemiBold";
   font-style: normal;

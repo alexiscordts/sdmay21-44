@@ -19,9 +19,15 @@ class ViewTherapist extends React.Component {
           <td>{therapist.lname}</td>
           <td>{therapist.email}</td>
           <td> 
-            <a href="edit_therapist" >
+            <button class = "editButton" onClick={() => {
+                sessionStorage.setItem("fname", therapist.fname);
+                sessionStorage.setItem("lname", therapist.lname);
+                sessionStorage.setItem("email", therapist.email);
+                window.location.href = "/edit_therapist";
+                }
+            }>
               <img src={require("./Icons/icons8-edit-64.png")} alt="edit" className="icon" />
-            </a>
+            </button>
           </td>
         </tr>
       );
