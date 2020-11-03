@@ -23,7 +23,6 @@ class ViewTherapist extends React.Component {
               <img src={require("./Icons/icons8-edit-64.png")} alt="edit" className="icon" />
             </a>
           </td>
-          <td> <img class="icon" src={require("./Icons/icons8-delete-64.png")} /></td>
         </tr>
       );
   }.bind(this));
@@ -39,7 +38,6 @@ class ViewTherapist extends React.Component {
                 <th>Last Name</th>
                 <th>E-mail</th>
                 <th>Edit</th>
-                <th>Delete</th>
             </tr>
             </thead>
             <tbody>

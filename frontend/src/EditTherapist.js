@@ -16,7 +16,10 @@ class EditTherapist extends React.Component {
                     <label for="fname"><span>First Name <span class="required">*</span></span><input type="text" class="input-field" name="fname" value="" /></label>
                     <label for="lname"><span>Last Name <span class="required">*</span></span><input type="text" class="input-field" name="lname" value="" /></label>
                     <label for="email"><span>E-mail <span class="required">*</span></span><input type="text" class="input-field" name="email" value="" /></label>
-                    <div class="submitLabel"><input type="submit" value="Save" /></div>
+                    <div class="buttonContainer">
+                      <input type="button" onclick="alert('Hello World!')" value="Delete"/>
+                      <input type="submit" value="Save" />
+                    </div>
                   </form>
                 </div>
             </div>

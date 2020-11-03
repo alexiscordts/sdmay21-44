@@ -61,7 +61,7 @@
 .form-style input[type=button]{
 	border: none;
 	padding: 8px 15px 8px 15px;
-	background: #981D97;
+	background: #00529b;
   color: #fff;
 	box-shadow: 1px 1px 4px #DADADA;
 	-moz-box-shadow: 1px 1px 4px #DADADA;
@@ -74,7 +74,7 @@
 }
 .form-style input[type=submit]:hover,
 .form-style input[type=button]:hover{
-	background: #B57EB6;
+	background: #C3CBE4;
   color: #fff;
   cursor: pointer;
 }
@@ -85,6 +85,12 @@
   color: #3E3E3F;
 
 }
+
+.buttonContainer{
+	display: flex;
+  	justify-content: space-around;
+}
+
 @font-face {
   font-family: "AdelleSemiBold";
   font-style: normal;
