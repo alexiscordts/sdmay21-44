@@ -79,13 +79,6 @@
   cursor: pointer;
 }
 
-.submitLabel{
-  width: 100%;
-  text-align: center;
-  color: #3E3E3F;
-
-}
-
 .buttonContainer{
 	display: flex;
   	justify-content: space-around;
