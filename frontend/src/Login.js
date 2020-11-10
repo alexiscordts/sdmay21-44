@@ -45,6 +45,8 @@ class Login extends React.Component {
         <header className="Login-UI">
           <img src="https://www.unitypoint.org/images/unitypoint/UnityPointHealthLogo.svg"></img>
           <form type="loginform" onSubmit={this.handleLoginAttempt}>
+           <div>
+           
             <input
               type="email"
               name="email"
@@ -70,6 +72,8 @@ class Login extends React.Component {
             <button className="LoginButton" type="submit">
               Login
             </button>
+
+            </div>
           </form>
         </header>
       </div>
