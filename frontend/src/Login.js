@@ -41,13 +41,12 @@ class Login extends React.Component {
 
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <div className="Login">
-            <header className="Login-UI">
-              <img src="https://www.unitypoint.org/images/unitypoint/UnityPointHealthLogo.svg"></img>
-              <form type="loginform" onSubmit={this.handleLoginAttempt}>
-                <input
+      <div className="Login">
+        <header className="Login-UI">
+          <img src="https://www.unitypoint.org/images/unitypoint/UnityPointHealthLogo.svg"></img>
+          <form type="loginform" onSubmit={this.handleLoginAttempt}>
+           <div>
+               <input
                   type="email"
                   name="email"
                   placeholder="Enter Email"
@@ -55,9 +54,7 @@ class Login extends React.Component {
                   onChange={this.handleChange}
                   required
                 />
-
-                <br></br>
-
+             <br></br>
                 <input
                   type="password"
                   name="password"
@@ -67,14 +64,12 @@ class Login extends React.Component {
                   required
                 />
 
-                <br></br>
-
-                <button className="LoginButton" type="submit">
-                  Login
-                </button>
-              </form>
-            </header>
-          </div>
+             <br></br>
+            <button className="LoginButton" type="submit">
+              Login
+            </button>
+            </div>
+          </form>
         </header>
       </div>
     );
