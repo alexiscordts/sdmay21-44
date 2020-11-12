@@ -19,7 +19,7 @@ class ViewTherapist extends React.Component {
           <td>{therapist.lname}</td>
           <td>{therapist.email}</td>
           <td> 
-            <button class = "editButton" onClick={() => {
+            <button class = "iconButton" onClick={() => {
                 sessionStorage.setItem("fname", therapist.fname);
                 sessionStorage.setItem("lname", therapist.lname);
                 sessionStorage.setItem("email", therapist.email);
