@@ -41,11 +41,10 @@ class Login extends React.Component {
 
   render() {
     return (
-      <div className="Login">
-        <header className="Login-UI">
-          <img src="https://www.unitypoint.org/images/unitypoint/UnityPointHealthLogo.svg"></img>
-          <form type="loginform" onSubmit={this.handleLoginAttempt}>
-           <div>
+        <div id="parent">
+          <img id="unityImg" src="https://www.unitypoint.org/images/unitypoint/UnityPointHealthLogo.svg"></img>
+          <form id="loginform" type="loginform" onSubmit={this.handleLoginAttempt}>
+
                <input
                   type="email"
                   name="email"
@@ -63,15 +62,12 @@ class Login extends React.Component {
                   onChange={this.handleChange}
                   required
                 />
-
              <br></br>
-            <button className="LoginButton" type="submit">
+            <button id="LoginButton" type="submit">
               Login
             </button>
-            </div>
           </form>
-        </header>
-      </div>
+        </div>
     );
   }
 }
