@@ -7,7 +7,7 @@ class Dashboard extends React.Component {
   constructor(props) {
     super(props);
     this.username = {value : 'Username123'};
-    role = "Therapist";
+    role = "Admin";
     this.role = {value : role};
     this.menuItems = {values: loadMenuItems()};
   }

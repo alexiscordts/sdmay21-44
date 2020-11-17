@@ -53,63 +53,77 @@ class Dashboard extends React.Component {
     return (
     <div id="screen" onResize>
         <Nav />
-        <div id="schedule">
-            <div id="days">
-                <div id="topRow"></div>
-                {this.days.values}              
+        <div class="pageContainer">
+            <div class="dropdown">
+                <button class="dropbtn">
+                    View Schedule
+                    <i class="arrow down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="#">View all </a>
+                    <a href="#">View by room</a>
+                    <a href="#">View by therapist</a>
+                </div>
+                </div>
+            <div class="scheduleTitle">All Schedules</div>
+            <div id="schedule">
+                <div id="days">
+                    <div id="topRow"></div>
+                    {this.days.values}              
+                </div>
+                <div id="scheduleContainer">
+                    {this.time.value}
+                    <div id="hourColumn">
+                        {this.hours.values}
+                    </div>
+                    <div class="day Sunday">                   
+                        {this.lines.values}
+                    </div>
+                    <div class="day Monday">                   
+                        {this.lines.values}
+                    </div>
+                    <div class="day Tuesday">
+                        {this.lines.values}
+                        {this.tuesday.values}
+                    </div>
+                    <div class="day Wednesday">
+                        {this.lines.values}
+                    </div>
+                    <div class="day Thursday">
+                        {this.lines.values}
+                    </div>
+                    <div class="day Friday">
+                        {this.lines.values}
+                    </div>
+                    <div class="day Saturday">                   
+                        {this.lines.values}
+                    </div>
+                </div>
+                <div id="toggle">
+                    <div id="SundayToggle" class="daytoggle" onClick={() => toggleDay("Sunday")}>
+                        Su
+                    </div>
+                    <div id="MondayToggle" class="daytoggle" onClick={() => toggleDay("Monday")}>
+                        M
+                    </div>
+                    <div id="TuesdayToggle" class="daytoggle" onClick={() => toggleDay("Tuesday")}>
+                        T
+                    </div>
+                    <div id="WednesdayToggle" class="daytoggle" onClick={() => toggleDay("Wednesday")}>
+                        W
+                    </div>
+                    <div id="ThursdayToggle" class="daytoggle" onClick={() => toggleDay("Thursday")}>
+                        Th
+                    </div>
+                    <div id="FridayToggle" class="daytoggle" onClick={() => toggleDay("Friday")}>
+                        F
+                    </div>
+                    <div id="SaturdayToggle" class="daytoggle" onClick={() => toggleDay("Saturday")}>
+                        Sa
+                    </div>
+                </div>
             </div>
-            <div id="scheduleContainer">
-                {this.time.value}
-                <div id="hourColumn">
-                    {this.hours.values}
-                </div>
-                <div class="day Sunday">                   
-                    {this.lines.values}
-                </div>
-                <div class="day Monday">                   
-                    {this.lines.values}
-                </div>
-                <div class="day Tuesday">
-                    {this.lines.values}
-                    {this.tuesday.values}
-                </div>
-                <div class="day Wednesday">
-                    {this.lines.values}
-                </div>
-                <div class="day Thursday">
-                    {this.lines.values}
-                </div>
-                <div class="day Friday">
-                    {this.lines.values}
-                </div>
-                <div class="day Saturday">                   
-                    {this.lines.values}
-                </div>
-            </div>
-            <div id="toggle">
-                <div id="SundayToggle" class="daytoggle" onClick={() => toggleDay("Sunday")}>
-                    Su
-                </div>
-                <div id="MondayToggle" class="daytoggle" onClick={() => toggleDay("Monday")}>
-                    M
-                </div>
-                <div id="TuesdayToggle" class="daytoggle" onClick={() => toggleDay("Tuesday")}>
-                    T
-                </div>
-                <div id="WednesdayToggle" class="daytoggle" onClick={() => toggleDay("Wednesday")}>
-                    W
-                </div>
-                <div id="ThursdayToggle" class="daytoggle" onClick={() => toggleDay("Thursday")}>
-                    Th
-                </div>
-                <div id="FridayToggle" class="daytoggle" onClick={() => toggleDay("Friday")}>
-                    F
-                </div>
-                <div id="SaturdayToggle" class="daytoggle" onClick={() => toggleDay("Saturday")}>
-                    Sa
-                </div>
-            </div>
-        </div>           
+        </div>         
     </div>
     );
   }
