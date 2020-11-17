@@ -2,28 +2,28 @@ import React from "react";
 import "./TableStyles.css";
 import Nav from "./Nav";
 
-class ViewTherapist extends React.Component {
+class ViewAdmin extends React.Component {
   constructor (props){
     super(props);
 
   }
     
   render() {
-    var therapistList = [{"fname":"Amy", "lname":"Adams", "email":"amy@up.org"},{"fname":"John", "lname":"Smith","email":"john@up.org"}];
+    var adminList = [{"fname":"Sarah", "lname":"Geller", "email":"sarah@up.org"},{"fname":"Zach", "lname":"Johnson","email":"zach@up.org"}];
     var rows = [];
     
-    therapistList.forEach(function(therapist) {
+    adminList.forEach(function(admin) {
       rows.push(
         <tr>
-          <td>{therapist.fname}</td>
-          <td>{therapist.lname}</td>
-          <td>{therapist.email}</td>
+          <td>{admin.fname}</td>
+          <td>{admin.lname}</td>
+          <td>{admin.email}</td>
           <td> 
             <button class = "iconButton" onClick={() => {
-                sessionStorage.setItem("fname", therapist.fname);
-                sessionStorage.setItem("lname", therapist.lname);
-                sessionStorage.setItem("email", therapist.email);
-                window.location.href = "/edit_therapist";
+                sessionStorage.setItem("fname", admin.fname);
+                sessionStorage.setItem("lname", admin.lname);
+                sessionStorage.setItem("email", admin.email);
+                window.location.href = "/edit_admin";
                 }
             }>
               <img src={require("./Icons/icons8-edit-64.png")} alt="edit" className="icon" />
@@ -36,7 +36,7 @@ class ViewTherapist extends React.Component {
     return (
       <div >
         <Nav/>
-        <h2>Therapists</h2>
+        <h2>Admins</h2>
         <table class="fl-table">
             <thead>
             <tr>
@@ -54,4 +54,4 @@ class ViewTherapist extends React.Component {
     );
   }
 }
-export default ViewTherapist;
+export default ViewAdmin;

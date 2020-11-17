@@ -57,25 +57,49 @@ function closeNav() {
 function loadMenuItems() {
     const items = [];
     items.push(
-        <button class="menuButton">
+        <button class="menuButton" onClick={() => {
+            window.location.href = "/dashboard";
+            } 
+        }>
             <img class="menuButtonImg" src={require("./Icons/icons8-calendar-48.png")} />
             <div class="menuLabel">View Schedule</div>
         </button>,
+
         <button class="menuButton">
-            <img class="menuButtonImg" src={require("./Icons/icons8-clock-48.png")} />
-            <div class="menuLabel">Appointments</div>
-        </button>,
-        <button class="menuButton">
-            <img class="menuButtonImg" src={require("./Icons/icons8-female-user-48.png")} />
-            <div class="menuLabel">Manage Patients</div>
-        </button>,
-        <button class="menuButton">
-            <img class="menuButtonImg" src={require("./Icons/icons8-info-48.png")} />
+            <img class="menuButtonImg" src={require("./Icons/icons8-combo-chart-50.png")} />
             <div class="menuLabel">View Metrics</div>
         </button>,
-        <button class="menuButton">
-            <img class="menuButtonImg" src={require("./Icons/icons8-plus-48.png")} />
-            <div class="menuLabel">Edit Therapist</div>
+
+        <button class="menuButton" onClick={() => {
+            window.location.href = "/view_patient";
+            } 
+        }>
+            <img class="menuButtonImg" src={require("./Icons/icons8-wheelchair-50.png")} />
+            <div class="menuLabel">Manage Patients</div>
+        </button>,
+
+        <button class="menuButton" onClick={() => {
+            window.location.href = "/view_therapist";
+            } 
+        }>
+            <img class="menuButtonImg" src={require("./Icons/icons8-user-male-50.png")} />
+            <div class="menuLabel">Manage Therapists</div>
+        </button>,
+
+        <button class="menuButton" onClick={() => {
+            window.location.href = "/view_nurse";
+            } 
+        }>
+         <img class="menuButtonImg" src={require("./Icons/icons8-stethoscope-50.png")} />
+         <div class="menuLabel">Manage Nurses</div>
+        </button>,
+        
+        <button class="menuButton" onClick={() => {
+            window.location.href = "/view_admin";
+            } 
+        }>
+            <img class="menuButtonImg" src={require("./Icons/icons8-microsoft-admin-50.png")} />
+            <div class="menuLabel">Manage Admins</div>
         </button>
     );
     return items;
