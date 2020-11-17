@@ -1,6 +1,6 @@
 import React from "react";
-import "../TableStyles.css";
-import Nav from "../Nav";
+import "./TableStyles.css";
+import Nav from "./Nav";
 
 class ViewAdmin extends React.Component {
   constructor (props){
@@ -26,7 +26,7 @@ class ViewAdmin extends React.Component {
                 window.location.href = "/edit_admin";
                 }
             }>
-              <img src={require("../Icons/icons8-edit-64.png")} alt="edit" className="icon" />
+              <img src={require("./Icons/icons8-edit-64.png")} alt="edit" className="icon" />
             </button>
           </td>
         </tr>

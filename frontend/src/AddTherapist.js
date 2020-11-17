@@ -1,6 +1,6 @@
 import React from "react";
-import "../FormStyles.css";
-import Nav from "../Nav";
+import "./FormStyles.css";
+import Nav from "./Nav";
 
 class AddTherapist extends React.Component {
 

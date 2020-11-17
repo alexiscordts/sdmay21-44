@@ -1,6 +1,6 @@
 import React from "react";
-import "../TableStyles.css";
-import Nav from "../Nav";
+import "./TableStyles.css";
+import Nav from "./Nav";
 
 class ViewPatient extends React.Component {
   constructor (props){
@@ -20,7 +20,7 @@ class ViewPatient extends React.Component {
           <td>{patient.admissionDate}</td>
           <td> 
             <button class = "iconButton" >
-              <img src={require("../Icons/icons8-delete-64.png")} alt="delete" className="icon" />
+              <img src={require("./Icons/icons8-delete-64.png")} alt="delete" className="icon" />
             </button>
           </td>
         </tr>

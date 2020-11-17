@@ -3,17 +3,17 @@ import ReactDOM from "react-dom";
 import "./App.css";
 import Login from "./Login";
 import Dashboard from "./Dashboard";
-import AddAdmin from "./UserPages/AddAdmin";
-import AddNurse from "./UserPages/AddNurse";
-import AddPatient from "./UserPages/AddPatient";
-import AddTherapist from "./UserPages/AddTherapist";
-import EditAdmin from "./UserPages/EditAdmin";
-import EditNurse from "./UserPages/EditNurse";
-import EditTherapist from "./UserPages/EditTherapist";
-import ViewAdmin from "./UserPages/ViewAdmin";
-import ViewNurse from "./UserPages/ViewNurse";
-import ViewPatient from "./UserPages/ViewPatient";
-import ViewTherapist from "./UserPages/ViewTherapist";
+import AddAdmin from "./AddAdmin";
+import AddNurse from "./AddNurse";
+import AddPatient from "./AddPatient";
+import AddTherapist from "./AddTherapist";
+import EditAdmin from "./EditAdmin";
+import EditNurse from "./EditNurse";
+import EditTherapist from "./EditTherapist";
+import ViewAdmin from "./ViewAdmin";
+import ViewNurse from "./ViewNurse";
+import ViewPatient from "./ViewPatient";
+import ViewTherapist from "./ViewTherapist";
 import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
 
 class App extends React.Component {
