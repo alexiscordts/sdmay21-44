@@ -6,11 +6,9 @@ body    {
     background-color: white;
     float: clear;
     border: 1px solid #D1D2D4;
-    position: relative;
+    margin: auto;
     margin-top: 50px;
-    width: calc(100% - 300px);
-    margin-left: 250px;
-    margin-right: 50px;
+    width: 80%;
     
 }
 
