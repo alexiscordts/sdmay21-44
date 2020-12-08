@@ -9,12 +9,11 @@ namespace InpatientTherapySchedulingProgram.Services.Interfaces
 {
     interface IUserService
     {
-        Task<ActionResult<IEnumerable<User>>> GetUser();
-        Task<ActionResult<User>> GetUser(int id);
-        Task<IActionResult> PutUser(int id, User user);
-        Task<ActionResult<User>> PostUser(User user);
-        Task<ActionResult<User>> DeleteUser(int id);
-        bool UserExists(int id);
-        bool UserExists(string username, string password);
+        Task<IEnumerable<User>> GetAllUsers();
+        Task<User> GetUserById(int id);
+        Task<User> GetUserByUsername(string username);
+        Task<User> UpdateUser(int id, User user);
+        Task<User> AddUser(User user);
+        Task<User> DeleteUser(int id);
     }
 }

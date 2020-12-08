@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using InpatientTherapySchedulingProgram.Models;
+using InpatientTherapySchedulingProgram.Services;
+using InpatientTherapySchedulingProgram.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -33,6 +35,7 @@ namespace InpatientTherapySchedulingProgram
             //    .AddMicrosoftIdentityWebApi(Configuration, "AzureAd");
 
             services.AddDbContext<CoreDbContext>(op => op.UseSqlServer(Configuration.GetConnectionString("Database")));
+            services.AddScoped<IUserService, UserService>();
             services.AddControllers();
         }
 

@@ -1,48 +1,94 @@
 ﻿using InpatientTherapySchedulingProgram.Models;
 using InpatientTherapySchedulingProgram.Services.Interfaces;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using InpatientTherapySchedulingProgram.Exceptions.UserExceptions;
 
 namespace InpatientTherapySchedulingProgram.Services
 {
     public class UserService : IUserService
     {
-        public Task<ActionResult<User>> DeleteUser(int id)
+        private readonly CoreDbContext _context;
+
+        public UserService(CoreDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        public Task<ActionResult<IEnumerable<User>>> GetUser()
+        public async Task<User> DeleteUser(int id)
         {
-            throw new NotImplementedException();
+            if(!UserExists(id))
+            {
+                throw new UserDoesNotExistException();
+            }
+
+            var user = await _context.User.FindAsync(id);
+
+            _context.User.Remove(user);
+            await _context.SaveChangesAsync();
+
+            return user;
         }
 
-        public Task<ActionResult<User>> GetUser(int id)
+        public async Task<IEnumerable<User>> GetAllUsers()
         {
-            throw new NotImplementedException();
+            return await _context.User.ToListAsync();
         }
 
-        public Task<ActionResult<User>> PostUser(User user)
+        public async Task<User> GetUserById(int id)
         {
-            throw new NotImplementedException();
+            return await _context.User.FindAsync(id);
         }
 
-        public Task<IActionResult> PutUser(int id, User user)
+        public async Task<User> GetUserByUsername(string username)
         {
-            throw new NotImplementedException();
+            return await _context.User.FirstOrDefaultAsync(u => u.Username == username);
         }
 
-        public bool UserExists(int id)
+        public async Task<User> AddUser(User user)
         {
-            throw new NotImplementedException();
+            if (UserExists(user.Uid))
+            {
+                throw new UserIdAlreadyExistsException();
+            }
+            if (UserExists(user.Username))
+            {
+                throw new UsernameAlreadyExistsException();
+            }
+            _context.User.Add(user);
+            await _context.SaveChangesAsync();
+            return user;
         }
 
-        public bool UserExists(string username, string password)
+        public async Task<User> UpdateUser(int id, User user)
         {
-            throw new NotImplementedException();
+            if(id != user.Uid)
+            {
+                throw new UserIdsDoNotMatchException();
+            }
+            if(!UserExists(id))
+            {
+                throw new UserDoesNotExistException();
+            }
+
+            _context.Entry(user).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return user;
+        }
+
+        private bool UserExists(int id)
+        {
+            return _context.User.Any(u => u.Uid == id);
+        }
+
+        private bool UserExists(string username)
+        {
+            return _context.User.Any(u => u.Username == username);
         }
     }
 }

@@ -3,18 +3,9 @@ using InpatientTherapySchedulingProgram.Models;
 using InpatientTherapySchedulingProgramTests.Fakes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Text;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http;
-using System.Web.Http.Results;
-using Microsoft.AspNetCore.Mvc;
 using NotFoundResult = Microsoft.AspNetCore.Mvc.NotFoundResult;
 
 namespace InpatientTherapySchedulingProgramTests
@@ -53,7 +44,6 @@ namespace InpatientTherapySchedulingProgramTests
             var allUsers = await _testController.GetUser();
 
             allUsers.Value.Should().BeOfType<List<User>>();
-            
         }
 
         [TestMethod]

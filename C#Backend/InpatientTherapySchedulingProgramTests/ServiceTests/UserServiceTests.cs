@@ -1,0 +1,243 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using FluentAssertions;
+using InpatientTherapySchedulingProgram.Models;
+using InpatientTherapySchedulingProgram.Services;
+using InpatientTherapySchedulingProgramTests.Fakes;
+using System.Threading.Tasks;
+using InpatientTherapySchedulingProgram.Exceptions.UserExceptions;
+
+namespace InpatientTherapySchedulingProgramTests.ServiceTests
+{
+    [TestClass]
+    public class UserServiceTests
+    {
+        List<User> _testUsers;
+        CoreDbContext _testContext;
+        UserService _testService;
+
+        [TestInitialize]
+        public void Initialize()
+        {
+            var options = new DbContextOptionsBuilder<CoreDbContext>()
+                .UseInMemoryDatabase(databaseName: "UserDatabase")
+                .Options;
+            _testUsers = new List<User>();
+            _testContext = new CoreDbContext(options);
+            _testContext.Database.EnsureDeleted();
+
+            for(var i = 0; i < 10; i++)
+            {
+                var newUser = ModelFakes.UserFake.Generate();
+                _testUsers.Add(newUser);
+                _testContext.Add(newUser);
+                _testContext.SaveChanges();
+            }
+
+            _testService = new UserService(_testContext);
+        }
+
+        [TestMethod]
+        public async Task GetAllReturnsCorrectType()
+        {
+            var allUsers = await _testService.GetAllUsers();
+            
+            allUsers.Should().BeOfType<List<User>>();
+        }
+
+        [TestMethod]
+        public async Task GetAllReturnsCorrectNumberOfUsers()
+        {
+            var allUsers = await _testService.GetAllUsers();
+            List<User> listOfUsers = (List<User>)allUsers;
+
+            listOfUsers.Count.Should().Be(10);
+        }
+
+        [TestMethod]
+        public async Task GetAllReturnsCorrectListOfUsers()
+        {
+            var allUsers = await _testService.GetAllUsers();
+            List<User> listOfUsers = (List<User>)allUsers;
+
+            for(var i = 0; i < 10; i++)
+            {
+                _testUsers.Contains(listOfUsers[0]).Should().BeTrue();
+            }
+        }
+
+        [TestMethod]
+        public async Task GetSingleUserByUIDReturnsCorrectType()
+        {
+            var singleUser = await _testService.GetUserById(_testUsers[0].Uid);
+
+            singleUser.Should().BeOfType<User>();
+        }
+
+        [TestMethod]
+        public async Task GetSingleUserByUIDReturnsCorrectUser()
+        {
+            var singleUser = await _testService.GetUserById(_testUsers[0].Uid);
+
+            singleUser.Should().Be(_testUsers[0]);
+        }
+
+        [TestMethod]
+        public async Task GetSingleUserByUIDReturnsNullIfUserDoesNotExist()
+        {
+            var singleUser = await _testService.GetUserById(-1);
+
+            singleUser.Should().BeNull();
+        }
+
+        [TestMethod]
+        public async Task GetSingleUserByUsernameReturnsCorrectType()
+        {
+            var singleUser = await _testService.GetUserByUsername(_testUsers[0].Username);
+
+            singleUser.Should().BeOfType<User>();
+        }
+
+        [TestMethod]
+        public async Task GetSingleUserByUsernameReturnsCorrectUser()
+        {
+            var singleUser = await _testService.GetUserByUsername(_testUsers[0].Username);
+
+            singleUser.Should().Be(_testUsers[0]);
+        }
+
+        [TestMethod]
+        public async Task GetSingleUserByUsernameReturnsNullIfUserDoesNotExist()
+        {
+            var singleUser = await _testService.GetUserByUsername("-1");
+
+            singleUser.Should().BeNull();
+        }
+
+        [TestMethod]
+        public async Task AddUserIncreasesCountOfUsers()
+        {
+            var newUser = ModelFakes.UserFake.Generate();
+            await _testService.AddUser(newUser);
+
+            var allUsers = await _testService.GetAllUsers();
+            List<User> listOfUsers = (List<User>)allUsers;
+
+            listOfUsers.Count.Should().Be(11);
+        }
+
+        [TestMethod]
+        public async Task AddUserCorrectlyAddsUserToDatabase()
+        {
+            var newUser = ModelFakes.UserFake.Generate();
+            await _testService.AddUser(newUser);
+
+            var allUsers = await _testService.GetAllUsers();
+            List<User> listOfUsers = (List<User>)allUsers;
+
+            listOfUsers.Contains(newUser).Should().BeTrue();
+        }
+
+        [TestMethod]
+        public async Task AddUserWithExistingIdThrowsError()
+        {
+            int existingId = _testUsers[0].Uid;
+            var newUser = ModelFakes.UserFake.Generate();
+            newUser.Uid = existingId;
+
+            await _testService.Invoking(s => s.AddUser(newUser)).Should().ThrowAsync<UserIdAlreadyExistsException>();
+        }
+
+        [TestMethod]
+        public async Task AddUserWithExistingUsernameThrowsError()
+        {
+            string existingUsername = _testUsers[0].Username;
+            var newUser = ModelFakes.UserFake.Generate();
+            newUser.Username = existingUsername;
+
+            await _testService.Invoking(s => s.AddUser(newUser)).Should().ThrowAsync<UsernameAlreadyExistsException>();
+        }
+
+        [TestMethod]
+        public async Task DeleteUserDecrementsCount()
+        {
+            await _testService.DeleteUser(_testUsers[0].Uid);
+
+            var allUsers = await _testService.GetAllUsers();
+            List<User> listOfUsers = (List<User>)allUsers;
+
+            listOfUsers.Count.Should().Be(9);
+        }
+
+        [TestMethod]
+        public async Task DeleteUserRemovesUserFromDatabase()
+        {
+            await _testService.DeleteUser(_testUsers[0].Uid);
+
+            var allUsers = await _testService.GetAllUsers();
+            List<User> listOfUsers = (List<User>)allUsers;
+
+            listOfUsers.Contains(_testUsers[0]).Should().BeFalse();
+        }
+
+        [TestMethod]
+        public async Task DeleteUserReturnsCorrectUser()
+        {
+            var returnUser = await _testService.DeleteUser(_testUsers[0].Uid);
+
+            returnUser.Should().Be(_testUsers[0]);
+        }
+
+        [TestMethod]
+        public async Task DeleteUserThatDoesNotExistThrowsException() {
+            await _testService.Invoking(s => s.DeleteUser(-1)).Should().ThrowAsync<UserDoesNotExistException>();
+        }
+
+        [TestMethod]
+        public async Task UpdateUserReturnsCorrectType()
+        {
+            var returnUser = await _testService.UpdateUser(_testUsers[0].Uid, _testUsers[0]);
+
+            returnUser.Should().BeOfType<User>();
+        }
+
+        [TestMethod]
+        public async Task UpdateUserReturnsCorrectUser()
+        {
+            var returnUser = await _testService.UpdateUser(_testUsers[0].Uid, _testUsers[0]);
+
+            returnUser.Should().Be(_testUsers[0]);
+        }
+
+        [TestMethod]
+        public async Task UpdateUserWithAlteredDataUpdatesCorrectlyInDatabase()
+        {
+            var newUsername = ModelFakes.UserFake.Generate().Username;
+            _testUsers[0].Username = newUsername;
+
+            await _testService.UpdateUser(_testUsers[0].Uid, _testUsers[0]);
+
+            var returnUser = await _testService.GetUserById(_testUsers[0].Uid);
+
+            returnUser.Username.Should().Be(newUsername);
+        }
+
+        [TestMethod]
+        public async Task UpdateUserWithNonMatchingIdsThrowsError()
+        {
+            await _testService.Invoking(s => s.UpdateUser(_testUsers[1].Uid, _testUsers[0])).Should().ThrowAsync<UserIdsDoNotMatchException>();
+        }
+
+        [TestMethod]
+        public async Task UpdateUserWithNonExistingUserThrowsError()
+        {
+            _testUsers[0].Uid = -1;
+
+            await _testService.Invoking(s => s.UpdateUser(-1, _testUsers[0])).Should().ThrowAsync<UserDoesNotExistException>();
+        }
+
+    }
+}
