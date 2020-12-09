@@ -25,7 +25,7 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
             UserFake.RuleFor(m => m.LastName, r => r.Name.LastName());
             UserFake.RuleFor(m => m.Address, r => r.Address.FullAddress());
             UserFake.RuleFor(m => m.PhoneNumber, r => r.Phone.PhoneNumber());
-            UserFake.RuleFor(m => m.Username, r => r.Person.UserName);
+            UserFake.RuleFor(m => m.Username, r => r.IndexGlobal + r.Person.UserName);
             UserFake.RuleFor(m => m.Password, r => r.Internet.Password());
         }
     }

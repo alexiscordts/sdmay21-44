@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using FluentAssertions;
@@ -15,9 +13,9 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
     [TestClass]
     public class UserServiceTests
     {
-        List<User> _testUsers;
-        CoreDbContext _testContext;
-        UserService _testService;
+        private List<User> _testUsers;
+        private CoreDbContext _testContext;
+        private UserService _testService;
 
         [TestInitialize]
         public void Initialize()
@@ -70,51 +68,51 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         }
 
         [TestMethod]
-        public async Task GetSingleUserByUIDReturnsCorrectType()
+        public async Task GetUserByUserIdReturnsCorrectType()
         {
-            var singleUser = await _testService.GetUserById(_testUsers[0].Uid);
+            var user = await _testService.GetUserById(_testUsers[0].Uid);
 
-            singleUser.Should().BeOfType<User>();
+            user.Should().BeOfType<User>();
         }
 
         [TestMethod]
-        public async Task GetSingleUserByUIDReturnsCorrectUser()
+        public async Task GetUserByUserIdReturnsCorrectUser()
         {
-            var singleUser = await _testService.GetUserById(_testUsers[0].Uid);
+            var user = await _testService.GetUserById(_testUsers[0].Uid);
 
-            singleUser.Should().Be(_testUsers[0]);
+            user.Should().Be(_testUsers[0]);
         }
 
         [TestMethod]
-        public async Task GetSingleUserByUIDReturnsNullIfUserDoesNotExist()
+        public async Task GetUserByUserIdReturnsNullIfUserDoesNotExist()
         {
-            var singleUser = await _testService.GetUserById(-1);
+            var user = await _testService.GetUserById(-1);
 
-            singleUser.Should().BeNull();
+            user.Should().BeNull();
         }
 
         [TestMethod]
-        public async Task GetSingleUserByUsernameReturnsCorrectType()
+        public async Task GetUserByUsernameReturnsCorrectType()
         {
-            var singleUser = await _testService.GetUserByUsername(_testUsers[0].Username);
+            var user = await _testService.GetUserByUsername(_testUsers[0].Username);
 
-            singleUser.Should().BeOfType<User>();
+            user.Should().BeOfType<User>();
         }
 
         [TestMethod]
-        public async Task GetSingleUserByUsernameReturnsCorrectUser()
+        public async Task GetUserByUsernameReturnsCorrectUser()
         {
-            var singleUser = await _testService.GetUserByUsername(_testUsers[0].Username);
+            var user = await _testService.GetUserByUsername(_testUsers[0].Username);
 
-            singleUser.Should().Be(_testUsers[0]);
+            user.Should().Be(_testUsers[0]);
         }
 
         [TestMethod]
-        public async Task GetSingleUserByUsernameReturnsNullIfUserDoesNotExist()
+        public async Task GetUserByUsernameReturnsNullIfUserDoesNotExist()
         {
-            var singleUser = await _testService.GetUserByUsername("-1");
+            var user = await _testService.GetUserByUsername("-1");
 
-            singleUser.Should().BeNull();
+            user.Should().BeNull();
         }
 
         [TestMethod]
