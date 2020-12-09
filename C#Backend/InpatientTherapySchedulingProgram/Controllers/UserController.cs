@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using InpatientTherapySchedulingProgram.Models;
 using Microsoft.AspNetCore.Authorization;
+using InpatientTherapySchedulingProgram.Services;
+using InpatientTherapySchedulingProgram.Exceptions.UserExceptions;
+using InpatientTherapySchedulingProgram.Services.Interfaces;
 
 namespace InpatientTherapySchedulingProgram.Controllers
 {
@@ -14,45 +17,47 @@ namespace InpatientTherapySchedulingProgram.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly CoreDbContext _context;
+        private readonly IUserService _service;
 
-        public UserController(CoreDbContext context)
+        public UserController(IUserService service)
         {
-            _context = context;
+            _service = service;
         }
 
         // GET: api/User
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUser()
         {
-            return await _context.User.ToListAsync();
+            var allUsers = await _service.GetAllUsers();
+
+            return Ok(allUsers);
         }
 
         // GET: api/User/5
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
-            var user = await _context.User.FindAsync(id);
+            var user = await _service.GetUserById(id);
 
             if (user == null)
             {
                 return NotFound();
             }
 
-            return user;
+            return Ok(user);
         }
 
         [HttpGet("{username}")]
         public async Task<ActionResult<User>> GetUser(string username)
         {
-            var user = await _context.User.FirstOrDefaultAsync(u => u.Username == username);
+            var user = await _service.GetUserByUsername(username);
 
             if (user == null)
             {
                 return NotFound();
             }
 
-            return user;
+            return Ok(user);
         }
 
         // PUT: api/User/5
@@ -61,27 +66,21 @@ namespace InpatientTherapySchedulingProgram.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(int id, User user)
         {
-            if (id != user.Uid)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(user).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _service.UpdateUser(id, user);
+            }
+            catch(UserIdsDoNotMatchException e)
+            {
+                return BadRequest(e);
+            }
+            catch(UserDoesNotExistException e)
+            {
+                return BadRequest(e);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
             return NoContent();
@@ -93,21 +92,21 @@ namespace InpatientTherapySchedulingProgram.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
-            _context.User.Add(user);
             try
             {
-                await _context.SaveChangesAsync();
+                await _service.AddUser(user);
             }
-            catch (DbUpdateException)
+            catch (UserIdAlreadyExistsException e)
             {
-                if (UserExists(user.Uid))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
+                return Conflict(e);
+            }
+            catch (UsernameAlreadyExistsException e)
+            {
+                return Conflict(e);
+            }
+            catch(DbUpdateException)
+            {
+                throw;
             }
 
             return CreatedAtAction("GetUser", new { id = user.Uid }, user);
@@ -117,26 +116,23 @@ namespace InpatientTherapySchedulingProgram.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<User>> DeleteUser(int id)
         {
-            var user = await _context.User.FindAsync(id);
-            if (user == null)
+            User user;
+
+            try
             {
-                return NotFound();
+                user = await _service.DeleteUser(id);
+
+                if(user == null)
+                {
+                    return NotFound();
+                }
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
             }
 
-            _context.User.Remove(user);
-            await _context.SaveChangesAsync();
-
-            return user;
-        }
-
-        private bool UserExists(int id)
-        {
-            return _context.User.Any(e => e.Uid == id);
-        }
-
-        private bool UserExists(string username, string password)
-        {
-            return _context.User.Any(e => e.Username == username && e.Password == password);
+            return Ok(user);
         }
     }
 }

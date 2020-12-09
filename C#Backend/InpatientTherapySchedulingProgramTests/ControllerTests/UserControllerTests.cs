@@ -6,7 +6,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Moq;
 using NotFoundResult = Microsoft.AspNetCore.Mvc.NotFoundResult;
+using InpatientTherapySchedulingProgram.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using InpatientTherapySchedulingProgram.Exceptions.UserExceptions;
 
 namespace InpatientTherapySchedulingProgramTests
 {
@@ -14,47 +18,226 @@ namespace InpatientTherapySchedulingProgramTests
     public class UserControllerTests
     {
         List<User> _testUsers;
-        CoreDbContext _testContext;
+        Mock<IUserService> _fakeService;
         UserController _testController;
 
         [TestInitialize]
         public void Initialize()
         {
-            var options = new DbContextOptionsBuilder<CoreDbContext>()
-                .UseInMemoryDatabase(databaseName: "UserDatabase")
-                .Options;
             _testUsers = new List<User>();
-            _testContext = new CoreDbContext(options);
-            _testContext.Database.EnsureDeleted();
-
             for(var i = 0; i < 10; i++)
             {
-                var newUser = ModelFakes.UserFake.Generate();
-                _testUsers.Add(newUser);
-                _testContext.Add(newUser);
-                _testContext.SaveChanges();
+                var user = ModelFakes.UserFake.Generate();
+                _testUsers.Add(user);
             }
 
-            _testController = new UserController(_testContext);
+            _fakeService = new Mock<IUserService>();
+            _fakeService.SetupAllProperties();
+            _fakeService.Setup(s => s.GetAllUsers()).ReturnsAsync(_testUsers);
+            _fakeService.Setup(s => s.GetUserById(It.IsAny<int>())).ReturnsAsync(_testUsers[0]);
+            _fakeService.Setup(s => s.GetUserByUsername(It.IsAny<string>())).ReturnsAsync(_testUsers[0]);
+            _fakeService.Setup(s => s.UpdateUser(It.IsAny<int>(), It.IsAny<User>())).ReturnsAsync(_testUsers[0]);
+            _fakeService.Setup(s => s.AddUser(It.IsAny<User>())).ReturnsAsync(_testUsers[0]);
+            _fakeService.Setup(s => s.DeleteUser(It.IsAny<int>())).ReturnsAsync(_testUsers[0]);
+
+            _testController = new UserController(_fakeService.Object);
         }
 
         [TestMethod]
-        public async Task GetAllReturnsCorrectType()
+        public async Task ValidGetAllReturnsOkResponse()
         {
-            var allUsers = await _testController.GetUser();
+            var response = await _testController.GetUser();
 
-            allUsers.Value.Should().BeOfType<List<User>>();
+            response.Result.Should().BeOfType<OkObjectResult>();
         }
 
         [TestMethod]
-        public async Task GetSingleUserByUIDReturnsCorrectType()
+        public async Task ValidGetAllReturnsCorrectType()
         {
-            var singleUser = await _testController.GetUser(_testUsers[0].Uid);
-
-            singleUser.Value.Should().BeOfType<User>();
+            var response = await _testController.GetUser();
+            var responseResult = response.Result as OkObjectResult;
+            
+            responseResult.Value.Should().BeOfType<List<User>>();
         }
 
         [TestMethod]
+        public async Task ValidGetUserByUIDReturnsOkResponse()
+        {
+            var response = await _testController.GetUser(_testUsers[0].Uid);
+
+            response.Result.Should().BeOfType<OkObjectResult>();
+        }
+
+        [TestMethod]
+        public async Task ValidGetUserByUIDReturnsCorrectType()
+        {
+            var response = await _testController.GetUser(_testUsers[0].Uid);
+            var responseResult = response.Result as OkObjectResult;
+
+            responseResult.Value.Should().BeOfType<User>();
+        }
+
+        [TestMethod]
+        public async Task GetNonExistingUserByUIDReturnsNotFound()
+        {
+            _fakeService.Setup(s => s.GetUserById(It.IsAny<int>())).ReturnsAsync((User)null);
+
+            var response = await _testController.GetUser(-1);
+            var responseResult = response.Result;
+
+            responseResult.Should().BeOfType<NotFoundResult>();
+        }
+
+        [TestMethod]
+        public async Task ValidGetUserByUsernameReturnsOkResponse()
+        {
+            var response = await _testController.GetUser(_testUsers[0].Username);
+
+            response.Result.Should().BeOfType<OkObjectResult>();
+        }
+
+        [TestMethod]
+        public async Task ValidGetUserByUsernameReturnsCorrectType()
+        {
+            var response = await _testController.GetUser(_testUsers[0].Username);
+            var responseResult = response.Result as OkObjectResult;
+
+            responseResult.Value.Should().BeOfType<User>();
+        }
+
+        [TestMethod]
+        public async Task GetNonExistingUserByUsernameReturnsNotFound()
+        {
+            _fakeService.Setup(s => s.GetUserByUsername(It.IsAny<string>())).ReturnsAsync((User)null);
+
+            var response = await _testController.GetUser("-1");
+            var responseResult = response.Result;
+            
+            responseResult.Should().BeOfType<NotFoundResult>();
+        }
+
+        [TestMethod]
+        public async Task ValidPostUserReturnsNoContentResponse()
+        {
+            var response = await _testController.PutUser(_testUsers[0].Uid, _testUsers[0]);
+            
+            response.Should().BeOfType<NoContentResult>();
+        }
+
+        [TestMethod]
+        public async Task NonMatchingUserIdPostUserReturnsBadRequest()
+        {
+            _fakeService.Setup(s => s.UpdateUser(It.IsAny<int>(), It.IsAny<User>())).ThrowsAsync(new UserIdsDoNotMatchException());
+
+            var response = await _testController.PutUser(-1, _testUsers[0]);
+
+            response.Should().BeOfType<BadRequestObjectResult>();
+        }
+
+        [TestMethod]
+        public async Task NonExistingUserPostUserReturnsBadRequest()
+        {
+            _fakeService.Setup(s => s.UpdateUser(It.IsAny<int>(), It.IsAny<User>())).ThrowsAsync(new UserDoesNotExistException());
+
+            var response = await _testController.PutUser(_testUsers[0].Uid, new User());
+
+            response.Should().BeOfType<BadRequestObjectResult>();
+        }
+
+        [TestMethod]
+        public async Task DbUpdateConcurrencyExceptionPostUserShouldThrowError()
+        {
+            _fakeService.Setup(s => s.UpdateUser(It.IsAny<int>(), It.IsAny<User>())).ThrowsAsync(new DbUpdateConcurrencyException());
+
+            await _testController.Invoking(c => c.PutUser(_testUsers[0].Uid, _testUsers[0])).Should().ThrowAsync<DbUpdateConcurrencyException>();
+        }
+
+        [TestMethod]
+        public async Task ValidPostUserReturnsCreatedAtActionResponse()
+        {
+            var response = await _testController.PostUser(_testUsers[0]);
+            var responseResult = response.Result;
+
+            responseResult.Should().BeOfType<CreatedAtActionResult>();
+        }
+
+        [TestMethod]
+        public async Task ValidPostUserReturnsCorrectType()
+        {
+            var response = await _testController.PostUser(_testUsers[0]);
+            var responseResult = response.Result as CreatedAtActionResult;
+
+            responseResult.Value.Should().BeOfType<User>();
+        }
+
+        [TestMethod]
+        public async Task ExistingUIDPostUserReturnsConflict()
+        {
+            _fakeService.Setup(s => s.AddUser(It.IsAny<User>())).ThrowsAsync(new UserIdAlreadyExistsException());
+
+            var response = await _testController.PostUser(new User());
+            var responseResult = response.Result;
+
+            responseResult.Should().BeOfType<ConflictObjectResult>();
+        }
+
+        [TestMethod]
+        public async Task ExistingUsernamePostUserReturnsConflict()
+        {
+            _fakeService.Setup(s => s.AddUser(It.IsAny<User>())).ThrowsAsync(new UsernameAlreadyExistsException());
+
+            var response = await _testController.PostUser(new User());
+            var responseResult = response.Result;
+
+            responseResult.Should().BeOfType<ConflictObjectResult>();
+        }
+
+        [TestMethod]
+        public async Task DbUpdateExceptionPostUserThrowsError()
+        {
+            _fakeService.Setup(s => s.AddUser(It.IsAny<User>())).ThrowsAsync(new DbUpdateException());
+
+            await _testController.Invoking(c => c.PostUser(new User())).Should().ThrowAsync<DbUpdateException>();
+        }
+
+        [TestMethod]
+        public async Task ValidDeleteUserReturnsOkResponse()
+        {
+            var response = await _testController.DeleteUser(_testUsers[0].Uid);
+            var responseResult = response.Result;
+
+            responseResult.Should().BeOfType<OkObjectResult>();
+        }
+
+        [TestMethod]
+        public async Task ValidDeleteUserReturnsCorrectType()
+        {
+            var response = await _testController.DeleteUser(_testUsers[0].Uid);
+            var responseResult = response.Result as OkObjectResult;
+
+            responseResult.Value.Should().BeOfType<User>();
+        }
+
+        [TestMethod]
+        public async Task NonExistingDeleteUserReturnsNotFoundResponse()
+        {
+            _fakeService.Setup(s => s.DeleteUser(It.IsAny<int>())).ReturnsAsync((User)null);
+
+            var response = await _testController.DeleteUser(-1);
+            var responseResult = response.Result;
+            
+            responseResult.Should().BeOfType<NotFoundResult>();
+        }
+
+        [TestMethod]
+        public async Task DbUpdateConcurrencyExceptionDeleteUserThrowsError()
+        {
+            _fakeService.Setup(s => s.DeleteUser(It.IsAny<int>())).ThrowsAsync(new DbUpdateConcurrencyException());
+
+            await _testController.Invoking(c => c.DeleteUser(-1)).Should().ThrowAsync<DbUpdateConcurrencyException>();
+        }
+
+        /*[TestMethod]
         public async Task GetSingleUserByUIDReturnsCorrectUser()
         {
             var singleUser = await _testController.GetUser(_testUsers[0].Uid);
@@ -166,7 +349,7 @@ namespace InpatientTherapySchedulingProgramTests
             alteredUserValue.Username.Should().NotBe(originalUsernameValue);
             alteredUserValue.Username.Should().Be(newUsername);
         }
-
+        */
     }
 
 }

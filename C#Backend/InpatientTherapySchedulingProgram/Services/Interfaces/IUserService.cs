@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace InpatientTherapySchedulingProgram.Services.Interfaces
 {
-    interface IUserService
+    public interface IUserService
     {
         Task<IEnumerable<User>> GetAllUsers();
         Task<User> GetUserById(int id);

@@ -21,15 +21,23 @@ namespace InpatientTherapySchedulingProgram.Services
 
         public async Task<User> DeleteUser(int id)
         {
-            if(!UserExists(id))
-            {
-                throw new UserDoesNotExistException();
-            }
-
             var user = await _context.User.FindAsync(id);
 
+            if(user == null)
+            {
+                return null;
+            }
+
             _context.User.Remove(user);
-            await _context.SaveChangesAsync();
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch(DbUpdateConcurrencyException)
+            {
+                throw;
+            }
 
             return user;
         }
@@ -59,8 +67,18 @@ namespace InpatientTherapySchedulingProgram.Services
             {
                 throw new UsernameAlreadyExistsException();
             }
+
             _context.User.Add(user);
-            await _context.SaveChangesAsync();
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch(DbUpdateException)
+            {
+                throw;
+            }
+
             return user;
         }
 
@@ -76,7 +94,15 @@ namespace InpatientTherapySchedulingProgram.Services
             }
 
             _context.Entry(user).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
 
             return user;
         }

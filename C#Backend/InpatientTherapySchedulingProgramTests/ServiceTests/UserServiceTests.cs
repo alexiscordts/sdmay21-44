@@ -192,8 +192,10 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         }
 
         [TestMethod]
-        public async Task DeleteUserThatDoesNotExistThrowsException() {
-            await _testService.Invoking(s => s.DeleteUser(-1)).Should().ThrowAsync<UserDoesNotExistException>();
+        public async Task DeleteUserThatDoesExistReturnsNull() {
+            var returnUser = await _testService.DeleteUser(-1);
+
+            returnUser.Should().BeNull();
         }
 
         [TestMethod]
