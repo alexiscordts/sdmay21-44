@@ -1,11 +1,9 @@
 ﻿using InpatientTherapySchedulingProgram.Models;
 using InpatientTherapySchedulingProgram.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using InpatientTherapySchedulingProgram.Exceptions.UserExceptions;
 
 namespace InpatientTherapySchedulingProgram.Services
