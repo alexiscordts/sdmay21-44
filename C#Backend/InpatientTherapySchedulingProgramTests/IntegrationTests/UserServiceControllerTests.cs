@@ -6,10 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Moq;
-using InpatientTherapySchedulingProgram.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using InpatientTherapySchedulingProgram.Exceptions.UserExceptions;
 using InpatientTherapySchedulingProgram.Services;
 
 namespace InpatientTherapySchedulingProgramTests.IntegrationTests
@@ -17,10 +14,10 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
     [TestClass]
     public class UserServiceControllerTests
     {
-        List<User> _testUsers;
-        CoreDbContext _testContext;
-        UserService _testService;
-        UserController _testController;
+        private List<User> _testUsers;
+        private CoreDbContext _testContext;
+        private UserService _testService;
+        private UserController _testController;
 
         [TestInitialize]
         public void Initialize()
@@ -244,8 +241,8 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         {
             var newUser = ModelFakes.UserFake.Generate();
             newUser.Uid = _testUsers[0].Uid;
-
-            var response = await _testController.PostUser(newUser);
+            
+            await _testController.PostUser(newUser);
 
             var getResponse = await _testController.GetUser(newUser.Uid);
             var getResponseResult = getResponse.Result as OkObjectResult;
@@ -273,7 +270,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
             var newUser = ModelFakes.UserFake.Generate();
             newUser.Username = _testUsers[0].Username;
 
-            var response = await _testController.PostUser(newUser);
+            await _testController.PostUser(newUser);
 
             var getResponse = await _testController.GetUser(newUser.Username);
             var getResponseResult = getResponse.Result as OkObjectResult;

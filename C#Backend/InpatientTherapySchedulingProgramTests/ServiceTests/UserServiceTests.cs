@@ -238,6 +238,5 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
 
             await _testService.Invoking(s => s.UpdateUser(-1, _testUsers[0])).Should().ThrowAsync<UserDoesNotExistException>();
         }
-
     }
 }
