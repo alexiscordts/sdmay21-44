@@ -97,7 +97,7 @@ namespace InpatientTherapySchedulingProgram.Services
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch(DbUpdateConcurrencyException)
             {
                 throw;
             }
