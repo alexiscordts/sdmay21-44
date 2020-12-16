@@ -195,9 +195,12 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         [TestMethod]
         public async Task NonExistingPutUserShouldReturnBadRequest()
         {
-            var response = await _testController.PutUser(-1, new User());
+            var fakeUser = new User();
+            fakeUser.Uid = -1;
 
-            response.Should().BeOfType<BadRequestObjectResult>();
+            var response = await _testController.PutUser(-1, fakeUser);
+
+            response.Should().BeOfType<NotFoundResult>();
         }
 
         [TestMethod]

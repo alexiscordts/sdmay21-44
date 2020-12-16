@@ -139,13 +139,13 @@ namespace InpatientTherapySchedulingProgramTests
         }
 
         [TestMethod]
-        public async Task NonExistingUserPostUserReturnsBadRequest()
+        public async Task NonExistingUserPostUserReturnsNotFound()
         {
             _fakeService.Setup(s => s.UpdateUser(It.IsAny<int>(), It.IsAny<User>())).ThrowsAsync(new UserDoesNotExistException());
 
             var response = await _testController.PutUser(_testUsers[0].Uid, new User());
 
-            response.Should().BeOfType<BadRequestObjectResult>();
+            response.Should().BeOfType<NotFoundResult>();
         }
 
         [TestMethod]

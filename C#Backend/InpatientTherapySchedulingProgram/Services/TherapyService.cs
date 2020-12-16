@@ -96,10 +96,16 @@ namespace InpatientTherapySchedulingProgram.Services
             {
                 throw new TherapyAdlsDoNotMatchException();
             }
-            if(TherapyExistsByAdl(therapy.Adl))
+            if(!TherapyExistsByAdl(therapy.Adl))
             {
                 throw new TherapyDoesNotExistsException();
             }
+
+            var local = _context.Set<Therapy>()
+                .Local
+                .FirstOrDefault(t => t.Adl == adl);
+
+            _context.Entry(local).State = EntityState.Detached;
 
             _context.Entry(therapy).State = EntityState.Modified;
 

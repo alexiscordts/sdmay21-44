@@ -10,16 +10,26 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
     public static class ModelFakes
     {
         public static Faker<User>UserFake { get; set; }
+        public static Faker<Therapy>TherapyFake { get; set; }
 
-    static ModelFakes()
-    {
-        BuildUserFakes();
-    }
+        static ModelFakes()
+        {
+            BuildUserFakes();
+            BuildTherapyFakes();
+        }
+
+        private static void BuildTherapyFakes()
+        {
+            TherapyFake = new Faker<Therapy>();
+            TherapyFake.RuleFor(m => m.Adl, r => r.IndexGlobal + r.Company.CompanyName());
+            TherapyFake.RuleFor(m => m.Type, r => r.Random.String2(10));
+            TherapyFake.RuleFor(m => m.Abbreviation, r => r.IndexGlobal + r.Company.CompanySuffix());
+        }
 
         private static void BuildUserFakes()
         {
             UserFake = new Faker<User>();
-            UserFake.RuleFor(m => m.Uid, r => r.UniqueIndex);
+            UserFake.RuleFor(m => m.Uid, r => r.IndexGlobal);
             UserFake.RuleFor(m => m.FirstName, r => r.Name.FirstName());
             UserFake.RuleFor(m => m.MiddleName, r => r.Name.FirstName());
             UserFake.RuleFor(m => m.LastName, r => r.Name.LastName());

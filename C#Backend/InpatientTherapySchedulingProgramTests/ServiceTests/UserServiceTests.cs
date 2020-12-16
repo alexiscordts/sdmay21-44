@@ -115,10 +115,20 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
             user.Should().BeNull();
         }
 
+        public async Task AddUserReturnsCorrectType()
+        {
+            var newUser = ModelFakes.UserFake.Generate();
+
+            var returnUser = await _testService.AddUser(newUser);
+
+            returnUser.Should().BeOfType<User>();
+        }
+
         [TestMethod]
         public async Task AddUserIncreasesCountOfUsers()
         {
             var newUser = ModelFakes.UserFake.Generate();
+
             await _testService.AddUser(newUser);
 
             var allUsers = await _testService.GetAllUsers();
@@ -131,6 +141,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         public async Task AddUserCorrectlyAddsUserToDatabase()
         {
             var newUser = ModelFakes.UserFake.Generate();
+
             await _testService.AddUser(newUser);
 
             var allUsers = await _testService.GetAllUsers();
@@ -234,9 +245,9 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task UpdateUserWithNonExistingUserThrowsError()
         {
-            _testUsers[0].Uid = -1;
+            var user = ModelFakes.UserFake.Generate();
 
-            await _testService.Invoking(s => s.UpdateUser(-1, _testUsers[0])).Should().ThrowAsync<UserDoesNotExistException>();
+            await _testService.Invoking(s => s.UpdateUser(user.Uid, user)).Should().ThrowAsync<UserDoesNotExistException>();
         }
     }
 }
