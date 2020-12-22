@@ -29,7 +29,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
             _testContext = new CoreDbContext(options);
             _testContext.Database.EnsureDeleted();
 
-            for (var i = 0; i < 10; i++)
+            for(var i = 0; i < 10; i++)
             {
                 var newUser = ModelFakes.UserFake.Generate();
                 _testUsers.Add(newUser);

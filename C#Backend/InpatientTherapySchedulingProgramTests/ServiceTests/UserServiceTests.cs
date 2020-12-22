@@ -157,7 +157,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
             var newUser = ModelFakes.UserFake.Generate();
             newUser.Uid = existingId;
 
-            await _testService.Invoking(s => s.AddUser(newUser)).Should().ThrowAsync<UserIdAlreadyExistsException>();
+            await _testService.Invoking(s => s.AddUser(newUser)).Should().ThrowAsync<UserIdAlreadyExistException>();
         }
 
         [TestMethod]
@@ -167,7 +167,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
             var newUser = ModelFakes.UserFake.Generate();
             newUser.Username = existingUsername;
 
-            await _testService.Invoking(s => s.AddUser(newUser)).Should().ThrowAsync<UsernameAlreadyExistsException>();
+            await _testService.Invoking(s => s.AddUser(newUser)).Should().ThrowAsync<UsernameAlreadyExistException>();
         }
 
         [TestMethod]

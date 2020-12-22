@@ -21,11 +21,11 @@ namespace InpatientTherapySchedulingProgram.Services
         {
             if(TherapyExistsByAdl(therapy.Adl))
             {
-                throw new TherapyAdlAlreadyExistsException();
+                throw new TherapyAdlAlreadyExistException();
             }
             if(TherapyExistsByAbbreviation(therapy.Abbreviation))
             {
-                throw new TherapyAbbreviationAlreadyExistsException();
+                throw new TherapyAbbreviationAlreadyExistException();
             }
 
             _context.Therapy.Add(therapy);
@@ -67,7 +67,7 @@ namespace InpatientTherapySchedulingProgram.Services
 
         public async Task<IEnumerable<string>> GetAllAdls()
         {
-            return await _context.Therapy.Select(t => t.Adl).ToListAsync();
+            return await _context.Therapy.Select(t => t.Adl).Distinct().ToListAsync();
         }
 
         public async Task<IEnumerable<Therapy>> GetAllTherapies()
@@ -77,7 +77,7 @@ namespace InpatientTherapySchedulingProgram.Services
 
         public async Task<IEnumerable<string>> GetAllTypes()
         {
-            return await _context.Therapy.Select(t => t.Type).ToListAsync();
+            return await _context.Therapy.Select(t => t.Type).Distinct().ToListAsync();
         }
 
         public async Task<Therapy> GetTherapyByAdl(string adl)
@@ -98,7 +98,7 @@ namespace InpatientTherapySchedulingProgram.Services
             }
             if(!TherapyExistsByAdl(therapy.Adl))
             {
-                throw new TherapyDoesNotExistsException();
+                throw new TherapyDoesNotExistException();
             }
 
             var local = _context.Set<Therapy>()

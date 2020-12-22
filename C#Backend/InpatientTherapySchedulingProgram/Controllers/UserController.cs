@@ -96,11 +96,11 @@ namespace InpatientTherapySchedulingProgram.Controllers
             {
                 await _service.AddUser(user);
             }
-            catch(UserIdAlreadyExistsException e)
+            catch(UserIdAlreadyExistException e)
             {
                 return Conflict(e);
             }
-            catch(UsernameAlreadyExistsException e)
+            catch(UsernameAlreadyExistException e)
             {
                 return Conflict(e);
             }

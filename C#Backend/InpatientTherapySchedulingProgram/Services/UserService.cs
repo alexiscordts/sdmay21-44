@@ -59,11 +59,11 @@ namespace InpatientTherapySchedulingProgram.Services
         {
             if (UserExists(user.Uid))
             {
-                throw new UserIdAlreadyExistsException();
+                throw new UserIdAlreadyExistException();
             }
             if (UserExists(user.Username))
             {
-                throw new UsernameAlreadyExistsException();
+                throw new UsernameAlreadyExistException();
             }
 
             _context.User.Add(user);

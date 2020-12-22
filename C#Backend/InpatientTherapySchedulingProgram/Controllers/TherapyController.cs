@@ -32,8 +32,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
         }
 
         // GET: api/Therapy/adl
-        [Route("/adl")]
-        [HttpGet]
+        [HttpGet("adl")]
         public async Task<ActionResult<IEnumerable<Therapy>>> GetTherapyAdl()
         {
             var allAdls = await _service.GetAllAdls();
@@ -42,8 +41,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
         }
 
         // GET: api/Therapy/type
-        [Route("/type")]
-        [HttpGet]
+        [HttpGet("type")]
         public async Task<ActionResult<IEnumerable<Therapy>>> GetTherapyType()
         {
             var allTypes = await _service.GetAllTypes();
@@ -62,11 +60,11 @@ namespace InpatientTherapySchedulingProgram.Controllers
                 return NotFound();
             }
 
-            return therapy;
+            return Ok(therapy);
         }
 
-        // GET: api/Therapy/ovm
-        [HttpGet("{abbreviation}")]
+        // GET: api/Therapy/abbreviation/ABRV
+        [HttpGet("abbreviation/{abbreviation}")]
         public async Task<ActionResult<Therapy>> GetTherapyByAbbreviation(string abbreviation)
         {
             var therapy = await _service.GetTherapyByAbbreviation(abbreviation);
@@ -76,7 +74,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
                 return NotFound();
             }
 
-            return therapy;
+            return Ok(therapy);
         }
 
         // PUT: api/Therapy/5
@@ -93,7 +91,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
             {
                 return BadRequest(e);
             }
-            catch(TherapyDoesNotExistsException)
+            catch(TherapyDoesNotExistException)
             {
                 return NotFound();
             }
@@ -115,11 +113,11 @@ namespace InpatientTherapySchedulingProgram.Controllers
             {
                 await _service.AddTherapy(therapy);
             }
-            catch(TherapyAdlAlreadyExistsException e)
+            catch(TherapyAdlAlreadyExistException e)
             {
                 return Conflict(e);
             }
-            catch(TherapyAbbreviationAlreadyExistsException e)
+            catch(TherapyAbbreviationAlreadyExistException e)
             {
                 return Conflict(e);
             }
@@ -151,7 +149,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
                 throw;
             }
 
-            return therapy;
+            return Ok(therapy);
         }
     }
 }

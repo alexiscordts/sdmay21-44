@@ -177,7 +177,7 @@ namespace InpatientTherapySchedulingProgramTests
         [TestMethod]
         public async Task ExistingUserIdPostUserReturnsConflict()
         {
-            _fakeService.Setup(s => s.AddUser(It.IsAny<User>())).ThrowsAsync(new UserIdAlreadyExistsException());
+            _fakeService.Setup(s => s.AddUser(It.IsAny<User>())).ThrowsAsync(new UserIdAlreadyExistException());
 
             var response = await _testController.PostUser(new User());
             var responseResult = response.Result;
@@ -188,7 +188,7 @@ namespace InpatientTherapySchedulingProgramTests
         [TestMethod]
         public async Task ExistingUsernamePostUserReturnsConflict()
         {
-            _fakeService.Setup(s => s.AddUser(It.IsAny<User>())).ThrowsAsync(new UsernameAlreadyExistsException());
+            _fakeService.Setup(s => s.AddUser(It.IsAny<User>())).ThrowsAsync(new UsernameAlreadyExistException());
 
             var response = await _testController.PostUser(new User());
             var responseResult = response.Result;
