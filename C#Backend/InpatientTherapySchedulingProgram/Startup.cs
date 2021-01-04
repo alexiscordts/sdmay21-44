@@ -37,6 +37,7 @@ namespace InpatientTherapySchedulingProgram
             services.AddDbContext<CoreDbContext>(op => op.UseSqlServer(Configuration.GetConnectionString("Database")));
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITherapyService, TherapyService>();
+            services.AddScoped<ITherapistActivityService, TherapistActivityService>();
             services.AddControllers();
         }
 

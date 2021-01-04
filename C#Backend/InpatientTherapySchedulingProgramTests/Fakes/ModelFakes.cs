@@ -11,11 +11,20 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
     {
         public static Faker<User>UserFake { get; set; }
         public static Faker<Therapy>TherapyFake { get; set; }
+        public static Faker<TherapistActivity>TherapistActivityFake { get; set; }
 
         static ModelFakes()
         {
             BuildUserFakes();
             BuildTherapyFakes();
+            BuildTherapistActivityFakes();
+        }
+
+        private static void BuildTherapistActivityFakes()
+        {
+            TherapistActivityFake = new Faker<TherapistActivity>();
+            TherapistActivityFake.RuleFor(m => m.Name, r => r.IndexGlobal + r.Random.AlphaNumeric(10));
+            TherapistActivityFake.RuleFor(m => m.IsProductive, r => r.Random.Bool());
         }
 
         private static void BuildTherapyFakes()
