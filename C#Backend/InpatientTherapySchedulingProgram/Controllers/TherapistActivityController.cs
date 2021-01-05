@@ -26,9 +26,9 @@ namespace InpatientTherapySchedulingProgram.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TherapistActivity>>> GetTherapistActivity()
         {
-            var allTherapistActivies = await _service.GetAllTherapistActivities();
+            var allTherapistActivities = await _service.GetAllTherapistActivities();
 
-            return Ok(allTherapistActivies);
+            return Ok(allTherapistActivities);
         }
 
         // GET: api/TherapistActivity/5
@@ -42,7 +42,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
                 return NotFound();
             }
 
-            return therapistActivity;
+            return Ok(therapistActivity);
         }
 
         // PUT: api/TherapistActivity/5
