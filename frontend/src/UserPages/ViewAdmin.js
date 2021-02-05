@@ -1,5 +1,6 @@
 import React from "react";
 import "../TableStyles.css";
+import "./UserStyles.css";
 import Nav from "../Nav";
 
 class ViewAdmin extends React.Component {
@@ -36,8 +37,13 @@ class ViewAdmin extends React.Component {
     return (
       <div >
         <Nav/>
-        <h2>Admins</h2>
-        <table class="fl-table">
+        <div class = "userHeaderRow">
+          <h2>Admins</h2>
+          <button class = "iconAddUserButton" onClick={() => {window.location.href = "/add_patient"}}>
+            <img src={require("../Icons/icons8-add-user-male-48.png")} alt="edit" className="iconAddUser" />
+          </button>
+        </div>
+        <table class="user-table">
             <thead>
             <tr>
                 <th>First Name</th>
