@@ -21,7 +21,7 @@ class Dashboard extends React.Component {
                     <a href="#">View by therapist</a>
                 </div>
                 </div>
-            <div class="scheduleTitle">All Schedules</div>
+            <div class="scheduleTitle">{'Inpatient Therapy Scheduler'}</div>
             <Schedule/>
         </div>         
     </div>
