@@ -7,6 +7,7 @@ using InpatientTherapySchedulingProgram.Services;
 using InpatientTherapySchedulingProgramTests.Fakes;
 using System.Threading.Tasks;
 using InpatientTherapySchedulingProgram.Exceptions.UserExceptions;
+using System;
 
 namespace InpatientTherapySchedulingProgramTests.ServiceTests
 {
@@ -30,7 +31,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
             for(var i = 0; i < 10; i++)
             {
                 var newUser = ModelFakes.UserFake.Generate();
-                _testUsers.Add(newUser);
+                _testUsers.Add(ObjectExtensions.Copy(newUser));
                 _testContext.Add(newUser);
                 _testContext.SaveChanges();
             }
@@ -63,56 +64,56 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
 
             for(var i = 0; i < 10; i++)
             {
-                _testUsers.Contains(listOfUsers[0]).Should().BeTrue();
+                _testUsers.Contains(listOfUsers[i]).Should().BeTrue();
             }
         }
 
         [TestMethod]
         public async Task GetUserByUserIdReturnsCorrectType()
         {
-            var user = await _testService.GetUserById(_testUsers[0].Uid);
+            var returnUser = await _testService.GetUserById(_testUsers[0].Uid);
 
-            user.Should().BeOfType<User>();
+            returnUser.Should().BeOfType<User>();
         }
 
         [TestMethod]
         public async Task GetUserByUserIdReturnsCorrectUser()
         {
-            var user = await _testService.GetUserById(_testUsers[0].Uid);
+            var returnUser = await _testService.GetUserById(_testUsers[0].Uid);
 
-            user.Should().Be(_testUsers[0]);
+            returnUser.Should().Be(_testUsers[0]);
         }
 
         [TestMethod]
         public async Task GetUserByUserIdReturnsNullIfUserDoesNotExist()
         {
-            var user = await _testService.GetUserById(-1);
+            var returnUser = await _testService.GetUserById(-1);
 
-            user.Should().BeNull();
+            returnUser.Should().BeNull();
         }
 
         [TestMethod]
         public async Task GetUserByUsernameReturnsCorrectType()
         {
-            var user = await _testService.GetUserByUsername(_testUsers[0].Username);
+            var returnUser = await _testService.GetUserByUsername(_testUsers[0].Username);
 
-            user.Should().BeOfType<User>();
+            returnUser.Should().BeOfType<User>();
         }
 
         [TestMethod]
         public async Task GetUserByUsernameReturnsCorrectUser()
         {
-            var user = await _testService.GetUserByUsername(_testUsers[0].Username);
+            var returnUser = await _testService.GetUserByUsername(_testUsers[0].Username);
 
-            user.Should().Be(_testUsers[0]);
+            returnUser.Should().Be(_testUsers[0]);
         }
 
         [TestMethod]
         public async Task GetUserByUsernameReturnsNullIfUserDoesNotExist()
         {
-            var user = await _testService.GetUserByUsername("-1");
+            var returnUser = await _testService.GetUserByUsername("-1");
 
-            user.Should().BeNull();
+            returnUser.Should().BeNull();
         }
 
         [TestMethod]
@@ -133,10 +134,9 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
             var newUser = ModelFakes.UserFake.Generate();
             await _testService.AddUser(newUser);
 
-            var allUsers = await _testService.GetAllUsers();
-            List<User> listOfUsers = (List<User>)allUsers;
+            var returnUser = await _testService.GetUserById(newUser.Uid);
 
-            listOfUsers.Contains(newUser).Should().BeTrue();
+            returnUser.Should().Be(newUser);
         }
 
         [TestMethod]
@@ -185,6 +185,8 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         public async Task DeleteUserReturnsCorrectUser()
         {
             var returnUser = await _testService.DeleteUser(_testUsers[0].Uid);
+
+            bool isEqual = returnUser.Equals(_testUsers[0]);
 
             returnUser.Should().Be(_testUsers[0]);
         }

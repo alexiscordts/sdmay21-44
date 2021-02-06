@@ -91,6 +91,12 @@ namespace InpatientTherapySchedulingProgram.Services
                 throw new UserDoesNotExistException();
             }
 
+            var local = _context.Set<User>()
+                .Local
+                .FirstOrDefault(u => u.Uid == user.Uid);
+
+            _context.Entry(local).State = EntityState.Detached;
+
             _context.Entry(user).State = EntityState.Modified;
 
             try
