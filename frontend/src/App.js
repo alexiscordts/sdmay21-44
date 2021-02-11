@@ -15,6 +15,9 @@ import ViewNurse from "./UserPages/ViewNurse";
 import ViewPatient from "./UserPages/ViewPatient";
 import ViewTherapist from "./UserPages/ViewTherapist";
 import Settings from "./Settings";
+import AddLocation from "./AddLocation";
+import ViewLocations from "./ViewLocations";
+import EditLocation from "./EditLocation";
 import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
 
 class App extends React.Component {
@@ -52,6 +55,9 @@ class App extends React.Component {
                <Route path="/view_patient" component={ViewPatient} />
                <Route path="/view_therapist" component={ViewTherapist} />
                <Route path="/settings" component={Settings} />
+               <Route path="/manage_locations" component={ViewLocations} />
+               <Route path="/add_location" component={AddLocation} />
+               <Route path="/edit_location" component={EditLocation} />
                <Route path="/" component={Login} handleLogin={this.handleLogin} />
             </Switch>
           </Router>
