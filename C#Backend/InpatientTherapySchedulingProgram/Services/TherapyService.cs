@@ -23,7 +23,7 @@ namespace InpatientTherapySchedulingProgram.Services
             {
                 throw new TherapyAdlAlreadyExistException();
             }
-            if(TherapyExistsByAbbreviation(therapy.Abbreviation))
+            if(await TherapyExistsByAbbreviation(therapy.Abbreviation))
             {
                 throw new TherapyAbbreviationAlreadyExistException();
             }
@@ -126,9 +126,9 @@ namespace InpatientTherapySchedulingProgram.Services
             return await _context.Therapy.FindAsync(adl) != null;
         }
 
-        private bool TherapyExistsByAbbreviation(string abbreviation)
+        private async Task<bool> TherapyExistsByAbbreviation(string abbreviation)
         {
-            return _context.Therapy.Any(t => t.Abbreviation == abbreviation);
+            return await _context.Therapy.FirstOrDefaultAsync(t => t.Abbreviation.Equals(abbreviation)) != null;
         }
     }
 }
