@@ -133,20 +133,20 @@ namespace InpatientTherapySchedulingProgram.Controllers
         [HttpDelete("{adl}")]
         public async Task<ActionResult<Therapy>> DeleteTherapy(string adl)
         {
-            Therapy therapy = null;
+            Therapy therapy;
 
             try
             {
                 therapy = await _service.DeleteTherapy(adl);
-
-                if(therapy == null)
-                {
-                    return NotFound();
-                }
             }
             catch(DbUpdateException)
             {
                 throw;
+            }
+
+            if (therapy == null)
+            {
+                return NotFound();
             }
 
             return Ok(therapy);

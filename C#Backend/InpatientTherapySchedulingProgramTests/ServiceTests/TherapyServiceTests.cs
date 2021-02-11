@@ -57,7 +57,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         }
 
         [TestMethod]
-        public async Task GetAllTherapiesReturnsCorrectListOfTherapiests()
+        public async Task GetAllTherapiesReturnsCorrectListOfTherapists()
         {
             var allTherapies = await _testService.GetAllTherapies();
             List<Therapy> listOfTherapies = (List<Therapy>)allTherapies;
@@ -284,7 +284,9 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
             var newAbbreviation = ModelFakes.TherapyFake.Generate().Abbreviation;
             _testTherapies[0].Abbreviation = newAbbreviation;
 
-            var therapy = await _testService.UpdateTherapy(_testTherapies[0].Adl, _testTherapies[0]);
+            await _testService.UpdateTherapy(_testTherapies[0].Adl, _testTherapies[0]);
+
+            var therapy = await _testService.GetTherapyByAdl(_testTherapies[0].Adl);
 
             therapy.Should().Be(_testTherapies[0]);
         }

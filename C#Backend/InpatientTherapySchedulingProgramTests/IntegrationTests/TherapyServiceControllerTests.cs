@@ -253,7 +253,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         }
 
         [TestMethod]
-        public async Task ValidPutTherapyCorrectUpdatesData()
+        public async Task ValidPutTherapyCorrectlyUpdatesData()
         {
             var oldAbbreviation = _testTherapies[0].Abbreviation;
             var newAbbreviation = ModelFakes.TherapyFake.Generate().Abbreviation;

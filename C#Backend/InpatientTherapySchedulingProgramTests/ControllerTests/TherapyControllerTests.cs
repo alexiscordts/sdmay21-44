@@ -259,7 +259,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         }
 
         [TestMethod]
-        public async Task ValidDeleteReturnsOkResponse()
+        public async Task ValidDeleteTherapyReturnsOkResponse()
         {
             var response = await _testController.DeleteTherapy(_testTherapies[0].Adl);
 
@@ -267,7 +267,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         }
 
         [TestMethod]
-        public async Task ValidDeleteReturnsCorrectType()
+        public async Task ValidDeleteTherapyReturnsCorrectType()
         {
             var response = await _testController.DeleteTherapy(_testTherapies[0].Adl);
             var responseResult = response.Result as OkObjectResult;
