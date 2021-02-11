@@ -82,7 +82,7 @@ namespace InpatientTherapySchedulingProgramTests
         }
 
         [TestMethod]
-        public async Task GetNonExistingUserByUserIdReturnsNotFound()
+        public async Task GetNonExistingUserByUserIdReturnsNotFoundResponse()
         {
             _fakeService.Setup(s => s.GetUserById(It.IsAny<int>())).ReturnsAsync((User)null);
 
@@ -110,7 +110,7 @@ namespace InpatientTherapySchedulingProgramTests
         }
 
         [TestMethod]
-        public async Task GetNonExistingUserByUsernameReturnsNotFound()
+        public async Task GetNonExistingUserByUsernameReturnsNotFoundResponse()
         {
             _fakeService.Setup(s => s.GetUserByUsername(It.IsAny<string>())).ReturnsAsync((User)null);
 
@@ -121,7 +121,7 @@ namespace InpatientTherapySchedulingProgramTests
         }
 
         [TestMethod]
-        public async Task ValidPostUserReturnsNoContentResponse()
+        public async Task ValidPutUserReturnsNoContentResponse()
         {
             var response = await _testController.PutUser(_testUsers[0].Uid, _testUsers[0]);
             
@@ -129,7 +129,7 @@ namespace InpatientTherapySchedulingProgramTests
         }
 
         [TestMethod]
-        public async Task NonMatchingUserIdPostUserReturnsBadRequest()
+        public async Task NonMatchingUserIdPutUserReturnsBadRequest()
         {
             _fakeService.Setup(s => s.UpdateUser(It.IsAny<int>(), It.IsAny<User>())).ThrowsAsync(new UserIdsDoNotMatchException());
 
@@ -149,7 +149,7 @@ namespace InpatientTherapySchedulingProgramTests
         }
 
         [TestMethod]
-        public async Task DbUpdateConcurrencyExceptionPostUserShouldThrowError()
+        public async Task DbUpdateConcurrencyExceptionPutUserShouldThrowDbUpdateConcurrencyException()
         {
             _fakeService.Setup(s => s.UpdateUser(It.IsAny<int>(), It.IsAny<User>())).ThrowsAsync(new DbUpdateConcurrencyException());
 
@@ -175,7 +175,7 @@ namespace InpatientTherapySchedulingProgramTests
         }
 
         [TestMethod]
-        public async Task ExistingUserIdPostUserReturnsConflict()
+        public async Task ExistingUserIdPostUserReturnsConflictResponse()
         {
             _fakeService.Setup(s => s.AddUser(It.IsAny<User>())).ThrowsAsync(new UserIdAlreadyExistException());
 
@@ -186,7 +186,7 @@ namespace InpatientTherapySchedulingProgramTests
         }
 
         [TestMethod]
-        public async Task ExistingUsernamePostUserReturnsConflict()
+        public async Task ExistingUsernamePostUserReturnsConflictResponse()
         {
             _fakeService.Setup(s => s.AddUser(It.IsAny<User>())).ThrowsAsync(new UsernameAlreadyExistException());
 
@@ -197,7 +197,7 @@ namespace InpatientTherapySchedulingProgramTests
         }
 
         [TestMethod]
-        public async Task DbUpdateExceptionPostUserThrowsError()
+        public async Task DbUpdateExceptionPostUserThrowsDbUpdateException()
         {
             _fakeService.Setup(s => s.AddUser(It.IsAny<User>())).ThrowsAsync(new DbUpdateException());
 
@@ -223,7 +223,7 @@ namespace InpatientTherapySchedulingProgramTests
         }
 
         [TestMethod]
-        public async Task NonExistingDeleteUserReturnsNotFoundResponse()
+        public async Task NonExistingUserDeleteUserReturnsNotFoundResponse()
         {
             _fakeService.Setup(s => s.DeleteUser(It.IsAny<int>())).ReturnsAsync((User)null);
 
@@ -234,7 +234,7 @@ namespace InpatientTherapySchedulingProgramTests
         }
 
         [TestMethod]
-        public async Task DbUpdateConcurrencyExceptionDeleteUserThrowsError()
+        public async Task DbUpdateConcurrencyExceptionDeleteUserThrowsDbUpdateConcurrencyException()
         {
             _fakeService.Setup(s => s.DeleteUser(It.IsAny<int>())).ThrowsAsync(new DbUpdateConcurrencyException());
 

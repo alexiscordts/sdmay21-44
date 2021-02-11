@@ -1,6 +1,7 @@
 import React from "react";
-import "../TableStyles.css";
 import Nav from "../Nav";
+import "./UserStyles.css";
+import "../TableStyles.css";
 
 class ViewPatient extends React.Component {
   constructor (props){
@@ -30,8 +31,13 @@ class ViewPatient extends React.Component {
     return (
       <div >
         <Nav/>
-        <h2>Patients</h2>
-        <table class="fl-table">
+        <div class = "userHeaderRow">
+          <h2>Patients</h2>
+          <button class = "iconAddUserButton" onClick={() => {window.location.href = "/add_patient"}}>
+            <img src={require("../Icons/icons8-add-user-male-48.png")} alt="edit" className="iconAddUser" />
+          </button>
+        </div>
+        <table class="user-table">
             <thead>
             <tr>
                 <th>First Name</th>

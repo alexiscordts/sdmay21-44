@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using InpatientTherapySchedulingProgram.Services;
+using System;
 
 namespace InpatientTherapySchedulingProgramTests.IntegrationTests
 {
@@ -32,7 +33,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
             for(var i = 0; i < 10; i++)
             {
                 var newUser = ModelFakes.UserFake.Generate();
-                _testUsers.Add(newUser);
+                _testUsers.Add(ObjectExtensions.Copy(newUser));
                 _testContext.Add(newUser);
                 _testContext.SaveChanges();
             }
@@ -233,7 +234,6 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
             newUser.Uid = _testUsers[0].Uid;
 
             var response = await _testController.PostUser(newUser);
-
             var responseResult = response.Result;
 
             responseResult.Should().BeOfType<ConflictObjectResult>();
@@ -261,7 +261,6 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
             newUser.Username = _testUsers[0].Username;
 
             var response = await _testController.PostUser(newUser);
-
             var responseResult = response.Result;
 
             responseResult.Should().BeOfType<ConflictObjectResult>();
