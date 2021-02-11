@@ -1,0 +1,13 @@
+.manageLocationButton{
+    background: transparent;
+    color: #00529B;
+    padding: 16px;
+    font-size: 20px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.pageContainer{
+    margin-left: 50px;
+}
