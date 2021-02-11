@@ -20,7 +20,7 @@ namespace InpatientTherapySchedulingProgram.Services
 
         public async Task<TherapistActivity> AddTherapistActivity(TherapistActivity therapistActivity)
         {
-            if(await _context.TherapistActivity.FindAsync(therapistActivity.Name) != null)
+            if(await TherapistActivityExistsByName(therapistActivity.Name))
             {
                 throw new TherapistActivityAlreadyExistsException();
             }
@@ -78,7 +78,7 @@ namespace InpatientTherapySchedulingProgram.Services
             {
                 throw new TherapistActivityNamesDoNotMatchException();
             }
-            if(await _context.TherapistActivity.FindAsync(name) == null)
+            if(!await TherapistActivityExistsByName(name))
             {
                 throw new TherapistActivityDoesNotExistException();
             }
@@ -101,6 +101,11 @@ namespace InpatientTherapySchedulingProgram.Services
             }
 
             return therapistActivity;
+        }
+        
+        private async Task<bool> TherapistActivityExistsByName(string name)
+        {
+            return await _context.TherapistActivity.FindAsync(name) != null;
         }
     }
 }

@@ -19,7 +19,7 @@ namespace InpatientTherapySchedulingProgram.Services
 
         public async Task<Therapy> AddTherapy(Therapy therapy)
         {
-            if(TherapyExistsByAdl(therapy.Adl))
+            if(await TherapyExistsByAdl(therapy.Adl))
             {
                 throw new TherapyAdlAlreadyExistException();
             }
@@ -96,7 +96,7 @@ namespace InpatientTherapySchedulingProgram.Services
             {
                 throw new TherapyAdlsDoNotMatchException();
             }
-            if(!TherapyExistsByAdl(therapy.Adl))
+            if(!await TherapyExistsByAdl(therapy.Adl))
             {
                 throw new TherapyDoesNotExistException();
             }
@@ -121,9 +121,9 @@ namespace InpatientTherapySchedulingProgram.Services
             return therapy;
         }
 
-        private bool TherapyExistsByAdl(string adl)
+        private async Task<bool> TherapyExistsByAdl(string adl)
         {
-            return _context.Therapy.Any(t => t.Adl == adl);
+            return await _context.Therapy.FindAsync(adl) != null;
         }
 
         private bool TherapyExistsByAbbreviation(string abbreviation)
