@@ -68,19 +68,18 @@ namespace InpatientTherapySchedulingProgram.Models
                 return true;
             }
 
-            return this.Uid == user.Uid && this.FirstName == user.FirstName && this.MiddleName == user.MiddleName &&
-                this.LastName == user.LastName && this.Username == user.Username;
+            return this.Uid == user.Uid && this.FirstName.Equals(user.FirstName) && this.MiddleName.Equals(user.MiddleName) &&
+                this.LastName.Equals(user.LastName) && this.Username.Equals(user.Username);
         }
 
         public static bool operator ==(User lhs, User rhs)
         {
-            if (Object.ReferenceEquals(lhs, null))
+            if (Object.ReferenceEquals(lhs, rhs))
             {
-                if (Object.ReferenceEquals(rhs, null))
-                {
-                    return true;
-                }
-
+                return true;
+            }
+            else if (lhs is null)
+            {
                 return false;
             }
 
