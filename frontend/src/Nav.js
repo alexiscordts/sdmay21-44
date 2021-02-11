@@ -100,6 +100,14 @@ function loadMenuItems() {
         }>
             <img class="menuButtonImg" src={require("./Icons/icons8-microsoft-admin-50.png")} />
             <div class="menuLabel">Manage Admins</div>
+        </button>,
+
+        <button class="menuButton" onClick={() => {
+            window.location.href = "/settings";
+            } 
+        }>
+            <img class="menuButtonImg" src={require("./Icons/icons8-settings-48.png")} />
+            <div class="menuLabel">Settings</div>
         </button>
     );
     return items;
