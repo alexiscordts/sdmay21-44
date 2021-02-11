@@ -203,7 +203,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         }
 
         [TestMethod]
-        public async Task UpdateTherapistWithNonExistingTherapistActivityThrowsError()
+        public async Task UpdateTherapistActivityWithNonExistingTherapistActivityThrowsError()
         {
             var therapistActivity = ModelFakes.TherapistActivityFake.Generate();
 

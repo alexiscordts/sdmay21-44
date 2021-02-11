@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -145,7 +144,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         }
 
         [TestMethod]
-        public async Task NonMatchingPutTherapistActivityReturnsBadRequestResponse()
+        public async Task NonMatchingTherapistActivityNamesPutTherapistActivityReturnsBadRequestResponse()
         {
             var response = await _testController.PutTherapistActivity("-1", _testTherapistActivities[0]);
 
@@ -153,7 +152,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         }
 
         [TestMethod]
-        public async Task NonExistingPutTherapistActivityReturnsNotFoundResponse()
+        public async Task NonExistingTherapistActivityPutTherapistActivityReturnsNotFoundResponse()
         {
             var therapistActivity = ModelFakes.TherapistActivityFake.Generate();
 
@@ -210,7 +209,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         }
 
         [TestMethod]
-        public async Task ExistingNamePostTherapistActivityReturnsConflictResponse()
+        public async Task ExistingTherapistActivityNamePostTherapistActivityReturnsConflictResponse()
         {
             var newTherapistActivity = ModelFakes.TherapistActivityFake.Generate();
             newTherapistActivity.Name = _testTherapistActivities[0].Name;
@@ -222,7 +221,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         }
 
         [TestMethod]
-        public async Task ExistingNamePostTherapistActivityDoesNotAddTherapistActivity()
+        public async Task ExistingTherapistActivityNamePostTherapistActivityDoesNotAddTherapistActivity()
         {
             var newTherapistActivity = ModelFakes.TherapistActivityFake.Generate();
             newTherapistActivity.IsProductive = !_testTherapistActivities[0].IsProductive;
@@ -265,7 +264,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         }
 
         [TestMethod]
-        public async Task NonExistingDeleteTherapistActivityReturnsNotFoundResponse()
+        public async Task NonExistingTherapistActivityDeleteTherapistActivityReturnsNotFoundResponse()
         {
             var response = await _testController.DeleteTherapistActivity("-1");
             var responseResult = response.Result;

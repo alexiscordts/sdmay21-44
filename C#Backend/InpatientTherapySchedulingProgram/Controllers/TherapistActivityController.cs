@@ -97,7 +97,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
         [HttpDelete("{name}")]
         public async Task<ActionResult<TherapistActivity>> DeleteTherapistActivity(string name)
         {
-            TherapistActivity therapistActivity = null;
+            TherapistActivity therapistActivity;
 
             try
             {

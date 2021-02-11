@@ -81,7 +81,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         }
 
         [TestMethod]
-        public async Task NullResultGetTherapistActivityByNameReturnsNotFound()
+        public async Task NullResultGetTherapistActivityByNameReturnsNotFoundResponse()
         {
             _fakeService.Setup(s => s.GetTherapistActivityByName(It.IsAny<string>())).ReturnsAsync((TherapistActivity)null);
 
@@ -148,7 +148,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         }
 
         [TestMethod]
-        public async Task TherapistActivityAlreadyExistsExceptionPostTherapistReturnsConflictResponse()
+        public async Task TherapistActivityAlreadyExistsExceptionPostTherapistActivityReturnsConflictResponse()
         {
             _fakeService.Setup(s => s.AddTherapistActivity(It.IsAny<TherapistActivity>())).ThrowsAsync(new TherapistActivityAlreadyExistsException());
 
