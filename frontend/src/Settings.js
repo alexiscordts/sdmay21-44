@@ -9,7 +9,7 @@ return (
     <div>
         <Nav/>
         <div class='pageContainer'>
-            <button class = "manageLocationButton" onClick={() => {window.location.href = "/view_locations"}}>
+            <button class = "manageLocationButton" onClick={() => {window.location.href = "/manage_locations"}}>
                 Manage Locations
             </button>
         </div>
