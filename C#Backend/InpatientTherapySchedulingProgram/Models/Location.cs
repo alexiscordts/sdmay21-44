@@ -11,19 +11,22 @@ namespace InpatientTherapySchedulingProgram.Models
         public Location()
         {
             Appointment = new HashSet<Appointment>();
-            RoomNumber = new HashSet<RoomNumber>();
+            Patient = new HashSet<Patient>();
+            Room = new HashSet<Room>();
         }
 
         [Key]
-        [Column("lid")]
-        public int Lid { get; set; }
+        [Column("location_id")]
+        public int LocationId { get; set; }
+        [Required]
         [Column("name")]
         [StringLength(255)]
         public string Name { get; set; }
 
-        [InverseProperty("L")]
+        [InverseProperty("Location")]
         public virtual ICollection<Appointment> Appointment { get; set; }
-        [InverseProperty("L")]
-        public virtual ICollection<RoomNumber> RoomNumber { get; set; }
+        public virtual ICollection<Patient> Patient { get; set; }
+        [InverseProperty("Location")]
+        public virtual ICollection<Room> Room { get; set; }
     }
 }

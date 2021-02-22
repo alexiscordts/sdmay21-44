@@ -19,7 +19,7 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
         private static void BuildUserFakes()
         {
             UserFake = new Faker<User>();
-            UserFake.RuleFor(m => m.Uid, r => r.UniqueIndex);
+            UserFake.RuleFor(m => m.UserId, r => r.UniqueIndex);
             UserFake.RuleFor(m => m.FirstName, r => r.Name.FirstName());
             UserFake.RuleFor(m => m.MiddleName, r => r.Name.FirstName());
             UserFake.RuleFor(m => m.LastName, r => r.Name.LastName());
