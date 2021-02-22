@@ -16,7 +16,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
     {
         private List<TherapistActivity> _testTherapistActivities;
         private CoreDbContext _testContext;
-        private TherapistActivityService _testService;
+        private TherapistActivityService _testTherapistActivityService;
 
         [TestInitialize]
         public void Initialize()
@@ -36,13 +36,13 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
                 _testContext.SaveChanges();
             }
 
-            _testService = new TherapistActivityService(_testContext);
+            _testTherapistActivityService = new TherapistActivityService(_testContext);
         }
 
         [TestMethod]
         public async Task GetAllTherapistActivitesReturnsCorrectType()
         {
-            var allTherapistActivities = await _testService.GetAllTherapistActivities();
+            var allTherapistActivities = await _testTherapistActivityService.GetAllTherapistActivities();
 
             allTherapistActivities.Should().BeOfType<List<TherapistActivity>>();
         }
@@ -50,7 +50,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task GetAllTherapistActivitesReturnsCorrectNumberOfTherapists()
         {
-            var allTherapistActivities = await _testService.GetAllTherapistActivities();
+            var allTherapistActivities = await _testTherapistActivityService.GetAllTherapistActivities();
             List<TherapistActivity> listOfTherapistActivites = (List<TherapistActivity>)allTherapistActivities;
 
             listOfTherapistActivites.Count.Should().Be(10);
@@ -59,7 +59,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task GetAllTherapistActivitesReturnsCorrectListOfTherapistActivity()
         {
-            var allTherapistActivites = await _testService.GetAllTherapistActivities();
+            var allTherapistActivites = await _testTherapistActivityService.GetAllTherapistActivities();
             List<TherapistActivity> listOfTherapistActivities = (List<TherapistActivity>)allTherapistActivites;
 
             for(var i = 0; i < listOfTherapistActivities.Count; i++)
@@ -71,7 +71,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task GetTherapistActivityByNameReturnsCorrectType()
         {
-            var therapistActivity = await _testService.GetTherapistActivityByName(_testTherapistActivities[0].Name);
+            var therapistActivity = await _testTherapistActivityService.GetTherapistActivityByName(_testTherapistActivities[0].Name);
 
             therapistActivity.Should().BeOfType<TherapistActivity>();
         }
@@ -79,7 +79,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task GetTherapistActivityByNameReturnsCorrectTherapistActivity()
         {
-            var therapistActivity = await _testService.GetTherapistActivityByName(_testTherapistActivities[0].Name);
+            var therapistActivity = await _testTherapistActivityService.GetTherapistActivityByName(_testTherapistActivities[0].Name);
 
             therapistActivity.Should().Be(_testTherapistActivities[0]);
         }
@@ -87,7 +87,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task GetTherapistActivityReturnsNullIfTherapistActivityDoesNotExist()
         {
-            var therapistActivity = await _testService.GetTherapistActivityByName("-1");
+            var therapistActivity = await _testTherapistActivityService.GetTherapistActivityByName("-1");
 
             therapistActivity.Should().BeNull();
         }
@@ -97,7 +97,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         {
             var newTherapistActivity = ModelFakes.TherapistActivityFake.Generate();
 
-            var returnTherapistActivity = await _testService.AddTherapistActivity(newTherapistActivity);
+            var returnTherapistActivity = await _testTherapistActivityService.AddTherapistActivity(newTherapistActivity);
 
             returnTherapistActivity.Should().BeOfType<TherapistActivity>();
         }
@@ -107,9 +107,9 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         {
             var newTherapistActivity = ModelFakes.TherapistActivityFake.Generate();
 
-            await _testService.AddTherapistActivity(newTherapistActivity);
+            await _testTherapistActivityService.AddTherapistActivity(newTherapistActivity);
 
-            var allTherapistActivities = await _testService.GetAllTherapistActivities();
+            var allTherapistActivities = await _testTherapistActivityService.GetAllTherapistActivities();
             List<TherapistActivity> listOfTherapistActivities = (List<TherapistActivity>)allTherapistActivities;
 
             listOfTherapistActivities.Count.Should().Be(11);
@@ -120,9 +120,9 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         {
             var newTherapistActivity = ModelFakes.TherapistActivityFake.Generate();
 
-            await _testService.AddTherapistActivity(newTherapistActivity);
+            await _testTherapistActivityService.AddTherapistActivity(newTherapistActivity);
 
-            var allTherapistActivities = await _testService.GetAllTherapistActivities();
+            var allTherapistActivities = await _testTherapistActivityService.GetAllTherapistActivities();
             List<TherapistActivity> listOfTherapistActivities = (List<TherapistActivity>)allTherapistActivities;
 
             listOfTherapistActivities.Contains(newTherapistActivity).Should().BeTrue();
@@ -134,13 +134,13 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
             var newTherapistActivity = ModelFakes.TherapistActivityFake.Generate();
             newTherapistActivity.Name = _testTherapistActivities[0].Name;
 
-            await _testService.Invoking(s => s.AddTherapistActivity(newTherapistActivity)).Should().ThrowAsync<TherapistActivityAlreadyExistsException>();
+            await _testTherapistActivityService.Invoking(s => s.AddTherapistActivity(newTherapistActivity)).Should().ThrowAsync<TherapistActivityAlreadyExistsException>();
         }
 
         [TestMethod]
         public async Task DeleteTherapistActivityReturnsCorrectType()
         {
-            var therapistActivity = await _testService.DeleteTherapistActivity(_testTherapistActivities[0].Name);
+            var therapistActivity = await _testTherapistActivityService.DeleteTherapistActivity(_testTherapistActivities[0].Name);
 
             therapistActivity.Should().BeOfType<TherapistActivity>();
         }
@@ -148,9 +148,9 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task DeleteTherapistActivityDecrementsCount()
         {
-            await _testService.DeleteTherapistActivity(_testTherapistActivities[0].Name);
+            await _testTherapistActivityService.DeleteTherapistActivity(_testTherapistActivities[0].Name);
 
-            var allTherapistActivities = await _testService.GetAllTherapistActivities();
+            var allTherapistActivities = await _testTherapistActivityService.GetAllTherapistActivities();
             List<TherapistActivity> listOfTherapistActivities = (List<TherapistActivity>)allTherapistActivities;
 
             listOfTherapistActivities.Count.Should().Be(9);
@@ -159,9 +159,9 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task DeleteTherapistActivityRemovesTherapistActivityFromDatabase()
         {
-            await _testService.DeleteTherapistActivity(_testTherapistActivities[0].Name);
+            await _testTherapistActivityService.DeleteTherapistActivity(_testTherapistActivities[0].Name);
 
-            var allTherapistActivites = await _testService.GetAllTherapistActivities();
+            var allTherapistActivites = await _testTherapistActivityService.GetAllTherapistActivities();
             List<TherapistActivity> listOfTherapistActivities = (List<TherapistActivity>)allTherapistActivites;
 
             listOfTherapistActivities.Contains(_testTherapistActivities[0]).Should().BeFalse();
@@ -170,7 +170,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task DeleteTherapistActivityThatDoesNotExistReturnsNull()
         {
-            var therapistActivity = await _testService.DeleteTherapistActivity("-1");
+            var therapistActivity = await _testTherapistActivityService.DeleteTherapistActivity("-1");
 
             therapistActivity.Should().BeNull();
         }
@@ -178,7 +178,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task UpdateTherapistActivityReturnsCorrectType()
         {
-            var therapistActivity = await _testService.UpdateTherapistActivity(_testTherapistActivities[0].Name, _testTherapistActivities[0]);
+            var therapistActivity = await _testTherapistActivityService.UpdateTherapistActivity(_testTherapistActivities[0].Name, _testTherapistActivities[0]);
 
             therapistActivity.Should().BeOfType<TherapistActivity>();
         }
@@ -189,9 +189,9 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
             bool oldIsProductive = (bool)_testTherapistActivities[0].IsProductive;
             _testTherapistActivities[0].IsProductive = !_testTherapistActivities[0].IsProductive;
 
-            await _testService.UpdateTherapistActivity(_testTherapistActivities[0].Name, _testTherapistActivities[0]);
+            await _testTherapistActivityService.UpdateTherapistActivity(_testTherapistActivities[0].Name, _testTherapistActivities[0]);
 
-            var therapistActivity = await _testService.GetTherapistActivityByName(_testTherapistActivities[0].Name);
+            var therapistActivity = await _testTherapistActivityService.GetTherapistActivityByName(_testTherapistActivities[0].Name);
 
             therapistActivity.IsProductive.Should().Be(!oldIsProductive);
         }
@@ -199,15 +199,15 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task UpdateTherapistActivityWithNonMatchingNamesThrowsError()
         {
-            await _testService.Invoking(s => s.UpdateTherapistActivity("-1", _testTherapistActivities[0])).Should().ThrowAsync<TherapistActivityNamesDoNotMatchException>();
+            await _testTherapistActivityService.Invoking(s => s.UpdateTherapistActivity("-1", _testTherapistActivities[0])).Should().ThrowAsync<TherapistActivityNamesDoNotMatchException>();
         }
 
         [TestMethod]
         public async Task UpdateTherapistActivityWithNonExistingTherapistActivityThrowsError()
         {
-            var therapistActivity = ModelFakes.TherapistActivityFake.Generate();
+            var fakeTherapistActivity = ModelFakes.TherapistActivityFake.Generate();
 
-            await _testService.Invoking(s => s.UpdateTherapistActivity(therapistActivity.Name, therapistActivity)).Should().ThrowAsync<TherapistActivityDoesNotExistException>();
+            await _testTherapistActivityService.Invoking(s => s.UpdateTherapistActivity(fakeTherapistActivity.Name, fakeTherapistActivity)).Should().ThrowAsync<TherapistActivityDoesNotExistException>();
         }
     }
 }

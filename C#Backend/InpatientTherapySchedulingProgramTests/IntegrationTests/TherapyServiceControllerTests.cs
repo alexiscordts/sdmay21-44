@@ -17,8 +17,8 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
     public class TherapyServiceControllerTests
     {
         private List<Therapy> _testTherapies;
-        private static List<string> _testAdls;
-        private static List<string> _testTypes;
+        private List<string> _testAdls;
+        private List<string> _testTypes;
         private CoreDbContext _testContext;
         private TherapyService _testService;
         private TherapyController _testController;
@@ -271,7 +271,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         }
 
         [TestMethod]
-        public async Task NonMatchingAdlsPutTherapyShouldReturnBadRequestResponse()
+        public async Task NonMatchingAdlsPutTherapyReturnsBadRequestResponse()
         {
             var response = await _testController.PutTherapy("-1", _testTherapies[0]);
 

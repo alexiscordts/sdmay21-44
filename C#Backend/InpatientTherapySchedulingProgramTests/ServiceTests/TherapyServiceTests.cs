@@ -16,7 +16,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
     {
         private List<Therapy> _testTherapies;
         private CoreDbContext _testContext;
-        private TherapyService _testService;
+        private TherapyService _testTherapyService;
 
         [TestInitialize]
         public void Initialize()
@@ -36,13 +36,13 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
                 _testContext.SaveChanges();
             }
 
-            _testService = new TherapyService(_testContext);
+            _testTherapyService = new TherapyService(_testContext);
         }
 
         [TestMethod]
         public async Task GetAllTherapiesReturnsCorrectType()
         {
-            var allTherapies = await _testService.GetAllTherapies();
+            var allTherapies = await _testTherapyService.GetAllTherapies();
 
             allTherapies.Should().BeOfType<List<Therapy>>();
         }
@@ -50,7 +50,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task GetAllTherapiesReturnsCorrectNumberOfTherapists()
         {
-            var allTherapies = await _testService.GetAllTherapies();
+            var allTherapies = await _testTherapyService.GetAllTherapies();
             List<Therapy> listOfTherapies = (List<Therapy>)allTherapies;
 
             listOfTherapies.Count.Should().Be(10);
@@ -59,7 +59,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task GetAllTherapiesReturnsCorrectListOfTherapists()
         {
-            var allTherapies = await _testService.GetAllTherapies();
+            var allTherapies = await _testTherapyService.GetAllTherapies();
             List<Therapy> listOfTherapies = (List<Therapy>)allTherapies;
 
             for(var i = 0; i < listOfTherapies.Count; i++)
@@ -71,7 +71,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task GetAllAdlsReturnsCorrectType()
         {
-            var allAdls = await _testService.GetAllAdls();
+            var allAdls = await _testTherapyService.GetAllAdls();
 
             allAdls.Should().BeOfType<List<string>>();
         }
@@ -86,7 +86,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
                 _testListOfAdls.Add(_testTherapies[i].Adl);
             }
 
-            var allAdls = await _testService.GetAllAdls();
+            var allAdls = await _testTherapyService.GetAllAdls();
             List<string> listOfAdls = (List<string>)allAdls;
 
             for(var i = 0; i < _testListOfAdls.Count; i++)
@@ -98,7 +98,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task GetAllTypesReturnsCorrectType()
         {
-            var allTypes = await _testService.GetAllTypes();
+            var allTypes = await _testTherapyService.GetAllTypes();
 
             allTypes.Should().BeOfType<List<string>>();
         }
@@ -113,7 +113,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
                 _testListOfTypes.Add(_testTherapies[i].Type);
             }
 
-            var allTypes = await _testService.GetAllTypes();
+            var allTypes = await _testTherapyService.GetAllTypes();
             List<string> listOfTypes = (List<string>)allTypes;
 
             for(var i = 0; i < listOfTypes.Count; i++)
@@ -125,7 +125,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task GetTherapyByAdlReturnsCorrectType()
         {
-            var therapy = await _testService.GetTherapyByAdl(_testTherapies[0].Adl);
+            var therapy = await _testTherapyService.GetTherapyByAdl(_testTherapies[0].Adl);
 
             therapy.Should().BeOfType<Therapy>();
         }
@@ -133,7 +133,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task GetTherapyByAdlReturnsCorrectTherapy()
         {
-            var therapy = await _testService.GetTherapyByAdl(_testTherapies[0].Adl);
+            var therapy = await _testTherapyService.GetTherapyByAdl(_testTherapies[0].Adl);
 
             therapy.Should().Be(_testTherapies[0]);
         }
@@ -141,7 +141,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task GetTherapyByAdlReturnsNullIfTherapyDoesNotExist()
         {
-            var therapy = await _testService.GetTherapyByAdl("-1");
+            var therapy = await _testTherapyService.GetTherapyByAdl("-1");
 
             therapy.Should().BeNull();
         }
@@ -149,7 +149,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task GetTherapyByAbbreviationReturnsCorrectType()
         {
-            var therapy = await _testService.GetTherapyByAbbreviation(_testTherapies[0].Abbreviation);
+            var therapy = await _testTherapyService.GetTherapyByAbbreviation(_testTherapies[0].Abbreviation);
 
             therapy.Should().BeOfType<Therapy>();
         }
@@ -157,7 +157,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task GetTherapyByAbbreviationReturnsCorrectTherapy()
         {
-            var therapy = await _testService.GetTherapyByAbbreviation(_testTherapies[0].Abbreviation);
+            var therapy = await _testTherapyService.GetTherapyByAbbreviation(_testTherapies[0].Abbreviation);
 
             therapy.Should().Be(_testTherapies[0]);
         }
@@ -165,7 +165,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task GetTherapyByAbbreviationReturnsNullIfTherapyDoesNotExist()
         {
-            var therapy = await _testService.GetTherapyByAbbreviation("-1");
+            var therapy = await _testTherapyService.GetTherapyByAbbreviation("-1");
 
             therapy.Should().BeNull();
         }
@@ -175,7 +175,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         {
             var newTherapy = ModelFakes.TherapyFake.Generate();
 
-            var returnTherapy = await _testService.AddTherapy(newTherapy);
+            var returnTherapy = await _testTherapyService.AddTherapy(newTherapy);
 
             returnTherapy.Should().BeOfType<Therapy>();
         }
@@ -185,9 +185,9 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         {
             var newTherapy = ModelFakes.TherapyFake.Generate();
 
-            await _testService.AddTherapy(newTherapy);
+            await _testTherapyService.AddTherapy(newTherapy);
 
-            var allTherapies = await _testService.GetAllTherapies();
+            var allTherapies = await _testTherapyService.GetAllTherapies();
             List<Therapy> listOfTherapies = (List<Therapy>)allTherapies;
 
             listOfTherapies.Count.Should().Be(11);
@@ -198,9 +198,9 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         {
             var newTherapy = ModelFakes.TherapyFake.Generate();
 
-            await _testService.AddTherapy(newTherapy);
+            await _testTherapyService.AddTherapy(newTherapy);
 
-            var allTherapies = await _testService.GetAllTherapies();
+            var allTherapies = await _testTherapyService.GetAllTherapies();
             List<Therapy> listOfTherapies = (List<Therapy>)allTherapies;
 
             listOfTherapies.Contains(newTherapy).Should().BeTrue();
@@ -212,7 +212,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
             var newTherapy = ModelFakes.TherapyFake.Generate();
             newTherapy.Adl = _testTherapies[0].Adl;
 
-            await _testService.Invoking(s => s.AddTherapy(newTherapy)).Should().ThrowAsync<TherapyAdlAlreadyExistException>();
+            await _testTherapyService.Invoking(s => s.AddTherapy(newTherapy)).Should().ThrowAsync<TherapyAdlAlreadyExistException>();
         }
 
         [TestMethod]
@@ -221,13 +221,13 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
             var newTherapy = ModelFakes.TherapyFake.Generate();
             newTherapy.Abbreviation = _testTherapies[0].Abbreviation;
 
-            await _testService.Invoking(s => s.AddTherapy(newTherapy)).Should().ThrowAsync<TherapyAbbreviationAlreadyExistException>();
+            await _testTherapyService.Invoking(s => s.AddTherapy(newTherapy)).Should().ThrowAsync<TherapyAbbreviationAlreadyExistException>();
         }
 
         [TestMethod]
         public async Task DeleteTherapyReturnsCorrectType()
         {
-            var therapy = await _testService.DeleteTherapy(_testTherapies[0].Adl);
+            var therapy = await _testTherapyService.DeleteTherapy(_testTherapies[0].Adl);
 
             therapy.Should().BeOfType<Therapy>();
         }
@@ -235,9 +235,9 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task DeleteTherapyDecrementsCount()
         {
-            await _testService.DeleteTherapy(_testTherapies[0].Adl);
+            await _testTherapyService.DeleteTherapy(_testTherapies[0].Adl);
 
-            var allTherapies = await _testService.GetAllTherapies();
+            var allTherapies = await _testTherapyService.GetAllTherapies();
             List<Therapy> listOfTherapies = (List<Therapy>)allTherapies;
 
             listOfTherapies.Count.Should().Be(9);
@@ -246,9 +246,9 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task DeleteTherapyCorrectlyRemovesTherapyFromDatabase()
         {
-            await _testService.DeleteTherapy(_testTherapies[0].Adl);
+            await _testTherapyService.DeleteTherapy(_testTherapies[0].Adl);
 
-            var allTherapies = await _testService.GetAllTherapies();
+            var allTherapies = await _testTherapyService.GetAllTherapies();
             List<Therapy> listOfTherapies = (List<Therapy>)allTherapies;
 
             listOfTherapies.Contains(_testTherapies[0]).Should().BeFalse();
@@ -257,7 +257,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task DeleteTherapyThatDoesExistReturnsNull()
         {
-            var therapy = await _testService.DeleteTherapy("-1");
+            var therapy = await _testTherapyService.DeleteTherapy("-1");
 
             therapy.Should().BeNull();
         }
@@ -265,7 +265,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task UpdateTherapyReturnsCorrectType()
         {
-            var therapy = await _testService.UpdateTherapy(_testTherapies[0].Adl, _testTherapies[0]);
+            var therapy = await _testTherapyService.UpdateTherapy(_testTherapies[0].Adl, _testTherapies[0]);
 
             therapy.Should().BeOfType<Therapy>();
         }
@@ -273,7 +273,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task UpdateTherapyReturnsCorrectTherapy()
         {
-            var therapy = await _testService.UpdateTherapy(_testTherapies[0].Adl, _testTherapies[0]);
+            var therapy = await _testTherapyService.UpdateTherapy(_testTherapies[0].Adl, _testTherapies[0]);
 
             therapy.Should().Be(_testTherapies[0]);
         }
@@ -284,9 +284,9 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
             var newAbbreviation = ModelFakes.TherapyFake.Generate().Abbreviation;
             _testTherapies[0].Abbreviation = newAbbreviation;
 
-            await _testService.UpdateTherapy(_testTherapies[0].Adl, _testTherapies[0]);
+            await _testTherapyService.UpdateTherapy(_testTherapies[0].Adl, _testTherapies[0]);
 
-            var therapy = await _testService.GetTherapyByAdl(_testTherapies[0].Adl);
+            var therapy = await _testTherapyService.GetTherapyByAbbreviation(newAbbreviation);
 
             therapy.Should().Be(_testTherapies[0]);
         }
@@ -294,15 +294,15 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task UpdateTherapyWithNonMatchingAdlsThrowsError()
         {
-            await _testService.Invoking(s => s.UpdateTherapy("-1", _testTherapies[0])).Should().ThrowAsync<TherapyAdlsDoNotMatchException>();
+            await _testTherapyService.Invoking(s => s.UpdateTherapy("-1", _testTherapies[0])).Should().ThrowAsync<TherapyAdlsDoNotMatchException>();
         }
 
         [TestMethod]
         public async Task UpdateTherapyWithNonExistingTherapyThrowsError()
         {
-            var therapy = ModelFakes.TherapyFake.Generate();
+            var fakeTherapy = ModelFakes.TherapyFake.Generate();
 
-            await _testService.Invoking(s => s.UpdateTherapy(therapy.Adl, therapy)).Should().ThrowAsync<TherapyDoesNotExistException>();
+            await _testTherapyService.Invoking(s => s.UpdateTherapy(fakeTherapy.Adl, fakeTherapy)).Should().ThrowAsync<TherapyDoesNotExistException>();
         }
     }
 }
