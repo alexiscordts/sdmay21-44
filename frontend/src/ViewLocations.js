@@ -40,7 +40,7 @@ class ViewLocations extends React.Component {
         <div class = "userHeaderRow">
           <h2>Addresses</h2>
           <button class = "iconAddUserButton" onClick={() => {window.location.href = "/add_location"}}>
-            <img src={require("./Icons/icons8-plus-52.png")} alt="add" className="iconAddLocation" />
+            <img src={require("./Icons/icons8-plus-48.png")} alt="add" className="iconAddLocation" />
           </button>
         </div>
         <table class="user-table">
