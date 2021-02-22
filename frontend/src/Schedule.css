@@ -2,15 +2,14 @@
     background-color: white;
     float: clear;
     border: 1px solid #D1D2D4;
-    margin-top: 25px;
-    width: 80%;
+    width: 100%;
     
 }
 
 #scheduleContainer  {
     overflow-y: scroll;
     overflow-x: hidden;
-    max-height: 80vh;
+    max-height: calc(100vh - 150px);
 }
 
 .day    {
@@ -39,7 +38,7 @@
 }
 
 .hour   {
-    height: 80px;
+    height: 70px;
     background-color: white;
     line-height: 40px;
     vertical-align: middle;
@@ -48,9 +47,9 @@
 }
 
 .halfHour   {
-    height: 40px;
+    height: 35px;
     background-color: white;
-    line-height: 80px;
+    line-height: 70px;
     vertical-align: middle;
     border-bottom: 1px solid #D1D2D4;
 }
@@ -78,16 +77,16 @@
 
   #topRow   {
       width: 5%;
-      height: 40px;
+      height:35px;
       float: left;
   }
 
   .appointment  {
-      height: 82px;
+      height: 72px;
       width: 100%;
       background-color: #00529b;
       position: absolute;
-      top: 82px;
+      top: 72px;
       text-align: left;
       color: white;
       overflow: hidden;
@@ -106,7 +105,7 @@
 
   .name {
       font-weight: bold;
-      font-size: 1.1em;
+      font-size: 1em;
       margin-top: 10px;
       margin-left: 10px;
   }
@@ -138,13 +137,6 @@
       display: none;
   }
 
-  @media only screen and (max-width: 900px) {
-    #schedule {
-      width: calc(100% - 50px);
-      margin-left: 50px;
-    }
-  }
-
   #toggle   {
       width: 280px;
       margin: auto;
@@ -169,7 +161,7 @@
       cursor: pointer;
   }
 
-  @media only screen and (max-width: 550px) {
+  @media only screen and (max-width: 650px) {
     .day    {
         width: 90%;
     }
@@ -202,5 +194,8 @@
     }
     #toggle {
         display: block;
+    }
+    #scheduleContainer  {
+        max-height: calc(100vh - 200px);
     }
   }

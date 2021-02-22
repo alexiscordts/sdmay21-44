@@ -160,7 +160,7 @@ function getPositionForTimeLine()
     var d = new Date();
     var hour = d.getHours() - 5;
     var minute = d.getMinutes();
-    return hour * 82 + minute * 82/60;
+    return hour * 72 + minute * 72/60;
 }
 
 function getDays()
@@ -211,11 +211,11 @@ function getAppointmentElements(appointments)   {
     appointments.forEach(appointment => {
         var start = appointment.date.getHours();
         var end = appointment.date.getHours() + appointment.length;
-        var position = (start - 5) * 82 + appointment.date.getMinutes() * 82/60;
+        var position = (start - 5) * 72 + appointment.date.getMinutes() * 72/60;
         const style = {
             top: position,
-            height: appointment.length * 82, 
-            minHeight: appointment.length * 82,
+            height: appointment.length * 72, 
+            minHeight: appointment.length * 72,
         };
         var startAMOrPM = "AM";
         var endAMOrPM = "AM";
@@ -232,7 +232,7 @@ function getAppointmentElements(appointments)   {
         var num = numAppointments.toString();
         appointmentElements.push(
             <div class="appointment" style={style} id={id} onClick={() => seeNotes(num)}>
-                <div class="hidden" id={id + "Height"}>{appointment.length * 82}px</div>
+                <div class="hidden" id={id + "Height"}>{appointment.length * 72}px</div>
                 <div class="name">{appointment.title}</div>
                 <div class="time">{time}</div>
                 <div class="time">Room {appointment.room}</div>
