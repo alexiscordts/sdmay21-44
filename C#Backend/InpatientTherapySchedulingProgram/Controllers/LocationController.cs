@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using InpatientTherapySchedulingProgram.Models;
+using InpatientTherapySchedulingProgram.Services.Interfaces;
+using InpatientTherapySchedulingProgram.Exceptions.LocationExceptions;
 
 namespace InpatientTherapySchedulingProgram.Controllers
 {
@@ -13,61 +15,80 @@ namespace InpatientTherapySchedulingProgram.Controllers
     [ApiController]
     public class LocationController : ControllerBase
     {
-        private readonly CoreDbContext _context;
+        private readonly ILocationService _locationService;
 
-        public LocationController(CoreDbContext context)
+        public LocationController(ILocationService locationService)
         {
-            _context = context;
+            _locationService = locationService;
         }
 
         // GET: api/Location
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Location>>> GetLocation()
         {
-            return await _context.Location.ToListAsync();
+            var allLocations = await _locationService.GetAllLocations();
+
+            return Ok(allLocations);
+        }
+
+        // GET: api/Location/name
+        [HttpGet("name")]
+        public async Task<ActionResult<IEnumerable<Location>>> GetLocationNames()
+        {
+            var allLocationNames = await _locationService.GetAllLocationNames();
+
+            return Ok(allLocationNames);
         }
 
         // GET: api/Location/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Location>> GetLocation(int id)
+        [HttpGet("{lid}")]
+        public async Task<ActionResult<Location>> GetLocation(int lid)
         {
-            var location = await _context.Location.FindAsync(id);
+            var location = await _locationService.GetLocationByLocationId(lid);
 
             if (location == null)
             {
                 return NotFound();
             }
 
-            return location;
+            return Ok(location);
+        }
+
+        // GET: api/Location/Hopkins
+        [HttpGet("{name}")]
+        public async Task<ActionResult<Location>> GetLocation(string name)
+        {
+            var location = await _locationService.GetLocationByName(name);
+
+            if (location == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(location);
         }
 
         // PUT: api/Location/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutLocation(int id, Location location)
+        [HttpPut("{lid}")]
+        public async Task<IActionResult> PutLocation(int lid, Location location)
         {
-            if (id != location.LocationId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(location).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _locationService.UpdateLocation(lid, location);
+            }
+            catch (LocationIdsDoNotMatchException e)
+            {
+                return BadRequest(e);
+            }
+            catch (LocationDoesNotExistException)
+            {
+                return NotFound();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!LocationExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
             return NoContent();
@@ -79,45 +100,47 @@ namespace InpatientTherapySchedulingProgram.Controllers
         [HttpPost]
         public async Task<ActionResult<Location>> PostLocation(Location location)
         {
-            _context.Location.Add(location);
             try
             {
-                await _context.SaveChangesAsync();
+                await _locationService.AddLocation(location);
+            }
+            catch (LocationIdAlreadyExistsException e)
+            {
+                return Conflict(e);
+            }
+            catch (LocationNameAlreadyExistsException e)
+            {
+                return Conflict(e);
             }
             catch (DbUpdateException)
             {
-                if (LocationExists(location.LocationId))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
             return CreatedAtAction("GetLocation", new { id = location.LocationId }, location);
         }
 
         // DELETE: api/Location/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Location>> DeleteLocation(int id)
+        [HttpDelete("{lid}")]
+        public async Task<ActionResult<Location>> DeleteLocation(int lid)
         {
-            var location = await _context.Location.FindAsync(id);
-            if (location == null)
+            Location location;
+
+            try
+            {
+                location = await _locationService.DeleteLocation(lid);
+            }
+            catch (DbUpdateException)
+            {
+                throw;
+            }
+
+            if(location == null)
             {
                 return NotFound();
             }
 
-            _context.Location.Remove(location);
-            await _context.SaveChangesAsync();
-
-            return location;
-        }
-
-        private bool LocationExists(int id)
-        {
-            return _context.Location.Any(e => e.LocationId == id);
+            return Ok(location);
         }
     }
 }
