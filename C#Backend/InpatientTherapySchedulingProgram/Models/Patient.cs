@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace InpatientTherapySchedulingProgram.Models
 {
     [Table("patient")]
-    public partial class Patient
+    public partial class Patient : IEquatable<Patient>
     {
         public Patient()
         {
@@ -45,5 +45,48 @@ namespace InpatientTherapySchedulingProgram.Models
         public virtual ICollection<Appointment> Appointment { get; set; }
         [InverseProperty("Patient")]
         public virtual ICollection<PatientEvent> PatientEvent { get; set; }
+
+
+        public override bool Equals(object obj)
+        {
+            return this.Equals(obj as Patient);
+        }
+
+        public bool Equals(Patient patient)
+        {
+            if (patient is null)
+            {
+                return false;
+            }
+
+            if (Object.ReferenceEquals(this, patient))
+            {
+                return true;
+            }
+
+            return this.Pid == patient.Pid && this.FirstName == patient.FirstName && this.MiddleName == patient.MiddleName &&
+                this.LastName == patient.LastName;
+        }
+
+        public static bool operator ==(Patient lhs, Patient rhs)
+        {
+            if (Object.ReferenceEquals(lhs, null))
+            {
+                if (Object.ReferenceEquals(rhs, null))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+
+            return lhs.Equals(rhs);
+        }
+
+        public static bool operator !=(Patient lhs, Patient rhs)
+        {
+            return !(lhs == rhs);
+        }
+
     }
 }

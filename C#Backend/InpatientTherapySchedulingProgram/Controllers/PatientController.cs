@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using InpatientTherapySchedulingProgram.Models;
+using InpatientTherapySchedulingProgram.Services.Interfaces;
+
 
 namespace InpatientTherapySchedulingProgram.Controllers
 {
@@ -13,18 +15,19 @@ namespace InpatientTherapySchedulingProgram.Controllers
     [ApiController]
     public class PatientController : ControllerBase
     {
-        private readonly CoreDbContext _context;
+        private readonly IPatientService _service;
 
-        public PatientController(CoreDbContext context)
+        public PatientController(IPatientService service)
         {
-            _context = context;
+            _service = service;
         }
 
         // GET: api/Patient
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Patient>>> GetPatient()
         {
-            return await _context.Patient.ToListAsync();
+            var allPatients = await _service.GetAllPatients();
+            return Ok(allPatients);
         }
 
         // GET: api/Patient/5
