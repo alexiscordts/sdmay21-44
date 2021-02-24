@@ -47,7 +47,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPermission(int id, Permission permission)
         {
-            if (id != permission.Id)
+            if (id != permission.UserId)
             {
                 return BadRequest();
             }
@@ -86,7 +86,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
             }
             catch (DbUpdateException)
             {
-                if (PermissionExists(permission.Id))
+                if (PermissionExists(permission.UserId))
                 {
                     return Conflict();
                 }
@@ -96,7 +96,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
                 }
             }
 
-            return CreatedAtAction("GetPermission", new { id = permission.Id }, permission);
+            return CreatedAtAction("GetPermission", new { id = permission.UserId }, permission);
         }
 
         // DELETE: api/Permission/5
@@ -117,7 +117,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
 
         private bool PermissionExists(int id)
         {
-            return _context.Permission.Any(e => e.Id == id);
+            return _context.Permission.Any(e => e.UserId == id);
         }
     }
 }

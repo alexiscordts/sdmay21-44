@@ -109,7 +109,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
                 throw;
             }
 
-            return CreatedAtAction("GetUser", new { id = user.Uid }, user);
+            return CreatedAtAction("GetUser", new { id = user.UserId }, user);
         }
 
         // DELETE: api/User/5

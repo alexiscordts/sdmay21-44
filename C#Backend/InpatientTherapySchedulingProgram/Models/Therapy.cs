@@ -17,9 +17,9 @@ namespace InpatientTherapySchedulingProgram.Models
         [Column("adl")]
         [StringLength(255)]
         public string Adl { get; set; }
-        [Column("type")]
+        [Column("therapy_type")]
         [StringLength(255)]
-        public string Type { get; set; }
+        public string TherapyType { get; set; }
         [Column("abbreviation")]
         [StringLength(255)]
         public string Abbreviation { get; set; }

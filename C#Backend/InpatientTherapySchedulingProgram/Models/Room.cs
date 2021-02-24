@@ -5,18 +5,18 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InpatientTherapySchedulingProgram.Models
 {
-    [Table("room_number")]
-    public partial class RoomNumber
+    [Table("room")]
+    public partial class Room
     {
         [Key]
         [Column("number")]
         public int Number { get; set; }
         [Key]
-        [Column("lid")]
-        public int Lid { get; set; }
+        [Column("location_id")]
+        public int LocationId { get; set; }
 
-        [ForeignKey(nameof(Lid))]
-        [InverseProperty(nameof(Location.RoomNumber))]
-        public virtual Location L { get; set; }
+        [ForeignKey(nameof(LocationId))]
+        [InverseProperty("Room")]
+        public virtual Location Location { get; set; }
     }
 }
