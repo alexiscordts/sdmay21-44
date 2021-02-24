@@ -1,4 +1,4 @@
-#schedule   {
+#therapistSchedule   {
     background-color: white;
     float: clear;
     border: 1px solid #D1D2D4;
@@ -6,13 +6,13 @@
     
 }
 
-#scheduleContainer  {
+#therapistSchedule #scheduleContainer  {
     overflow-y: scroll;
     overflow-x: hidden;
     max-height: calc(100vh - 150px);
 }
 
-.day    {
+#therapistSchedule .day    {
     width: 13%;
     float: left;
     text-align: center;
@@ -20,7 +20,7 @@
     position: relative;
 }
 
-.dayLabel   {
+#therapistSchedule .dayLabel   {
     width: 13%;
     float: left;
     text-align: center;
@@ -30,14 +30,14 @@
     background-color: #00A9D8;
 }
 
-#hourColumn    {
+#therapistSchedule #hourColumn    {
     width: 5%;
     float: left;
     border-right: 1px solid #D1D2D4;
     text-align: center;
 }
 
-.hour   {
+#therapistSchedule .hour   {
     height: 70px;
     background-color: white;
     line-height: 40px;
@@ -46,7 +46,7 @@
     border-top: 1px solid white;
 }
 
-.halfHour   {
+#therapistSchedule .halfHour   {
     height: 35px;
     background-color: white;
     line-height: 70px;
@@ -54,34 +54,34 @@
     border-bottom: 1px solid #D1D2D4;
 }
 
-::-webkit-scrollbar {
+#therapistSchedule ::-webkit-scrollbar {
     width: 15px;
   }
   
   /* Track */
-  ::-webkit-scrollbar-track {
+  #therapistSchedule ::-webkit-scrollbar-track {
     background: #f1f1f1; 
   }
    
   /* Handle */
-  ::-webkit-scrollbar-thumb {
+  #therapistSchedule ::-webkit-scrollbar-thumb {
     background: #888; 
     border-radius: 7px;
   }
 
-  #days {
+  #therapistSchedule #days {
       height: 40px;
       width: 100%;
       background-color: #00A9D8;
   }
 
-  #topRow   {
+  #therapistSchedule #topRow   {
       width: 5%;
       height:35px;
       float: left;
   }
 
-  .appointment  {
+  #therapistSchedule .appointment  {
       height: 72px;
       width: 100%;
       background-color: #00529b;
@@ -98,32 +98,32 @@
      z-index: 2;
   }
 
-  .appointment:hover    {
+  #therapistSchedule .appointment:hover    {
       height: auto;
       cursor: pointer;
   }
 
-  .name {
+  #therapistSchedule .name {
       font-weight: bold;
       font-size: 1em;
       margin-top: 10px;
       margin-left: 10px;
   }
 
-  .time  {
+  #therapistSchedule .time  {
     font-size: 0.8em;
     margin-top: 5px;
     margin-left: 10px;
   }
 
-  .notes    {
+  #therapistSchedule .notes    {
     font-size: 0.8em;
     margin-top: 15px;
     padding: 10px;
     display: none;
   }
 
-  #timeLine {
+  #therapistSchedule #timeLine {
     height: 2px;
     width: 100%;
     background-color:red;
@@ -133,17 +133,17 @@
     position: relative;
   }
 
-  .hidden   {
+  #therapistSchedule .hidden   {
       display: none;
   }
 
-  #toggle   {
+  #therapistSchedule #toggle   {
       width: 280px;
       margin: auto;
       display: none;
   }
 
-  .daytoggle    {
+  #therapistSchedule .daytoggle    {
       float: left;
       height: 30px;
       width: 30px;
@@ -157,45 +157,45 @@
       transition: 0.5s;
   }
 
-  .daytoggle:hover  {
+  #therapistSchedule .daytoggle:hover  {
       cursor: pointer;
   }
 
   @media only screen and (max-width: 650px) {
-    .day    {
+    #therapistSchedule .day    {
         width: 90%;
     }
-    .dayLabel   {
+    #therapistSchedule .dayLabel   {
         width: 90%;
     }
-    .Monday  {
+    #therapistSchedule .Monday  {
         display: none;
     }
-    .Tuesday  {
+    #therapistSchedule .Tuesday  {
         display: none;
     }
-    .Wednesday  {
+    #therapistSchedule .Wednesday  {
         display: none;
     }
-    .Thursday  {
+    #therapistSchedule .Thursday  {
         display: none;
     }
-    .Friday  {
+    #therapistSchedule .Friday  {
         display: none;
     }
-    .Saturday  {
+    #therapistSchedule .Saturday  {
         display: none;
     }
-    #SundayToggle   {
+    #therapistSchedule #SundayToggle   {
         background-color: #EA7600;
     }
-    #hourColumn {
+    #therapistSchedule #hourColumn {
         width: 9%;
     }
-    #toggle {
+    #therapistSchedule #toggle {
         display: block;
     }
-    #scheduleContainer  {
+    #therapistSchedule #scheduleContainer  {
         max-height: calc(100vh - 200px);
     }
   }

@@ -1,11 +1,18 @@
 import React from "react";
 import "./Dashboard.css";
 import Nav from "./Nav";
-import Schedule from "./Schedule";
+import TherapistSchedule from "./TherapistSchedule";
+import RoomSchedule from "./RoomSchedule";
 
 class Dashboard extends React.Component {
-  
+    constructor(props) {
+        super(props);
+        this.schedule = (<TherapistSchedule />);
+    }
+    //
+
   render() {
+
     return (
     <div id="screen" onResize>
         <Nav />
@@ -17,12 +24,18 @@ class Dashboard extends React.Component {
                 </button>
                 <div class="dropdown-content">
                     <a href="#">View all </a>
-                    <a href="#">View by room</a>
-                    <a href="#">View by therapist</a>
+                    <a href="#" onClick={() => {
+            this.schedule = (<RoomSchedule />);
+            } 
+        }>View by room</a>
+                    <a href="#" onClick={() => {
+            this.schedule = (<TherapistSchedule />);
+            } 
+        }>View by therapist</a>
                 </div>
                 </div>
             <div class="scheduleTitle">{'Inpatient Therapy Scheduler'}</div>
-            <Schedule/>
+            {this.schedule}
         </div>         
     </div>
     );
