@@ -42,7 +42,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
             _fakeLocationService.SetupAllProperties();
             _fakeLocationService.Setup(s => s.GetAllLocations()).ReturnsAsync(_testLocations);
             _fakeLocationService.Setup(s => s.GetAllLocationNames()).ReturnsAsync(_testLocationNames);
-            _fakeLocationService.Setup(s => s.GetLocationByLid(It.IsAny<int>())).ReturnsAsync(_testLocations[0]);
+            _fakeLocationService.Setup(s => s.GetLocationByLocationId(It.IsAny<int>())).ReturnsAsync(_testLocations[0]);
             _fakeLocationService.Setup(s => s.GetLocationByName(It.IsAny<string>())).ReturnsAsync(_testLocations[0]);
             _fakeLocationService.Setup(s => s.UpdateLocation(It.IsAny<int>(), It.IsAny<Location>())).ReturnsAsync(_testLocations[0]);
             _fakeLocationService.Setup(s => s.AddLocation(It.IsAny<Location>())).ReturnsAsync(_testLocations[0]);
@@ -86,26 +86,26 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         }
 
         [TestMethod]
-        public async Task ValidGetLocationByLidReturnsOkResponse()
+        public async Task ValidGetLocationByLocationidReturnsOkResponse()
         {
-            var response = await _testLocationController.GetLocation(_testLocations[0].Lid);
+            var response = await _testLocationController.GetLocation(_testLocations[0].LocationId);
 
             response.Result.Should().BeOfType<OkObjectResult>();
         }
 
         [TestMethod]
-        public async Task ValidGetLocationByLidReturnsCorrectType()
+        public async Task ValidGetLocationByLocationidReturnsCorrectType()
         {
-            var response = await _testLocationController.GetLocation(_testLocations[0].Lid);
+            var response = await _testLocationController.GetLocation(_testLocations[0].LocationId);
             var responseResult = response.Result as OkObjectResult;
 
             responseResult.Value.Should().BeOfType<Location>();
         }
 
         [TestMethod]
-        public async Task NullGetLocationByLidReturnsNotFoundResponse()
+        public async Task NullGetLocationByLocationidReturnsNotFoundResponse()
         {
-            _fakeLocationService.Setup(s => s.GetLocationByLid(It.IsAny<int>())).ReturnsAsync((Location)null);
+            _fakeLocationService.Setup(s => s.GetLocationByLocationId(It.IsAny<int>())).ReturnsAsync((Location)null);
 
             var response = await _testLocationController.GetLocation(-1);
 
@@ -142,7 +142,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         [TestMethod]
         public async Task ValidPutLocationReturnsNoContentResponse()
         {
-            var response = await _testLocationController.PutLocation(_testLocations[0].Lid, _testLocations[0]);
+            var response = await _testLocationController.PutLocation(_testLocations[0].LocationId, _testLocations[0]);
 
             response.Should().BeOfType<NoContentResult>();
         }
@@ -152,7 +152,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         {
             _fakeLocationService.Setup(s => s.UpdateLocation(It.IsAny<int>(), It.IsAny<Location>())).ThrowsAsync(new LocationIdsDoNotMatchException());
 
-            var response = await _testLocationController.PutLocation(_testLocations[0].Lid, _testLocations[0]);
+            var response = await _testLocationController.PutLocation(_testLocations[0].LocationId, _testLocations[0]);
 
             response.Should().BeOfType<BadRequestObjectResult>();
         }
@@ -162,7 +162,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         {
             _fakeLocationService.Setup(s => s.UpdateLocation(It.IsAny<int>(), It.IsAny<Location>())).ThrowsAsync(new LocationDoesNotExistException());
 
-            var response = await _testLocationController.PutLocation(_testLocations[0].Lid, _testLocations[0]);
+            var response = await _testLocationController.PutLocation(_testLocations[0].LocationId, _testLocations[0]);
 
             response.Should().BeOfType<NotFoundResult>();
         }
@@ -172,7 +172,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         {
             _fakeLocationService.Setup(s => s.UpdateLocation(It.IsAny<int>(), It.IsAny<Location>())).ThrowsAsync(new DbUpdateConcurrencyException());
 
-            await _testLocationController.Invoking(c => c.PutLocation(_testLocations[0].Lid, _testLocations[0])).Should().ThrowAsync<DbUpdateConcurrencyException>();
+            await _testLocationController.Invoking(c => c.PutLocation(_testLocations[0].LocationId, _testLocations[0])).Should().ThrowAsync<DbUpdateConcurrencyException>();
         }
 
         [TestMethod]
@@ -202,7 +202,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
             _fakeLocationService.Setup(s => s.AddLocation(It.IsAny<Location>())).ThrowsAsync(new LocationIdAlreadyExistsException());
 
             var newLocation = ModelFakes.LocationFake.Generate();
-            newLocation.Lid = _testLocations[0].Lid;
+            newLocation.LocationId = _testLocations[0].LocationId;
 
             var response = await _testLocationController.PostLocation(newLocation);
 
@@ -235,7 +235,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         [TestMethod]
         public async Task ValidDeleteLocationReturnsOkResponse()
         {
-            var response = await _testLocationController.DeleteLocation(_testLocations[0].Lid);
+            var response = await _testLocationController.DeleteLocation(_testLocations[0].LocationId);
 
             response.Result.Should().BeOfType<OkObjectResult>();
         }
@@ -243,7 +243,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         [TestMethod]
         public async Task ValidDeleteLocationReturnsCorrectType()
         {
-            var response = await _testLocationController.DeleteLocation(_testLocations[0].Lid);
+            var response = await _testLocationController.DeleteLocation(_testLocations[0].LocationId);
             var responseResult = response.Result as OkObjectResult;
 
             responseResult.Value.Should().BeOfType<Location>();

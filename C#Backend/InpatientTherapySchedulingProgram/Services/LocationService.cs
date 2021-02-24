@@ -20,7 +20,7 @@ namespace InpatientTherapySchedulingProgram.Services
 
         public async Task<Location> AddLocation(Location location)
         {
-            if(await LocationExists(location.Lid))
+            if(await LocationExists(location.LocationId))
             {
                 throw new LocationIdAlreadyExistsException();
             }
@@ -76,7 +76,7 @@ namespace InpatientTherapySchedulingProgram.Services
             return await _context.Location.ToListAsync();
         }
 
-        public async Task<Location> GetLocationByLid(int id)
+        public async Task<Location> GetLocationByLocationId(int id)
         {
             return await _context.Location.FindAsync(id);
         }
@@ -88,18 +88,18 @@ namespace InpatientTherapySchedulingProgram.Services
 
         public async Task<Location> UpdateLocation(int id, Location location)
         {
-            if(location.Lid != id)
+            if(location.LocationId != id)
             {
                 throw new LocationIdsDoNotMatchException();
             }
-            if(!await LocationExists(location.Lid))
+            if(!await LocationExists(location.LocationId))
             {
                 throw new LocationDoesNotExistException();
             }
 
             var local = _context.Set<Location>()
                 .Local
-                .FirstOrDefault(l => l.Lid == id);
+                .FirstOrDefault(l => l.LocationId == id);
 
             _context.Entry(local).State = EntityState.Detached;
 

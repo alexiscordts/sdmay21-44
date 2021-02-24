@@ -47,7 +47,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTherapistActivity(string id, TherapistActivity therapistActivity)
         {
-            if (id != therapistActivity.Name)
+            if (id != therapistActivity.ActivityName)
             {
                 return BadRequest();
             }
@@ -86,7 +86,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
             }
             catch (DbUpdateException)
             {
-                if (TherapistActivityExists(therapistActivity.Name))
+                if (TherapistActivityExists(therapistActivity.ActivityName))
                 {
                     return Conflict();
                 }
@@ -96,7 +96,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
                 }
             }
 
-            return CreatedAtAction("GetTherapistActivity", new { id = therapistActivity.Name }, therapistActivity);
+            return CreatedAtAction("GetTherapistActivity", new { id = therapistActivity.ActivityName }, therapistActivity);
         }
 
         // DELETE: api/TherapistActivity/5
@@ -117,7 +117,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
 
         private bool TherapistActivityExists(string id)
         {
-            return _context.TherapistActivity.Any(e => e.Name == id);
+            return _context.TherapistActivity.Any(e => e.ActivityName.Equals(id));
         }
     }
 }

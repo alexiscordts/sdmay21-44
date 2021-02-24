@@ -8,7 +8,7 @@ namespace InpatientTherapySchedulingProgram.Services.Interfaces
     {
         Task<IEnumerable<Location>> GetAllLocations();
         Task<IEnumerable<string>> GetAllLocationNames();
-        Task<Location> GetLocationByLid(int id);
+        Task<Location> GetLocationByLocationId(int id);
         Task<Location> GetLocationByName(string name);
         Task<Location> UpdateLocation(int id, Location location);
         Task<Location> AddLocation(Location location);

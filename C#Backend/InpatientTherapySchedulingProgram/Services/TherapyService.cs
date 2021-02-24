@@ -77,7 +77,7 @@ namespace InpatientTherapySchedulingProgram.Services
 
         public async Task<IEnumerable<string>> GetAllTypes()
         {
-            return await _context.Therapy.Select(t => t.Type).ToListAsync();
+            return await _context.Therapy.Select(t => t.TherapyType).ToListAsync();
         }
 
         public async Task<Therapy> GetTherapyByAdl(string adl)

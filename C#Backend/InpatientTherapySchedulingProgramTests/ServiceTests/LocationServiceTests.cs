@@ -96,25 +96,25 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         }
 
         [TestMethod]
-        public async Task GetLocationByLidReturnsCorrectType()
+        public async Task GetLocationByLocationIdReturnsCorrectType()
         {
-            var location = await _testLocationService.GetLocationByLid(_testLocations[0].Lid);
+            var location = await _testLocationService.GetLocationByLocationId(_testLocations[0].LocationId);
 
             location.Should().BeOfType<Location>();
         }
 
         [TestMethod]
-        public async Task GetLocationByLidReturnsCorrectLocation()
+        public async Task GetLocationByLocationIdReturnsCorrectLocation()
         {
-            var location = await _testLocationService.GetLocationByLid(_testLocations[0].Lid);
+            var location = await _testLocationService.GetLocationByLocationId(_testLocations[0].LocationId);
 
             location.Should().Be(_testLocations[0]);
         }
 
         [TestMethod]
-        public async Task GetLocationByLidReturnsNullIfLocationDoesNotExist()
+        public async Task GetLocationByLocationIdReturnsNullIfLocationDoesNotExist()
         {
-            var location = await _testLocationService.GetLocationByLid(-1);
+            var location = await _testLocationService.GetLocationByLocationId(-1);
 
             location.Should().BeNull();
         }
@@ -180,10 +180,10 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         }
 
         [TestMethod]
-        public async Task AddLocationWithExistingLidThrowsLocationIdAlreadyExistsException()
+        public async Task AddLocationWithExistingLocationIdThrowsLocationIdAlreadyExistsException()
         {
             var newLocation = ModelFakes.LocationFake.Generate();
-            newLocation.Lid = _testLocations[0].Lid;
+            newLocation.LocationId = _testLocations[0].LocationId;
 
             await _testLocationService.Invoking(s => s.AddLocation(newLocation)).Should().ThrowAsync<LocationIdAlreadyExistsException>();
         }
@@ -200,7 +200,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task DeleteLocationReturnsCorrectType()
         {
-            var location = await _testLocationService.DeleteLocation(_testLocations[0].Lid);
+            var location = await _testLocationService.DeleteLocation(_testLocations[0].LocationId);
 
             location.Should().BeOfType<Location>();
         }
@@ -208,7 +208,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task DeleteLocationDecrementsCount()
         {
-            await _testLocationService.DeleteLocation(_testLocations[0].Lid);
+            await _testLocationService.DeleteLocation(_testLocations[0].LocationId);
 
             var allLocations = await _testLocationService.GetAllLocations();
             List<Location> listOfLocations = (List<Location>)allLocations;
@@ -219,7 +219,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task DeleteLocationCorrectlyRemovesLocationFromDatabase()
         {
-            await _testLocationService.DeleteLocation(_testLocations[0].Lid);
+            await _testLocationService.DeleteLocation(_testLocations[0].LocationId);
 
             var allLocations = await _testLocationService.GetAllLocations();
             List<Location> listOfLocations = (List<Location>)allLocations;
@@ -238,7 +238,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task UpdateLocationReturnsCorrectType()
         {
-            var location = await _testLocationService.UpdateLocation(_testLocations[0].Lid, _testLocations[0]);
+            var location = await _testLocationService.UpdateLocation(_testLocations[0].LocationId, _testLocations[0]);
 
             location.Should().BeOfType<Location>();
         }
@@ -246,7 +246,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task UpdateLocationReturnsCorrectLocation()
         {
-            var location = await _testLocationService.UpdateLocation(_testLocations[0].Lid, _testLocations[0]);
+            var location = await _testLocationService.UpdateLocation(_testLocations[0].LocationId, _testLocations[0]);
 
             location.Should().Be(_testLocations[0]);
         }
@@ -257,25 +257,25 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
             var newLocationName = ModelFakes.LocationFake.Generate().Name;
             _testLocations[0].Name = newLocationName;
 
-            await _testLocationService.UpdateLocation(_testLocations[0].Lid, _testLocations[0]);
+            await _testLocationService.UpdateLocation(_testLocations[0].LocationId, _testLocations[0]);
 
-            var location = await _testLocationService.GetLocationByLid(_testLocations[0].Lid);
+            var location = await _testLocationService.GetLocationByLocationId(_testLocations[0].LocationId);
 
             location.Name.Should().Be(newLocationName);
         }
 
         [TestMethod]
-        public async Task UpdateLocationWithNonMatchingLocationLidsThrowsLocationIdsDoNotMatchExceptionException()
+        public async Task UpdateLocationWithNonMatchingLocationLocationIdsThrowsLocationIdsDoNotMatchExceptionException()
         {
             await _testLocationService.Invoking(s => s.UpdateLocation(-1, _testLocations[0])).Should().ThrowAsync<LocationIdsDoNotMatchException>();
         }
 
         [TestMethod]
-        public async Task UpdateLocationWithNonExistingLocationLocationLidsThrowsLocationDoesNotExistException()
+        public async Task UpdateLocationWithNonExistingLocationLocationLocationIdsThrowsLocationDoesNotExistException()
         {
             var fakeLocation = ModelFakes.LocationFake.Generate();
 
-            await _testLocationService.Invoking(s => s.UpdateLocation(fakeLocation.Lid, fakeLocation)).Should().ThrowAsync<LocationDoesNotExistException>();
+            await _testLocationService.Invoking(s => s.UpdateLocation(fakeLocation.LocationId, fakeLocation)).Should().ThrowAsync<LocationDoesNotExistException>();
         }
     }
 }

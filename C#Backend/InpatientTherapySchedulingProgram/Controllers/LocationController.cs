@@ -44,7 +44,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
         [HttpGet("{lid}")]
         public async Task<ActionResult<Location>> GetLocation(int lid)
         {
-            var location = await _locationService.GetLocationByLid(lid);
+            var location = await _locationService.GetLocationByLocationId(lid);
 
             if (location == null)
             {
@@ -117,7 +117,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
                 throw;
             }
 
-            return CreatedAtAction("GetLocation", new { id = location.Lid }, location);
+            return CreatedAtAction("GetLocation", new { id = location.LocationId }, location);
         }
 
         // DELETE: api/Location/5
