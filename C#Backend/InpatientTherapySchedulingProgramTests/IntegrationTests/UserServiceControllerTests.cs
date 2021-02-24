@@ -30,7 +30,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
             _testContext = new CoreDbContext(options);
             _testContext.Database.EnsureDeleted();
 
-            for (var i = 0; i < 10; i++)
+            for(var i = 0; i < 10; i++)
             {
                 var newUser = ModelFakes.UserFake.Generate();
                 _testUsers.Add(ObjectExtensions.Copy(newUser));
@@ -196,9 +196,12 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         [TestMethod]
         public async Task NonExistingPutUserShouldReturnBadRequest()
         {
-            var response = await _testController.PutUser(-1, new User());
+            var fakeUser = new User();
+            fakeUser.UserId = -1;
 
-            response.Should().BeOfType<BadRequestObjectResult>();
+            var response = await _testController.PutUser(-1, fakeUser);
+
+            response.Should().BeOfType<NotFoundResult>();
         }
 
         [TestMethod]

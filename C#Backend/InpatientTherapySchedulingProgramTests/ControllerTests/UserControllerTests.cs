@@ -139,13 +139,13 @@ namespace InpatientTherapySchedulingProgramTests
         }
 
         [TestMethod]
-        public async Task NonExistingUserPutUserReturnsBadRequest()
+        public async Task NonExistingUserPostUserReturnsNotFound()
         {
             _fakeService.Setup(s => s.UpdateUser(It.IsAny<int>(), It.IsAny<User>())).ThrowsAsync(new UserDoesNotExistException());
 
             var response = await _testController.PutUser(_testUsers[0].UserId, new User());
 
-            response.Should().BeOfType<BadRequestObjectResult>();
+            response.Should().BeOfType<NotFoundResult>();
         }
 
         [TestMethod]
@@ -177,7 +177,7 @@ namespace InpatientTherapySchedulingProgramTests
         [TestMethod]
         public async Task ExistingUserIdPostUserReturnsConflictResponse()
         {
-            _fakeService.Setup(s => s.AddUser(It.IsAny<User>())).ThrowsAsync(new UserIdAlreadyExistsException());
+            _fakeService.Setup(s => s.AddUser(It.IsAny<User>())).ThrowsAsync(new UserIdAlreadyExistException());
 
             var response = await _testController.PostUser(new User());
             var responseResult = response.Result;
@@ -188,7 +188,7 @@ namespace InpatientTherapySchedulingProgramTests
         [TestMethod]
         public async Task ExistingUsernamePostUserReturnsConflictResponse()
         {
-            _fakeService.Setup(s => s.AddUser(It.IsAny<User>())).ThrowsAsync(new UsernameAlreadyExistsException());
+            _fakeService.Setup(s => s.AddUser(It.IsAny<User>())).ThrowsAsync(new UsernameAlreadyExistException());
 
             var response = await _testController.PostUser(new User());
             var responseResult = response.Result;
