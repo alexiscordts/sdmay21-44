@@ -90,7 +90,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
                 throw;
             }
 
-            return CreatedAtAction("GetTherapistActivity", new { id = therapistActivity.Name }, therapistActivity);
+            return CreatedAtAction("GetTherapistActivity", new { id = therapistActivity.ActivityName }, therapistActivity);
         }
 
         // DELETE: api/TherapistActivity/5
@@ -103,12 +103,12 @@ namespace InpatientTherapySchedulingProgram.Controllers
             {
                 therapistActivity = await _service.DeleteTherapistActivity(name);
             }
-            catch(DbUpdateException)
+            catch (DbUpdateException)
             {
                 throw;
             }
 
-            if(therapistActivity == null)
+            if (therapistActivity == null)
             {
                 return NotFound();
             }

@@ -14,11 +14,11 @@ namespace InpatientTherapySchedulingProgram.Models
         }
 
         [Key]
-        [Column("name")]
+        [Column("activity_name")]
         [StringLength(255)]
-        public string Name { get; set; }
+        public string ActivityName { get; set; }
 
-        [InverseProperty("ActivityNavigation")]
+        [InverseProperty("ActivityNameNavigation")]
         public virtual ICollection<PatientEvent> PatientEvent { get; set; }
     }
 }

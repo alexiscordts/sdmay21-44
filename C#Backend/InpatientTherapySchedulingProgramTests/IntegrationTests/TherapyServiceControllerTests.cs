@@ -40,7 +40,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
                 var newTherapy = ModelFakes.TherapyFake.Generate();
                 _testTherapies.Add(ObjectExtensions.Copy(newTherapy));
                 _testAdls.Add(newTherapy.Adl);
-                _testTypes.Add(newTherapy.Type);
+                _testTypes.Add(newTherapy.TherapyType);
                 _testContext.Add(newTherapy);
                 _testContext.SaveChanges();
             }
@@ -322,7 +322,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         }
 
         [TestMethod]
-        public async Task ValidPostTherapyCorrectlyAddsTherapy()
+        public async Task ValidPostTherapyCorrectlyAddsTherapyToDatabase()
         {
             var newTherapy = ModelFakes.TherapyFake.Generate();
 
@@ -415,6 +415,17 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
             var therapy = responseResult.Value;
 
             therapy.Should().Be(_testTherapies[0]);
+        }
+
+        [TestMethod]
+        public async Task ValidDeleteTherapyCorrectlyRemovesTherapyFromDatabase()
+        {
+            await _testController.DeleteTherapy(_testTherapies[0].Adl);
+
+            var response = await _testController.GetTherapy(_testTherapies[0].Adl);
+            var responseResult = response.Result;
+
+            responseResult.Should().BeOfType<NotFoundResult>();
         }
 
         [TestMethod]

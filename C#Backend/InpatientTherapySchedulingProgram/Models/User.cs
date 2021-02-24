@@ -18,8 +18,8 @@ namespace InpatientTherapySchedulingProgram.Models
         }
 
         [Key]
-        [Column("uid")]
-        public int Uid { get; set; }
+        [Column("user_id")]
+        public int UserId { get; set; }
         [Column("first_name")]
         [StringLength(255)]
         public string FirstName { get; set; }
@@ -44,9 +44,9 @@ namespace InpatientTherapySchedulingProgram.Models
 
         [InverseProperty("Therapist")]
         public virtual ICollection<Appointment> Appointment { get; set; }
-        [InverseProperty("U")]
+        [InverseProperty("User")]
         public virtual ICollection<HoursWorked> HoursWorked { get; set; }
-        [InverseProperty("IdNavigation")]
+        [InverseProperty("User")]
         public virtual ICollection<Permission> Permission { get; set; }
         [InverseProperty("Therapist")]
         public virtual ICollection<TherapistEvent> TherapistEvent { get; set; }
@@ -68,8 +68,8 @@ namespace InpatientTherapySchedulingProgram.Models
                 return true;
             }
 
-            return this.Uid == user.Uid && this.FirstName == user.FirstName && this.MiddleName == user.MiddleName &&
-                this.LastName == user.LastName && this.Username == user.Username;
+            return this.UserId == user.UserId && this.FirstName.Equals(user.FirstName) && this.MiddleName.Equals(user.MiddleName) &&
+                this.LastName.Equals(user.LastName) && this.Username.Equals(user.Username);
         }
 
         public static bool operator ==(User lhs, User rhs)

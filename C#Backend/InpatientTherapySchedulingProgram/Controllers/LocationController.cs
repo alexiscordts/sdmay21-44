@@ -47,7 +47,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutLocation(int id, Location location)
         {
-            if (id != location.Lid)
+            if (id != location.LocationId)
             {
                 return BadRequest();
             }
@@ -86,7 +86,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
             }
             catch (DbUpdateException)
             {
-                if (LocationExists(location.Lid))
+                if (LocationExists(location.LocationId))
                 {
                     return Conflict();
                 }
@@ -96,7 +96,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
                 }
             }
 
-            return CreatedAtAction("GetLocation", new { id = location.Lid }, location);
+            return CreatedAtAction("GetLocation", new { id = location.LocationId }, location);
         }
 
         // DELETE: api/Location/5
@@ -117,7 +117,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
 
         private bool LocationExists(int id)
         {
-            return _context.Location.Any(e => e.Lid == id);
+            return _context.Location.Any(e => e.LocationId == id);
         }
     }
 }

@@ -37,7 +37,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
                 var therapy = ModelFakes.TherapyFake.Generate();
                 _testTherapies.Add(therapy);
                 _testAdls.Add(therapy.Adl);
-                _testTypes.Add(therapy.Type);
+                _testTypes.Add(therapy.TherapyType);
             }
 
             _testTypes = _testTypes.Distinct().ToList();

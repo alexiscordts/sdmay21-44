@@ -66,7 +66,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         [TestMethod]
         public async Task ValidGetTherapistActivityByNameReturnsOkResponse()
         {
-            var response = await _testController.GetTherapistActivity(_testTherapistActivities[0].Name);
+            var response = await _testController.GetTherapistActivity(_testTherapistActivities[0].ActivityName);
 
             response.Result.Should().BeOfType<OkObjectResult>();
         }
@@ -74,7 +74,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         [TestMethod]
         public async Task ValidGetTherapistActivityByNameReturnsCorrectType()
         {
-            var response = await _testController.GetTherapistActivity(_testTherapistActivities[0].Name);
+            var response = await _testController.GetTherapistActivity(_testTherapistActivities[0].ActivityName);
             var responseResult = response.Result as OkObjectResult;
 
             responseResult.Value.Should().BeOfType<TherapistActivity>();
@@ -93,7 +93,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         [TestMethod]
         public async Task ValidPutTherapistActivityReturnsNoContentResponse()
         {
-            var response = await _testController.PutTherapistActivity(_testTherapistActivities[0].Name, _testTherapistActivities[0]);
+            var response = await _testController.PutTherapistActivity(_testTherapistActivities[0].ActivityName, _testTherapistActivities[0]);
 
             response.Should().BeOfType<NoContentResult>();
         }
@@ -123,7 +123,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         {
             _fakeService.Setup(s => s.UpdateTherapistActivity(It.IsAny<string>(), It.IsAny<TherapistActivity>())).ThrowsAsync(new DbUpdateConcurrencyException());
 
-            await _testController.Invoking(c => c.PutTherapistActivity(_testTherapistActivities[0].Name, _testTherapistActivities[0])).Should().ThrowAsync<DbUpdateConcurrencyException>();
+            await _testController.Invoking(c => c.PutTherapistActivity(_testTherapistActivities[0].ActivityName, _testTherapistActivities[0])).Should().ThrowAsync<DbUpdateConcurrencyException>();
         }
 
         [TestMethod]
@@ -153,7 +153,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
             _fakeService.Setup(s => s.AddTherapistActivity(It.IsAny<TherapistActivity>())).ThrowsAsync(new TherapistActivityAlreadyExistsException());
 
             var newTherapistActivity = ModelFakes.TherapistActivityFake.Generate();
-            newTherapistActivity.Name = _testTherapistActivities[0].Name;
+            newTherapistActivity.ActivityName = _testTherapistActivities[0].ActivityName;
 
             var response = await _testController.PostTherapistActivity(newTherapistActivity);
 
@@ -173,7 +173,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         [TestMethod]
         public async Task ValidDeleteTherapistActivityReturnsOkResponse()
         {
-            var response = await _testController.DeleteTherapistActivity(_testTherapistActivities[0].Name);
+            var response = await _testController.DeleteTherapistActivity(_testTherapistActivities[0].ActivityName);
 
             response.Result.Should().BeOfType<OkObjectResult>();
         }
@@ -181,7 +181,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         [TestMethod]
         public async Task ValidDeleteTherapistActivityReturnsCorrectType()
         {
-            var response = await _testController.DeleteTherapistActivity(_testTherapistActivities[0].Name);
+            var response = await _testController.DeleteTherapistActivity(_testTherapistActivities[0].ActivityName);
             var responseResult = response.Result as OkObjectResult;
 
             responseResult.Value.Should().BeOfType<TherapistActivity>();
@@ -202,7 +202,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         {
             _fakeService.Setup(s => s.DeleteTherapistActivity(It.IsAny<string>())).ThrowsAsync(new DbUpdateException());
 
-            await _testController.Invoking(c => c.DeleteTherapistActivity(_testTherapistActivities[0].Name)).Should().ThrowAsync<DbUpdateException>();
+            await _testController.Invoking(c => c.DeleteTherapistActivity(_testTherapistActivities[0].ActivityName)).Should().ThrowAsync<DbUpdateException>();
         }
     }
 }

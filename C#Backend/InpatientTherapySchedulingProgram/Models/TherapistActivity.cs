@@ -14,9 +14,9 @@ namespace InpatientTherapySchedulingProgram.Models
         }
 
         [Key]
-        [Column("name")]
+        [Column("activity_name")]
         [StringLength(255)]
-        public string Name { get; set; }
+        public string ActivityName { get; set; }
         [Column("isProductive")]
         public bool? IsProductive { get; set; }
 
@@ -42,10 +42,11 @@ namespace InpatientTherapySchedulingProgram.Models
                 return false;
             }
 
-            return (this.Name == therapistActivity.Name) && (this.IsProductive == therapistActivity.IsProductive);
+            return (this.ActivityName == therapistActivity.ActivityName) && (this.IsProductive == therapistActivity.IsProductive);
         }
 
-        [InverseProperty("ActivityNavigation")]
+
+        [InverseProperty("ActivityNameNavigation")]
         public virtual ICollection<TherapistEvent> TherapistEvent { get; set; }
     }
 }

@@ -71,7 +71,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task GetUserByUserIdReturnsCorrectType()
         {
-            var returnUser = await _testUserService.GetUserById(_testUsers[0].Uid);
+            var returnUser = await _testUserService.GetUserById(_testUsers[0].UserId);
 
             returnUser.Should().BeOfType<User>();
         }
@@ -79,7 +79,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task GetUserByUserIdReturnsCorrectUser()
         {
-            var returnUser = await _testUserService.GetUserById(_testUsers[0].Uid);
+            var returnUser = await _testUserService.GetUserById(_testUsers[0].UserId);
 
             returnUser.Should().Be(_testUsers[0]);
         }
@@ -145,7 +145,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
 
             await _testUserService.AddUser(newUser);
 
-            var returnUser = await _testUserService.GetUserById(newUser.Uid);
+            var returnUser = await _testUserService.GetUserById(newUser.UserId);
 
             returnUser.Should().Be(newUser);
         }
@@ -153,9 +153,9 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task AddUserWithExistingIdThrowsError()
         {
-            int existingId = _testUsers[0].Uid;
+            int existingId = _testUsers[0].UserId;
             var newUser = ModelFakes.UserFake.Generate();
-            newUser.Uid = existingId;
+            newUser.UserId = existingId;
 
             await _testUserService.Invoking(s => s.AddUser(newUser)).Should().ThrowAsync<UserIdAlreadyExistException>();
         }
@@ -173,7 +173,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task DeleteUserDecrementsCount()
         {
-            await _testUserService.DeleteUser(_testUsers[0].Uid);
+            await _testUserService.DeleteUser(_testUsers[0].UserId);
 
             var allUsers = await _testUserService.GetAllUsers();
             List<User> listOfUsers = (List<User>)allUsers;
@@ -184,7 +184,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task DeleteUserRemovesUserFromDatabase()
         {
-            await _testUserService.DeleteUser(_testUsers[0].Uid);
+            await _testUserService.DeleteUser(_testUsers[0].UserId);
 
             var allUsers = await _testUserService.GetAllUsers();
             List<User> listOfUsers = (List<User>)allUsers;
@@ -195,7 +195,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task DeleteUserReturnsCorrectUser()
         {
-            var returnUser = await _testUserService.DeleteUser(_testUsers[0].Uid);
+            var returnUser = await _testUserService.DeleteUser(_testUsers[0].UserId);
 
             bool isEqual = returnUser.Equals(_testUsers[0]);
 
@@ -212,7 +212,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task UpdateUserReturnsCorrectType()
         {
-            var returnUser = await _testUserService.UpdateUser(_testUsers[0].Uid, _testUsers[0]);
+            var returnUser = await _testUserService.UpdateUser(_testUsers[0].UserId, _testUsers[0]);
 
             returnUser.Should().BeOfType<User>();
         }
@@ -220,7 +220,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task UpdateUserReturnsCorrectUser()
         {
-            var returnUser = await _testUserService.UpdateUser(_testUsers[0].Uid, _testUsers[0]);
+            var returnUser = await _testUserService.UpdateUser(_testUsers[0].UserId, _testUsers[0]);
 
             returnUser.Should().Be(_testUsers[0]);
         }
@@ -231,9 +231,10 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
             var newUsername = ModelFakes.UserFake.Generate().Username;
             _testUsers[0].Username = newUsername;
 
-            await _testUserService.UpdateUser(_testUsers[0].Uid, _testUsers[0]);
 
-            var returnUser = await _testUserService.GetUserById(_testUsers[0].Uid);
+            await _testUserService.UpdateUser(_testUsers[0].UserId, _testUsers[0]);
+
+            var returnUser = await _testUserService.GetUserById(_testUsers[0].UserId);
 
             returnUser.Username.Should().Be(newUsername);
         }
@@ -241,7 +242,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task UpdateUserWithNonMatchingIdsThrowsError()
         {
-            await _testUserService.Invoking(s => s.UpdateUser(_testUsers[1].Uid, _testUsers[0])).Should().ThrowAsync<UserIdsDoNotMatchException>();
+            await _testUserService.Invoking(s => s.UpdateUser(_testUsers[1].UserId, _testUsers[0])).Should().ThrowAsync<UserIdsDoNotMatchException>();
         }
 
         [TestMethod]
@@ -249,7 +250,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         {
             var fakeUser = ModelFakes.UserFake.Generate();
 
-            await _testUserService.Invoking(s => s.UpdateUser(fakeUser.Uid, fakeUser)).Should().ThrowAsync<UserDoesNotExistException>();
+            await _testUserService.Invoking(s => s.UpdateUser(fakeUser.UserId, fakeUser)).Should().ThrowAsync<UserDoesNotExistException>();
         }
     }
 }

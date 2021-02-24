@@ -86,7 +86,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         [TestMethod]
         public async Task ValidGetUserByIdReturnsOkResponse()
         {
-            var response = await _testController.GetUser(_testUsers[0].Uid);
+            var response = await _testController.GetUser(_testUsers[0].UserId);
             var responseResult = response.Result;
 
             responseResult.Should().BeOfType<OkObjectResult>();
@@ -95,7 +95,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         [TestMethod]
         public async Task ValidGetUserByIdReturnsCorrectType()
         {
-            var response = await _testController.GetUser(_testUsers[0].Uid);
+            var response = await _testController.GetUser(_testUsers[0].UserId);
             var responseResult = response.Result as OkObjectResult;
             var user = responseResult.Value;
 
@@ -105,7 +105,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         [TestMethod]
         public async Task ValidGetUserByIdReturnsCorrectUser()
         {
-            var response = await _testController.GetUser(_testUsers[0].Uid);
+            var response = await _testController.GetUser(_testUsers[0].UserId);
             var responseResult = response.Result as OkObjectResult;
             var user = responseResult.Value;
 
@@ -162,7 +162,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         [TestMethod]
         public async Task ValidPutUserReturnsNoContentResponse()
         {
-            var response = await _testController.PutUser(_testUsers[0].Uid, _testUsers[0]);
+            var response = await _testController.PutUser(_testUsers[0].UserId, _testUsers[0]);
 
             response.Should().BeOfType<NoContentResult>();
         }
@@ -174,9 +174,9 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
             var newUsername = ModelFakes.UserFake.Generate().Username;
             _testUsers[0].Username = newUsername;
 
-            await _testController.PutUser(_testUsers[0].Uid, _testUsers[0]);
+            await _testController.PutUser(_testUsers[0].UserId, _testUsers[0]);
 
-            var response = await _testController.GetUser(_testUsers[0].Uid);
+            var response = await _testController.GetUser(_testUsers[0].UserId);
             var responseResult = response.Result as OkObjectResult;
             User user = (User)responseResult.Value;
 
@@ -197,7 +197,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         public async Task NonExistingPutUserShouldReturnBadRequest()
         {
             var fakeUser = new User();
-            fakeUser.Uid = -1;
+            fakeUser.UserId = -1;
 
             var response = await _testController.PutUser(-1, fakeUser);
 
@@ -220,7 +220,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
             var newUser = ModelFakes.UserFake.Generate();
             await _testController.PostUser(newUser);
 
-            var response = await _testController.GetUser(newUser.Uid);
+            var response = await _testController.GetUser(newUser.UserId);
             var responseResult = response.Result as OkObjectResult;
             var user = responseResult.Value;
 
@@ -231,7 +231,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         public async Task ExistingUserIdPostUserReturnsConflict()
         {
             var newUser = ModelFakes.UserFake.Generate();
-            newUser.Uid = _testUsers[0].Uid;
+            newUser.UserId = _testUsers[0].UserId;
 
             var response = await _testController.PostUser(newUser);
             var responseResult = response.Result;
@@ -243,11 +243,11 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         public async Task ExistingUserIdPostUserDoesNotAddUser()
         {
             var newUser = ModelFakes.UserFake.Generate();
-            newUser.Uid = _testUsers[0].Uid;
+            newUser.UserId = _testUsers[0].UserId;
             
             await _testController.PostUser(newUser);
 
-            var getResponse = await _testController.GetUser(newUser.Uid);
+            var getResponse = await _testController.GetUser(newUser.UserId);
             var getResponseResult = getResponse.Result as OkObjectResult;
             var getUser = getResponseResult.Value;
 
@@ -284,7 +284,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         [TestMethod]
         public async Task ValidDeleteUserReturnsOkResponse()
         {
-            var response = await _testController.DeleteUser(_testUsers[0].Uid);
+            var response = await _testController.DeleteUser(_testUsers[0].UserId);
             var responseResult = response.Result;
 
             responseResult.Should().BeOfType<OkObjectResult>();
@@ -293,7 +293,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         [TestMethod]
         public async Task ValidDeleteUserReturnsCorrectType()
         {
-            var response = await _testController.DeleteUser(_testUsers[0].Uid);
+            var response = await _testController.DeleteUser(_testUsers[0].UserId);
             var responseResult = response.Result as OkObjectResult;
             var user = responseResult.Value; 
 
@@ -303,7 +303,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         [TestMethod]
         public async Task ValidDeleteUserReturnsCorrectUser()
         {
-            var response = await _testController.DeleteUser(_testUsers[0].Uid);
+            var response = await _testController.DeleteUser(_testUsers[0].UserId);
             var responseResult = response.Result as OkObjectResult;
             var user = responseResult.Value;
 
@@ -313,9 +313,9 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         [TestMethod]
         public async Task ValidDeleteUserCorrectlyRemovesUser()
         {
-            await _testController.DeleteUser(_testUsers[0].Uid);
+            await _testController.DeleteUser(_testUsers[0].UserId);
 
-            var response = await _testController.GetUser(_testUsers[0].Uid);
+            var response = await _testController.GetUser(_testUsers[0].UserId);
             var responseResult = response.Result;
 
             responseResult.Should().BeOfType<NotFoundResult>();

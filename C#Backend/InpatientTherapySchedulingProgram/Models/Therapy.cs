@@ -17,9 +17,9 @@ namespace InpatientTherapySchedulingProgram.Models
         [Column("adl")]
         [StringLength(255)]
         public string Adl { get; set; }
-        [Column("type")]
+        [Column("therapy_type")]
         [StringLength(255)]
-        public string Type { get; set; }
+        public string TherapyType { get; set; }
         [Column("abbreviation")]
         [StringLength(255)]
         public string Abbreviation { get; set; }
@@ -46,7 +46,7 @@ namespace InpatientTherapySchedulingProgram.Models
                 return false;
             }
 
-            return (this.Adl == therapy.Adl) && (this.Abbreviation == therapy.Abbreviation) && (this.Type == therapy.Type);
+            return (this.Adl == therapy.Adl) && (this.Abbreviation == therapy.Abbreviation) && (this.TherapyType == therapy.TherapyType);
         }
 
         public static bool operator ==(Therapy lhs, Therapy rhs)

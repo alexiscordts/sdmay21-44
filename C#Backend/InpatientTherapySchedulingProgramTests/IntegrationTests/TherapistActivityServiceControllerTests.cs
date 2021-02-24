@@ -86,7 +86,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         [TestMethod]
         public async Task ValidGetTherapistActivityReturnsOkResponse()
         {
-            var response = await _testController.GetTherapistActivity(_testTherapistActivities[0].Name);
+            var response = await _testController.GetTherapistActivity(_testTherapistActivities[0].ActivityName);
             var responseResult = response.Result;
 
             responseResult.Should().BeOfType<OkObjectResult>();
@@ -95,7 +95,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         [TestMethod]
         public async Task ValidGetTherapistActivityReturnsCorrectType()
         {
-            var response = await _testController.GetTherapistActivity(_testTherapistActivities[0].Name);
+            var response = await _testController.GetTherapistActivity(_testTherapistActivities[0].ActivityName);
             var responseResult = response.Result as OkObjectResult;
 
             responseResult.Value.Should().BeOfType<TherapistActivity>();
@@ -104,7 +104,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         [TestMethod]
         public async Task ValidGetTherapistActivityReturnsCorrectTherapistActivity()
         {
-            var response = await _testController.GetTherapistActivity(_testTherapistActivities[0].Name);
+            var response = await _testController.GetTherapistActivity(_testTherapistActivities[0].ActivityName);
             var responseResult = response.Result as OkObjectResult;
 
             responseResult.Value.Should().Be(_testTherapistActivities[0]);
@@ -122,7 +122,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         [TestMethod]
         public async Task ValidPutTherapistActivityReturnsNoContentResponse()
         {
-            var response = await _testController.PutTherapistActivity(_testTherapistActivities[0].Name, _testTherapistActivities[0]);
+            var response = await _testController.PutTherapistActivity(_testTherapistActivities[0].ActivityName, _testTherapistActivities[0]);
 
             response.Should().BeOfType<NoContentResult>();
         }
@@ -133,9 +133,9 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
             var oldIsProductive = _testTherapistActivities[0].IsProductive;
             _testTherapistActivities[0].IsProductive = !oldIsProductive;
 
-            await _testController.PutTherapistActivity(_testTherapistActivities[0].Name, _testTherapistActivities[0]);
+            await _testController.PutTherapistActivity(_testTherapistActivities[0].ActivityName, _testTherapistActivities[0]);
 
-            var response = await _testController.GetTherapistActivity(_testTherapistActivities[0].Name);
+            var response = await _testController.GetTherapistActivity(_testTherapistActivities[0].ActivityName);
             var responseResult = response.Result as OkObjectResult;
             TherapistActivity therapistActivity = (TherapistActivity)responseResult.Value;
 
@@ -156,7 +156,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         {
             var therapistActivity = ModelFakes.TherapistActivityFake.Generate();
 
-            var response = await _testController.PutTherapistActivity(therapistActivity.Name, therapistActivity);
+            var response = await _testController.PutTherapistActivity(therapistActivity.ActivityName, therapistActivity);
 
             response.Should().BeOfType<NotFoundResult>();
         }
@@ -201,7 +201,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
 
             await _testController.PostTherapistActivity(newTherapistActivity);
 
-            var response = await _testController.GetTherapistActivity(newTherapistActivity.Name);
+            var response = await _testController.GetTherapistActivity(newTherapistActivity.ActivityName);
             var responseResult = response.Result as OkObjectResult;
             var therapistActivity = responseResult.Value;
 
@@ -212,7 +212,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         public async Task ExistingTherapistActivityNamePostTherapistActivityReturnsConflictResponse()
         {
             var newTherapistActivity = ModelFakes.TherapistActivityFake.Generate();
-            newTherapistActivity.Name = _testTherapistActivities[0].Name;
+            newTherapistActivity.ActivityName = _testTherapistActivities[0].ActivityName;
 
             var response = await _testController.PostTherapistActivity(newTherapistActivity);
             var responseResult = response.Result;
@@ -225,11 +225,11 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         {
             var newTherapistActivity = ModelFakes.TherapistActivityFake.Generate();
             newTherapistActivity.IsProductive = !_testTherapistActivities[0].IsProductive;
-            newTherapistActivity.Name = _testTherapistActivities[0].Name;
+            newTherapistActivity.ActivityName = _testTherapistActivities[0].ActivityName;
 
             await _testController.PostTherapistActivity(newTherapistActivity);
 
-            var getResponse = await _testController.GetTherapistActivity(newTherapistActivity.Name);
+            var getResponse = await _testController.GetTherapistActivity(newTherapistActivity.ActivityName);
             var getResponseResult = getResponse.Result as OkObjectResult;
             var getTherapistActivity = getResponseResult.Value;
 
@@ -239,7 +239,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         [TestMethod]
         public async Task ValidDeleteTherapistActivityReturnsOkResponse()
         {
-            var response = await _testController.DeleteTherapistActivity(_testTherapistActivities[0].Name);
+            var response = await _testController.DeleteTherapistActivity(_testTherapistActivities[0].ActivityName);
             var responseResult = response.Result;
 
             responseResult.Should().BeOfType<OkObjectResult>();
@@ -248,7 +248,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         [TestMethod]
         public async Task ValidDeleteTherapistActivityReturnsCorrectType()
         {
-            var response = await _testController.DeleteTherapistActivity(_testTherapistActivities[0].Name);
+            var response = await _testController.DeleteTherapistActivity(_testTherapistActivities[0].ActivityName);
             var responseResult = response.Result as OkObjectResult;
 
             responseResult.Value.Should().BeOfType<TherapistActivity>();
@@ -257,7 +257,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         [TestMethod]
         public async Task ValidDeleteTherapistActivityReturnsCorrectThearpistActivity()
         {
-            var response = await _testController.DeleteTherapistActivity(_testTherapistActivities[0].Name);
+            var response = await _testController.DeleteTherapistActivity(_testTherapistActivities[0].ActivityName);
             var responseResult = response.Result as OkObjectResult;
 
             responseResult.Value.Should().Be(_testTherapistActivities[0]);

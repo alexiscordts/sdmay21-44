@@ -20,7 +20,7 @@ namespace InpatientTherapySchedulingProgram.Services
 
         public async Task<TherapistActivity> AddTherapistActivity(TherapistActivity therapistActivity)
         {
-            if(await TherapistActivityExistsByName(therapistActivity.Name))
+            if(await TherapistActivityExistsByName(therapistActivity.ActivityName))
             {
                 throw new TherapistActivityAlreadyExistsException();
             }
@@ -74,7 +74,7 @@ namespace InpatientTherapySchedulingProgram.Services
 
         public async Task<TherapistActivity> UpdateTherapistActivity(string name, TherapistActivity therapistActivity)
         {
-            if(name != therapistActivity.Name)
+            if(name != therapistActivity.ActivityName)
             {
                 throw new TherapistActivityNamesDoNotMatchException();
             }
@@ -85,7 +85,7 @@ namespace InpatientTherapySchedulingProgram.Services
 
             var local = _context.Set<TherapistActivity>()
                 .Local
-                .FirstOrDefault(t => t.Name == name);
+                .FirstOrDefault(t => t.ActivityName == name);
 
             _context.Entry(local).State = EntityState.Detached;
 

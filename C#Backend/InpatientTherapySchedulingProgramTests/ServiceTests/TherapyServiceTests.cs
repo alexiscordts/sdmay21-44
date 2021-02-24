@@ -110,7 +110,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
 
             for(var i = 0; i < _testTherapies.Count; i++)
             {
-                _testListOfTypes.Add(_testTherapies[i].Type);
+                _testListOfTypes.Add(_testTherapies[i].TherapyType);
             }
 
             var allTypes = await _testTherapyService.GetAllTypes();
