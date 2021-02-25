@@ -57,11 +57,11 @@ namespace InpatientTherapySchedulingProgram.Services
 
         public async Task<User> AddUser(User user)
         {
-            if (UserExists(user.UserId))
+            if (await UserExists(user.UserId))
             {
                 throw new UserIdAlreadyExistException();
             }
-            if (UserExists(user.Username))
+            if (await UserExists(user.Username))
             {
                 throw new UsernameAlreadyExistException();
             }
@@ -86,7 +86,7 @@ namespace InpatientTherapySchedulingProgram.Services
             {
                 throw new UserIdsDoNotMatchException();
             }
-            if(!UserExists(id))
+            if(!await UserExists(id))
             {
                 throw new UserDoesNotExistException();
             }
@@ -111,14 +111,14 @@ namespace InpatientTherapySchedulingProgram.Services
             return user;
         }
 
-        private bool UserExists(int id)
+        private async Task<bool> UserExists(int id)
         {
-            return _context.User.Any(u => u.UserId == id);
+            return await _context.User.FindAsync(id) != null;
         }
 
-        private bool UserExists(string username)
+        private async Task<bool> UserExists(string username)
         {
-            return _context.User.Any(u => u.Username == username);
+            return await _context.User.FirstOrDefaultAsync(u => u.Username == username) != null;
         }
     }
 }
