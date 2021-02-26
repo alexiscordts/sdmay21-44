@@ -119,3 +119,7 @@ button.topbtn:hover {
     float: right;
     cursor: pointer;
 }
+
+.hidden {
+    display: none;
+}

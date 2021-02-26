@@ -40,6 +40,7 @@
     display: inline-block;
 }
 
+
 #roomSchedule .therapist    {
     flex-grow: 1;
     min-width: 200px;
@@ -226,4 +227,75 @@
 #roomSchedule .scroll {
     background-color: #00A9D8;
     opacity: 100%;
+}
+
+@media print {
+    #roomSchedule #scheduleContainer {
+      overflow-x: visible;
+      overflow-y: hidden;
+      width: 1100px;
+      max-height: fit-content;
+    }
+
+    #roomSchedule #timeLine    {
+        display: none;
+    }
+
+    .page-break {
+        margin-top: 1rem;
+        display: block;
+        page-break-before: auto;
+      }
+
+      #roomSchedule  #toggle    {
+          display: none;
+      }
+      #roomSchedule #rooms  {
+        overflow-x: auto;
+        width: auto;
+        white-space: nowrap;
+        position: relative;
+        display: block;
+    }
+
+    #roomSchedule .room    {
+        min-width: 100px;
+        width: 100px;
+        height: 100%;
+        text-align: center;
+        border-right: 1px solid #D1D2D4;
+        position: relative;      
+        float: left;
+        display: block;
+    }
+
+    #roomSchedule .therapist    {
+        min-width: 200px;
+        width: 200px;
+        height: 100%;
+        text-align: center;
+        border-right: 1px solid #D1D2D4;
+        position: relative;      
+        float: left;
+        display: block;
+    }
+      
+    .printHours {
+        width: 75px;
+        float: left;
+    }
+
+    #roomSchedule #hourColumn    {
+        display: none;
+    }
+
+  }
+  
+  @page {
+    margin: 10mm;
+  }
+
+.printHours {
+    width: 0px;
+    float: left;
 }

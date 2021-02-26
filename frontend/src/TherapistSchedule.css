@@ -226,3 +226,24 @@
   #therapistSchedule button.editAppointmentButton:hover    {
       cursor: pointer;
   }
+
+  @media print {
+    #therapistSchedule #scheduleContainer {
+      overflow: hidden;
+      max-height: 10000px;
+    }
+
+    #therapistSchedule #timeLine    {
+        display: none;
+    }
+
+    .page-break {
+        margin-top: 1rem;
+        display: block;
+        page-break-before: auto;
+      }
+  }
+  
+  @page {
+    margin: 10mm;
+  }

@@ -102,18 +102,21 @@ class RoomSchedule extends React.Component {
 }
 
 function getRooms() {
-    return ["237", "123", "283", '111', '083', '162', '298', '293', '222', '105', '102', '112', '101', '103', '104', '105', '106'];
+    return ["237", "123", "283", '111', '083', '162', '298', '293', '222', '105', '102', '112', '101', '103', '104', '105', '106', "237", "123", "283", '111', '083', '162', '298', '293', '222', '105', '102', '112', '101', '103', '104', '105', '106'];
 }
 
 function loadRooms()
 {
     var lines = loadLines();
+    var hours = loadHours();
     const rooms = getRooms();
     const roomElements = [];
     var appointments = getAppointments(new Date());
     const tuesday = getAppointmentElements(appointments);
     for (let i = 0; i < rooms.length; i++)
     {
+        if (i % 10 == 0)
+            roomElements.push(<div class="printHours">{hours}</div>);
         if (rooms[i] == "123")
             roomElements.push(
                 <div class="room">

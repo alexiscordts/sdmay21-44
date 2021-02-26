@@ -5,11 +5,13 @@ import TherapistSchedule from "./TherapistSchedule";
 import RoomSchedule from "./RoomSchedule";
 import AllTherapistSchedule from "./AllTherapistSchedule";
 import AddAppointment from "./UserPages/AddAppointment";
+import ReactToPrint from "react-to-print";
 
 class Dashboard extends React.Component {
     constructor(props) {
         super(props);
         this.schedule = (<TherapistSchedule />);
+        this.printSchedule = (<RoomSchedule />);
     }
     //
 
@@ -33,8 +35,11 @@ class Dashboard extends React.Component {
                 </div>
             </div>
             <button class="topbtn" onClick={() => showAddAppointment()}>Add Appointment</button>
-            <button class="topbtn">Print Schedule</button>
-            {this.schedule}
+            <ReactToPrint trigger={() => <button class="topbtn">Print Schedule</button>} 
+            onBeforeGetContent={() => showTimes()}
+            onAfterPrint={() => hideTimes()}
+            content={() => this.schedule} />
+            <div ref={(el) => (this.schedule = el)}>{this.schedule}</div>
         </div>
         <AddAppointment />
     </div>
@@ -44,6 +49,20 @@ class Dashboard extends React.Component {
 
 function showAddAppointment()   {
     document.getElementById("addAppointment").style.display = "block";
+}
+
+function showTimes()   {
+    var x = document.getElementsByClassName("printHours");
+    for(var i=0; i< x.length;i++){
+        x[i].style.width = "75px";
+     }
+}
+
+function hideTimes()   {
+    var x = document.getElementsByClassName("printHours");
+    for(var i=0; i< x.length;i++){
+        x[i].style.width = "0px";
+     }
 }
 
 export default Dashboard;

@@ -102,11 +102,12 @@ class AllTherapistSchedule extends React.Component {
 }
 
 function getRooms() {
-    return ['Spongebob Squarepants', 'Patrick Star', 'Squidward Tentacles', 'Mr. Krabs', 'Mrs. Puff'];
+    return ['Spongebob Squarepants', 'Patrick Star', 'Squidward Tentacles', 'Mr. Krabs', 'Mrs. Puff', 'Spongebob Squarepants', 'Patrick Star', 'Squidward Tentacles', 'Mr. Krabs', 'Mrs. Puff', 'Spongebob Squarepants', 'Patrick Star', 'Squidward Tentacles', 'Mr. Krabs', 'Mrs. Puff'];
 }
 
 function loadRooms()
 {
+    var hours = loadHours();
     var lines = loadLines();
     const rooms = getRooms();
     const roomElements = [];
@@ -114,6 +115,8 @@ function loadRooms()
     const tuesday = getAppointmentElements(appointments);
     for (let i = 0; i < rooms.length; i++)
     {
+        if (i % 5 == 0)
+            roomElements.push(<div class="printHours">{hours}</div>);
         if (i == 3)
             roomElements.push(
                 <div class="therapist">
