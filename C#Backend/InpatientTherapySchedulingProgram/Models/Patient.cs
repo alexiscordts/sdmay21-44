@@ -15,8 +15,8 @@ namespace InpatientTherapySchedulingProgram.Models
         }
 
         [Key]
-        [Column("pid")]
-        public int Pid { get; set; }
+        [Column("patient_id")]
+        public int PatientId { get; set; }
         [Column("first_name")]
         [StringLength(255)]
         public string FirstName { get; set; }
@@ -32,15 +32,16 @@ namespace InpatientTherapySchedulingProgram.Models
         [Column("phone_number")]
         [StringLength(255)]
         public string PhoneNumber { get; set; }
-        [Column("location")]
+        [Column("location_name")]
         [StringLength(255)]
-        public string Location { get; set; }
+        public string LocationName { get; set; }
         [Column("start_date", TypeName = "date")]
         public DateTime? StartDate { get; set; }
-        [Column("PMR_physician")]
+        [Column("pmr_physician")]
         [StringLength(255)]
         public string PmrPhysician { get; set; }
 
+        public virtual Location LocationNameNavigation { get; set; }
         [InverseProperty("Patient")]
         public virtual ICollection<Appointment> Appointment { get; set; }
         [InverseProperty("Patient")]

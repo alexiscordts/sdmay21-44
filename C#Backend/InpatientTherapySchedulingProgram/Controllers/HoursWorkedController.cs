@@ -29,7 +29,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
 
         // GET: api/HoursWorkeds/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<HoursWorked>> GetHoursWorked(DateTime id)
+        public async Task<ActionResult<HoursWorked>> GetHoursWorked(int id)
         {
             var hoursWorked = await _context.HoursWorked.FindAsync(id);
 
@@ -45,9 +45,9 @@ namespace InpatientTherapySchedulingProgram.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutHoursWorked(DateTime id, HoursWorked hoursWorked)
+        public async Task<IActionResult> PutHoursWorked(int id, HoursWorked hoursWorked)
         {
-            if (id != hoursWorked.StartDatetime)
+            if (id != hoursWorked.HoursWorkedId)
             {
                 return BadRequest();
             }
@@ -86,7 +86,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
             }
             catch (DbUpdateException)
             {
-                if (HoursWorkedExists(hoursWorked.StartDatetime))
+                if (HoursWorkedExists(hoursWorked.HoursWorkedId))
                 {
                     return Conflict();
                 }
@@ -96,7 +96,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
                 }
             }
 
-            return CreatedAtAction("GetHoursWorked", new { id = hoursWorked.StartDatetime }, hoursWorked);
+            return CreatedAtAction("GetHoursWorked", new { id = hoursWorked.HoursWorkedId }, hoursWorked);
         }
 
         // DELETE: api/HoursWorkeds/5
@@ -115,9 +115,9 @@ namespace InpatientTherapySchedulingProgram.Controllers
             return hoursWorked;
         }
 
-        private bool HoursWorkedExists(DateTime id)
+        private bool HoursWorkedExists(int id)
         {
-            return _context.HoursWorked.Any(e => e.StartDatetime == id);
+            return _context.HoursWorked.Any(e => e.HoursWorkedId == id);
         }
     }
 }
