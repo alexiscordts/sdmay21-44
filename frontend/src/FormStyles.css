@@ -95,3 +95,11 @@
     url(./UnityPointHealthSources/Fonts//Adelle/Adelle_Semibold.otf)
     format("otf");
 }
+
+#delete	{
+	background-color: #df0000;
+}
+
+#delete:hover	{
+	opacity: 25%;
+}

@@ -38,20 +38,35 @@
 }
 
 #therapistSchedule .hour   {
-    height: 70px;
+    height: 50px;
     background-color: white;
-    line-height: 40px;
+    line-height: 25px;
     vertical-align: middle;
     border-bottom: 1px solid #D1D2D4;
     border-top: 1px solid white;
 }
 
 #therapistSchedule .halfHour   {
-    height: 35px;
+    height: 25px;
     background-color: white;
-    line-height: 70px;
     vertical-align: middle;
     border-bottom: 1px solid #D1D2D4;
+    cursor: pointer;
+}
+
+#therapistSchedule .halfHour .hide {
+    background-color: #D1D2D4;
+    line-height: 25px;
+    height: 100%;
+    width: 100%;
+    line-height: 25px;
+    font-size: 20px;
+    transition: 0.2s;
+    opacity: 0;
+}
+
+#therapistSchedule .halfHour .hide:hover   {
+    opacity: 1;
 }
 
 #therapistSchedule ::-webkit-scrollbar {
@@ -100,7 +115,6 @@
 
   #therapistSchedule .appointment:hover    {
       height: auto;
-      cursor: pointer;
   }
 
   #therapistSchedule .name {
@@ -198,4 +212,17 @@
     #therapistSchedule #scheduleContainer  {
         max-height: calc(100vh - 200px);
     }
+  }
+
+  #therapistSchedule .editAppointmentButton    {
+    font-size: 0.8em;
+    margin: 10px;
+    display: none;
+    white-space: normal;
+    border: none;
+    float: left;
+  }
+
+  #therapistSchedule button.editAppointmentButton:hover    {
+      cursor: pointer;
   }

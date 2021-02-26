@@ -152,7 +152,7 @@ function loadLines()
     for (var i = 0; i < 30; i++)
     {
         items.push(
-            <div class="halfHour"></div>
+            <div onClick={() => showAddAppointment()} class="halfHour"><div class="hide">+</div></div>
         );
     }
     return items;
@@ -194,7 +194,7 @@ function getPositionForTimeLine()
     var d = new Date();
     var hour = d.getHours() - 5;
     var minute = d.getMinutes();
-    return hour * 42 + minute * 42/60 + 36;
+    return hour * 52 + minute * 52/60;
 }
 
 
@@ -224,20 +224,20 @@ function getAppointmentElements(appointments)   {
     appointments.forEach(appointment => {
         var start = appointment.date.getHours();
         var end = appointment.date.getHours() + appointment.length;
-        var position = (start - 5) * 42 + appointment.date.getMinutes() * 42/60 + 36;
+        var position = (start - 5) * 52 + appointment.date.getMinutes() * 52/60 + 36;
         var style;
         if (appointment.type == "1")
             style = {
                 top: position,
-                height: appointment.length * 42, 
-                minHeight: appointment.length * 42,
+                height: appointment.length * 52, 
+                minHeight: appointment.length * 52,
                 backgroundColor: "#EA7600"
             };
         else
         style = {
             top: position,
-            height: appointment.length * 42, 
-            minHeight: appointment.length * 42
+            height: appointment.length * 52, 
+            minHeight: appointment.length * 52
         };
         var startAMOrPM = "AM";
         var endAMOrPM = "AM";
@@ -254,11 +254,14 @@ function getAppointmentElements(appointments)   {
         var num = numAppointments.toString();
         appointmentElements.push(
             <div class="appointment" style={style} id={id} onClick={() => seeNotes(num)}>
-                <div class="hidden" id={id + "Height"}>{appointment.length * 42}px</div>
+                <div class="hidden" id={id + "Height"}>{appointment.length * 52}px</div>
                 <div class="name">{appointment.title}</div>
                 <div class="time">Type {appointment.type}</div>
                 <div class="time">Room {appointment.room}</div>
                 <div class="notes" id={"notes" + num}>Notes: {appointment.notes}</div>
+                <button class="editAppointmentButton" id={"editAppointmentButton" + num}>Edit</button>
+                <button class="editAppointmentButton" id={"copyAppointmentButton" + num}>Copy</button>
+                <button class="editAppointmentButton" id={"deleteAppointmentButton" + num}>Delete</button>             
             </div>
         );
         numAppointments++;
@@ -268,7 +271,10 @@ function getAppointmentElements(appointments)   {
 
 var idExpanded = null;
 function seeNotes(id)   {
-    var notes = "notes" + id;
+    let notes = "notes" + id;
+    let edit = "editAppointmentButton" + id;
+    let copy = "copyAppointmentButton" + id;
+    let deleteApp = "deleteAppointmentButton" + id;
     id = "appointment" + id;
     if (document.getElementById(id).style.height != "auto" && idExpanded == null)
     {
@@ -276,6 +282,9 @@ function seeNotes(id)   {
         document.getElementById(id).style.width = "200%";
         document.getElementById(id).style.zIndex = 4;
         document.getElementById(notes).style.display = "block";
+        document.getElementById(edit).style.display = "block";
+        document.getElementById(copy).style.display = "block";
+        document.getElementById(deleteApp).style.display = "block";
         idExpanded = id;
     }
     else if (idExpanded == id)
@@ -284,6 +293,9 @@ function seeNotes(id)   {
         document.getElementById(id).style.width = "100%";
         document.getElementById(id).style.zIndex = 2;
         document.getElementById(notes).style.display = "none";
+        document.getElementById(edit).style.display = "none";
+        document.getElementById(copy).style.display = "none";
+        document.getElementById(deleteApp).style.display = "none";
         idExpanded = null;
     }
 }
@@ -312,6 +324,10 @@ function leftScroll()
 function rightScroll()   
 {
     document.getElementById('rooms').scrollLeft += 101;
+}
+
+function showAddAppointment()   {
+    document.getElementById("addAppointment").style.display = "block";
 }
 
 export default RoomSchedule;
