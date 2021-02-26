@@ -24,7 +24,16 @@ class AddAppointment extends React.Component {
         </div>
         <div class="form-style">
         <div class="form-style-heading"> Add Appointment</div>
+
         <form action="" method="post">
+            <label for="patient"><span>Patient <span class="required">*</span></span>
+            <select class="select-field" name="patient">
+                <option value="sponge">Spongebob Squarepants</option>
+                <option value="squid">Squidward Tentacles</option>
+                <option value="pat">Patrick Star</option>
+            </select>
+            </label>
+
             <label for="therapist"><span>Therapist <span class="required">*</span></span>
             <select class="select-field" name="therapist">
                 <option value="sponge">Spongebob Squarepants</option>

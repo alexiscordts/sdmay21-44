@@ -194,7 +194,7 @@ function getPositionForTimeLine()
     var d = new Date();
     var hour = d.getHours() - 5;
     var minute = d.getMinutes();
-    return hour * 52 + minute * 52/60;
+    return hour * 52 + minute * 52/60 + 36;
 }
 
 
