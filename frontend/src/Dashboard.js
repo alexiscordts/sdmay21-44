@@ -11,7 +11,7 @@ class Dashboard extends React.Component {
     constructor(props) {
         super(props);
         this.schedule = (<TherapistSchedule />);
-        this.printSchedule = (<RoomSchedule />);
+        this.scheduleHeader = "My Schedule";
     }
     //
 
@@ -27,13 +27,13 @@ class Dashboard extends React.Component {
                     <i class="arrow down"></i>
                 </button>
                 <div class="dropdown-content">
-                <a href="#" onClick={() => {
-                    this.schedule = (<TherapistSchedule />);}}>My schedule</a>
-                    <a href="#" onClick={() => {this.schedule = (<AllTherapistSchedule />);}}>By therapist</a>
-                    <a href="#" onClick={() => {this.schedule = (<RoomSchedule />);}}>By room</a>
+                <a href="#" onClick={() => {this.schedule = (<TherapistSchedule />); this.scheduleHeader = "My Schedule";}}>My schedule</a>
+                <a href="#" onClick={() => {this.schedule = (<AllTherapistSchedule />); this.scheduleHeader = "Therapist Schedule";}}>By therapist</a>
+                <a href="#" onClick={() => {this.schedule = (<RoomSchedule />); this.scheduleHeader = "Room Schedule";}}>By room</a>
                     
                 </div>
             </div>
+            <div id="scheduleTitle">{this.scheduleHeader}</div>
             <button class="topbtn" onClick={() => showAddAppointment()}>Add Appointment</button>
             <ReactToPrint trigger={() => <button class="topbtn">Print Schedule</button>} 
             onBeforeGetContent={() => showTimes()}

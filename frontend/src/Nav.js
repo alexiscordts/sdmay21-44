@@ -24,6 +24,7 @@ class Dashboard extends React.Component {
             ☰
           </div>
           <img src="https://www.unitypoint.org/images/unitypoint/UnityPointHealthLogo.svg" />
+          <div id="appName"> - &nbsp;Therapy Scheduler</div>
           <div id="signout">
             <img src={require("./Icons/icons8-exit-48.png")} />
           </div>

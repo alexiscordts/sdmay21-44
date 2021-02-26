@@ -41,6 +41,7 @@ body    {
 #topNav img   {
     height: 40px;
     margin-top: 5px;
+    float: left;
 }
 
 #sideNav    {
@@ -109,4 +110,20 @@ body    {
 
 #signout img:hover  {
     cursor: pointer;
+}
+
+@font-face {
+    font-family: Adelle;
+    src: url(./UnityPointHealthSources/Fonts/Adelle/Adelle_Reg.otf);
+  }
+
+#appName    {
+    width: 170px;
+    float: left;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 40px;
+    padding-top: 8px;
+    font-family: Adelle, Arial, Helvetica, sans-serif;
+    color:rgb(243, 243, 243);
 }
