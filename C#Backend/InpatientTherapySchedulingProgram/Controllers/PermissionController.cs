@@ -31,9 +31,9 @@ namespace InpatientTherapySchedulingProgram.Controllers
 
         // GET: api/Permission/5
         [HttpGet("{userId}")]
-        public async Task<ActionResult<string>> GetPermission(int userId)
+        public async Task<ActionResult<Permission>> GetPermission(int userId)
         {
-            var permission = await _permissionService.GetRoleOfUser(userId);
+            var permission = await _permissionService.GetPermissionByUserId(userId);
 
             if (permission == null)
             {
@@ -88,7 +88,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
                 throw;
             }
 
-            if(permission is null)
+            if (permission is null)
             {
                 return NotFound(); 
             }

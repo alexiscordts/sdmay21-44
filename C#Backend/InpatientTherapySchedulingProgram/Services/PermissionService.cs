@@ -33,7 +33,7 @@ namespace InpatientTherapySchedulingProgram.Services
             }
             if (!await UserExists(permission.UserId))
             {
-                throw new UserDoesNotExistException("User with id: " + permission.UserId + " does not exists");
+                throw new UserDoesNotExistException("User with id: " + permission.UserId + " does not exist");
             }
             if (await PermissionExists(permission))
             {
@@ -56,7 +56,7 @@ namespace InpatientTherapySchedulingProgram.Services
 
         public async Task<Permission> DeletePermission(int userId)
         {
-            var permission = await _context.Permission.FindAsync(userId);
+            var permission = await _context.Permission.FirstOrDefaultAsync(p => p.UserId == userId);
 
             if (permission == null)
             {
@@ -82,15 +82,14 @@ namespace InpatientTherapySchedulingProgram.Services
             return await _context.Permission.ToListAsync();
         }
 
-        public async Task<string> GetRoleOfUser(int userId)
+        public async Task<Permission> GetPermissionByUserId(int userId)
         {
-            return await _context.Permission.Where(p => p.UserId == userId)
-                .Select(p => p.Role).SingleOrDefaultAsync();
+            return await _context.Permission.FirstOrDefaultAsync(p => p.UserId == userId);
         }
 
-        private async Task<bool> UserExists(int id)
+        private async Task<bool> UserExists(int userId)
         {
-            return await _context.User.FindAsync(id) != null;
+            return await _context.User.FindAsync(userId) != null;
         }
 
         private async Task<bool> PermissionExists(Permission permission)
