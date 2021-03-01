@@ -51,7 +51,7 @@ class ViewTherapyTypes extends React.Component {
           <button
             class="iconAddUserButton"
             onClick={() => {
-              window.location.href = "/add_location";
+              window.location.href = "/add_therapy_types";
             }}
           >
             <img
