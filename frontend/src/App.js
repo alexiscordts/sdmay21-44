@@ -21,6 +21,10 @@ import EditLocation from "./EditLocation";
 import AddRoom from "./Rooms/AddRoom";
 import ViewRoom from "./Rooms/ViewRooms";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import AddTherapyTypes from "./TherapyTypes/AddTherapyTypes";
+import EditTherapyTypes from "./TherapyTypes/EditTherapyTypes";
+import ViewTherapyTypes from "./TherapyTypes/ViewTherapyTypes";
+
 
 class App extends React.Component {
   constructor(props) {
@@ -49,13 +53,16 @@ class App extends React.Component {
           <Route path="/add_nurse" component={AddNurse} />
           <Route path="/add_patient" component={AddPatient} />
           <Route path="/add_therapist" component={AddTherapist} />
+          <Route path="/add_therapy_types" component={AddTherapyTypes} />
           <Route path="/edit_admin" component={EditAdmin} />
           <Route path="/edit_nurse" component={EditNurse} />
           <Route path="/edit_therapist" component={EditTherapist} />
+          <Route path="/edit_therapy_types" component={EditTherapyTypes} />
           <Route path="/view_admin" component={ViewAdmin} />
           <Route path="/view_nurse" component={ViewNurse} />
           <Route path="/view_patient" component={ViewPatient} />
           <Route path="/view_therapist" component={ViewTherapist} />
+          <Route path="/view_therapy_types" component={ViewTherapyTypes} />
           <Route path="/settings" component={Settings} />
           <Route path="/manage_locations" component={ViewLocations} />
           <Route path="/add_location" component={AddLocation} />
