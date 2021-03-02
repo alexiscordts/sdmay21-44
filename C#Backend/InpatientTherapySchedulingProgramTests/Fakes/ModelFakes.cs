@@ -9,11 +9,13 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
 {
     public static class ModelFakes
     {
-        public static Faker<User>UserFake { get; set; }
+        public static Faker<User> UserFake { get; set; }
+        public static Faker<PatientActivity> PatientActivityFake { get; set; }
 
     static ModelFakes()
     {
         BuildUserFakes();
+        BuildPatientActivityFakes();
     }
 
         private static void BuildUserFakes()
@@ -27,6 +29,11 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
             UserFake.RuleFor(m => m.PhoneNumber, r => r.Phone.PhoneNumber());
             UserFake.RuleFor(m => m.Username, r => r.IndexGlobal + r.Person.UserName);
             UserFake.RuleFor(m => m.Password, r => r.Internet.Password());
+        }
+        private static void BuildPatientActivityFakes()
+        {
+            PatientActivityFake = new Faker<PatientActivity>();
+            PatientActivityFake.RuleFor(m => m.Name, r => r.Name.FirstName() + r.UniqueIndex);
         }
     }
     

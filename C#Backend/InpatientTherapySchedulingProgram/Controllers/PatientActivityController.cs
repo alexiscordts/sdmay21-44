@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using InpatientTherapySchedulingProgram.Models;
+using InpatientTherapySchedulingProgram.Services.Interfaces;
+using InpatientTherapySchedulingProgram.Exceptions.PatientActivityExceptions;
 
 namespace InpatientTherapySchedulingProgram.Controllers
 {
@@ -13,25 +15,27 @@ namespace InpatientTherapySchedulingProgram.Controllers
     [ApiController]
     public class PatientActivityController : ControllerBase
     {
-        private readonly CoreDbContext _context;
+        private readonly IPatientActivity _service;
 
-        public PatientActivityController(CoreDbContext context)
+        public PatientActivityController(IPatientActivity service)
         {
-            _context = context;
+            _service = service;
         }
 
         // GET: api/PatientActivity
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PatientActivity>>> GetPatientActivity()
         {
-            return await _context.PatientActivity.ToListAsync();
+            var allPatientActivity = await _service.GetAllPatientActivity();
+            
+            return Ok(allPatientActivity);
         }
 
         // GET: api/PatientActivity/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<PatientActivity>> GetPatientActivity(string id)
+        public async Task<ActionResult<PatientActivity>> GetPatientActivity(string name)
         {
-            var patientActivity = await _context.PatientActivity.FindAsync(id);
+            var patientActivity = await _service.GetPatientActivityByName(name);
 
             if (patientActivity == null)
             {
@@ -39,38 +43,6 @@ namespace InpatientTherapySchedulingProgram.Controllers
             }
 
             return patientActivity;
-        }
-
-        // PUT: api/PatientActivity/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutPatientActivity(string id, PatientActivity patientActivity)
-        {
-            if (id != patientActivity.Name)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(patientActivity).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!PatientActivityExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
         }
 
         // POST: api/PatientActivity
@@ -79,21 +51,17 @@ namespace InpatientTherapySchedulingProgram.Controllers
         [HttpPost]
         public async Task<ActionResult<PatientActivity>> PostPatientActivity(PatientActivity patientActivity)
         {
-            _context.PatientActivity.Add(patientActivity);
             try
             {
-                await _context.SaveChangesAsync();
+                await _service.AddPatientActivity(patientActivity);
+            }
+            catch(PatientActivityNameAlreadyExistsException e)
+            {
+                return BadRequest(e);
             }
             catch (DbUpdateException)
             {
-                if (PatientActivityExists(patientActivity.Name))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
             return CreatedAtAction("GetPatientActivity", new { id = patientActivity.Name }, patientActivity);
@@ -101,23 +69,25 @@ namespace InpatientTherapySchedulingProgram.Controllers
 
         // DELETE: api/PatientActivity/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<PatientActivity>> DeletePatientActivity(string id)
+        public async Task<ActionResult<PatientActivity>> DeletePatientActivity(string activityName)
         {
-            var patientActivity = await _context.PatientActivity.FindAsync(id);
-            if (patientActivity == null)
+            PatientActivity patientActivity;
+
+            try
             {
-                return NotFound();
+                patientActivity = await _service.DeletePatientActivity(activityName);
+
+                if (patientActivity == null)
+                {
+                    return NotFound();
+                }
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
             }
 
-            _context.PatientActivity.Remove(patientActivity);
-            await _context.SaveChangesAsync();
-
-            return patientActivity;
-        }
-
-        private bool PatientActivityExists(string id)
-        {
-            return _context.PatientActivity.Any(e => e.Name == id);
+            return Ok(patientActivity);
         }
     }
 }
