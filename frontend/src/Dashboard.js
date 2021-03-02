@@ -11,7 +11,8 @@ class Dashboard extends React.Component {
     constructor(props) {
         super(props);
         this.schedule = (<TherapistSchedule />);
-        this.scheduleHeader = "My Schedule";
+        this.date = new Date();
+        this.scheduleHeader = "My Schedule - Week of " + this.date.toLocaleDateString();
     }
     //
 
@@ -27,9 +28,9 @@ class Dashboard extends React.Component {
                     <i class="arrow down"></i>
                 </button>
                 <div class="dropdown-content">
-                <a href="#" onClick={() => {this.schedule = (<TherapistSchedule />); this.scheduleHeader = "My Schedule";}}>My schedule</a>
-                <a href="#" onClick={() => {this.schedule = (<AllTherapistSchedule />); this.scheduleHeader = "Therapist Schedule";}}>By therapist</a>
-                <a href="#" onClick={() => {this.schedule = (<RoomSchedule />); this.scheduleHeader = "Room Schedule";}}>By room</a>
+                <a href="#" onClick={() => {this.schedule = (<TherapistSchedule />); this.scheduleHeader = "My Schedule - Week of " + this.date.toLocaleDateString();}}>My schedule</a>
+                <a href="#" onClick={() => {this.schedule = (<AllTherapistSchedule />); this.scheduleHeader = "Therapist Schedule - " + this.date.toLocaleDateString();}}>By therapist</a>
+                <a href="#" onClick={() => {this.schedule = (<RoomSchedule />); this.scheduleHeader = "Room Schedule - " + this.date.toLocaleDateString();}}>By room</a>
                     
                 </div>
             </div>
@@ -38,6 +39,7 @@ class Dashboard extends React.Component {
             <ReactToPrint trigger={() => <button class="topbtn">Print Schedule</button>} 
             onBeforeGetContent={() => showTimes()}
             onAfterPrint={() => hideTimes()}
+            documentTitle={this.scheduleHeader}
             content={() => this.schedule} />
             <div ref={(el) => (this.schedule = el)}>{this.schedule}</div>
         </div>

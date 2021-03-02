@@ -23,7 +23,7 @@ class AddAppointment extends React.Component {
 
         </div>
         <div class="form-style">
-        <div class="form-style-heading"> Add Appointment</div>
+        <div class="form-style-heading">Add Appointment</div>
 
         <form action="" method="post">
             <label for="patient"><span>Patient <span class="required">*</span></span>
@@ -68,7 +68,6 @@ class AddAppointment extends React.Component {
             <div class="buttonContainer">
               <input type="button" value="Save + Copy"/>
               <input type="submit" value="Save" />
-              <input id="delete" type="submit" value="Delete" />
             </div>
           </form>
         </div>

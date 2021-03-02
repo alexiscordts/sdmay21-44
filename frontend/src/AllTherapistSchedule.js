@@ -51,6 +51,7 @@ class AllTherapistSchedule extends React.Component {
     var roomSchedules = loadRooms();
     var roomNumbers = loadRoomNumbers();
     return (
+        <div>
         <div id="roomSchedule">
             <div id="scheduleContainer">
                 
@@ -93,6 +94,11 @@ class AllTherapistSchedule extends React.Component {
                 </div>
             </div>
         </div>
+        <label class="scrollLabel" for="scrollCheck">
+        scroll
+        <input type = "checkbox" id="scrollCheck" onChange={() => showScroll()}/>
+        </label>
+        </div>
     );
   }
 
@@ -102,7 +108,7 @@ class AllTherapistSchedule extends React.Component {
 }
 
 function getRooms() {
-    return ['Spongebob Squarepants', 'Patrick Star', 'Squidward Tentacles', 'Mr. Krabs', 'Mrs. Puff', 'Spongebob Squarepants', 'Patrick Star', 'Squidward Tentacles', 'Mr. Krabs', 'Mrs. Puff', 'Spongebob Squarepants', 'Patrick Star', 'Squidward Tentacles', 'Mr. Krabs', 'Mrs. Puff'];
+    return ['Spongebob Squarepants-Squarepants', 'Patrick Star', 'Squidward Tentacles', 'Mr. Krabs', 'Mrs. Puff', 'Spongebob Squarepants', 'Patrick Star', 'Squidward Tentacles', 'Mr. Krabs', 'Mrs. Puff', 'Spongebob Squarepants', 'Patrick Star', 'Squidward Tentacles', 'Mr. Krabs', 'Mrs. Puff'];
 }
 
 function loadRooms()
@@ -115,7 +121,7 @@ function loadRooms()
     const tuesday = getAppointmentElements(appointments);
     for (let i = 0; i < rooms.length; i++)
     {
-        if (i % 5 == 0)
+        if (i % 10 == 0)
             roomElements.push(<div class="printHours">{hours}</div>);
         if (i == 3)
             roomElements.push(
@@ -152,11 +158,27 @@ function loadRoomNumbers()
 function loadLines()
 {
     const items = [];
-    for (var i = 0; i < 30; i++)
+    for (var i = 0; i < 15; i++)
     {
-        items.push(
-            <div onClick={() => showAddAppointment()} class="halfHour"><div class="hide">+</div></div>
-        );
+        if (i % 2)
+        {
+            items.push(
+                <div onClick={() => showAddAppointment()} class="halfHour"><div class="hide">+</div></div>
+            );
+            items.push(
+                <div onClick={() => showAddAppointment()} class="halfHour"><div class="hide">+</div></div>
+            );
+        }
+        else
+        {
+            items.push(
+                <div onClick={() => showAddAppointment()} class="halfHour printGrey"><div class="hide">+</div></div>
+            );
+             items.push(
+                <div onClick={() => showAddAppointment()} class="halfHour printGrey"><div class="hide">+</div></div>
+            );
+
+        }
     }
     return items;
 }
@@ -173,9 +195,15 @@ function loadHours()
             AMPM = "PM"
         else if (i > 12)
             time = i - 12;
-        hours.push(
-            <div class="hour">{time} {AMPM}</div>
-        );
+        
+        if(i % 2 == 0)
+            hours.push(
+                <div class="hour">{time} {AMPM}</div>
+            );
+        else 
+            hours.push(
+                <div class="hour printGrey">{time} {AMPM}</div>
+            );
     }
     return hours;
 }
@@ -321,16 +349,40 @@ function toggleDay(toggleDay)
 
 function leftScroll()   
 {
-    document.getElementById('rooms').scrollLeft -= 202;
+    var w = window.innerWidth - 175;
+    w = w - (w % 202);
+    document.getElementById('rooms').scrollBy({
+        left: -w,
+        behavior: 'smooth'
+      });
 }
 
 function rightScroll()   
 {
-    document.getElementById('rooms').scrollLeft += 202;
+    var w = window.innerWidth - 175;
+    w = w - (w % 202);
+    document.getElementById('rooms').scrollBy({
+        left: w,
+        behavior: 'smooth'
+      });
 }
 
 function showAddAppointment()   {
     document.getElementById("addAppointment").style.display = "block";
+}
+
+function showScroll()   {
+    let checked = document.getElementById("scrollCheck").checked;
+    if (checked == true)
+    {
+        document.getElementById("rooms").style.overflowX = "initial";
+        checked = false;
+    }
+    else
+    {
+        document.getElementById("rooms").style.overflowX = "scroll";
+        checked = true;
+    }
 }
 
 export default AllTherapistSchedule;

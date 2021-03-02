@@ -57,6 +57,7 @@
     line-height: 36px;
     background-color: #00A9D8;
     color: white;
+    overflow: hidden;
 }
 
 #roomSchedule .roomLabel2  {
@@ -263,18 +264,18 @@
         width: 100px;
         height: 100%;
         text-align: center;
-        border-right: 1px solid #D1D2D4;
+        border-right: 2px solid #D1D2D4;
         position: relative;      
         float: left;
         display: block;
     }
 
     #roomSchedule .therapist    {
-        min-width: 200px;
-        width: 200px;
+        min-width: 100px;
+        width: 100px;
         height: 100%;
         text-align: center;
-        border-right: 1px solid #D1D2D4;
+        border-right: 2px solid #D1D2D4;
         position: relative;      
         float: left;
         display: block;
@@ -289,6 +290,42 @@
         display: none;
     }
 
+    #roomSchedule .halfhour   {
+        border: none;
+        border-bottom: 1px solid white;
+    }
+
+    #roomSchedule .printGrey  {
+        background-color: #D1D2D4;
+    }
+
+    #roomSchedule .halfhour.printGrey  {
+        border-bottom: 1px solid #D1D2D4;
+    }
+
+    #roomSchedule .hour  {
+        border-top: 1px solid white;
+        border-bottom: 1px solid white;
+    }
+
+    #roomSchedule .hour.printGrey  {
+        border-bottom: 1px solid #D1D2D4;
+        border-top: 1px solid #D1D2D4;
+    }
+
+    #roomSchedule .roomLabel  {
+        height: 36px;
+        width: 100%;
+        line-height: 18px;
+        background-color: #00A9D8;
+        color: white;
+        white-space: initial;
+    }
+
+    .scrollLabel  {
+       display: none;
+    }
+    
   }
   
   @page {
@@ -298,4 +335,15 @@
 .printHours {
     width: 0px;
     float: left;
+    overflow: hidden;
+}
+
+.scrollLabel    {
+    float: right;
+}
+
+@media only screen and (max-width: 700px) {
+    .scrollLabel  {
+        display: none;
+    }
 }

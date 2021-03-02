@@ -115,11 +115,27 @@ class TherapistSchedule extends React.Component {
 function loadLines()
 {
     const items = [];
-    for (var i = 0; i < 30; i++)
+    for (var i = 0; i < 15; i++)
     {
-        items.push(
-            <div onClick={() => showAddAppointment()} class="halfHour"><div class="hide">+</div></div>
-        );
+        if (i % 2)
+        {
+            items.push(
+                <div onClick={() => showAddAppointment()} class="halfHour"><div class="hide">+</div></div>
+            );
+            items.push(
+                <div onClick={() => showAddAppointment()} class="halfHour"><div class="hide">+</div></div>
+            );
+        }
+        else
+        {
+            items.push(
+                <div onClick={() => showAddAppointment()} class="halfHour printGrey"><div class="hide">+</div></div>
+            );
+             items.push(
+                <div onClick={() => showAddAppointment()} class="halfHour printGrey"><div class="hide">+</div></div>
+            );
+
+        }
     }
     return items;
 }
@@ -127,6 +143,7 @@ function loadLines()
 function loadHours()
 {
     const hours = [];
+    hours.push(<div id="topSpace"></div>);
     var AMPM = "AM"
     for (var i = 5; i < 20; i++)
     {
@@ -135,9 +152,15 @@ function loadHours()
             AMPM = "PM"
         else if (i > 12)
             time = i - 12;
-        hours.push(
-            <div class="hour">{time} {AMPM}</div>
-        );
+        
+        if(i % 2 == 0)
+            hours.push(
+                <div class="hour">{time} {AMPM}</div>
+            );
+        else 
+            hours.push(
+                <div class="hour printGrey">{time} {AMPM}</div>
+            );
     }
     return hours;
 }
