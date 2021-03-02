@@ -34,7 +34,7 @@ namespace InpatientTherapySchedulingProgram.Models
                 return true;
             }
 
-            return this.Name == patientActivity.Name;
+            return this.ActivityName == patientActivity.ActivityName;
         }
 
         public override bool Equals(object obj)

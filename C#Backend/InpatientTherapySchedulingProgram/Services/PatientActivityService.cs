@@ -22,7 +22,7 @@ namespace InpatientTherapySchedulingProgram.Services
 
         public async Task<PatientActivity> AddPatientActivity(PatientActivity patientActivity)
         {
-            if (await PatientActivityExists(patientActivity.Name))
+            if (await PatientActivityExists(patientActivity.ActivityName))
             {
                 throw new PatientActivityNameAlreadyExistsException();
             }
@@ -71,10 +71,10 @@ namespace InpatientTherapySchedulingProgram.Services
 
         public async Task<PatientActivity> GetPatientActivityByName(string activityName)
         {
-            return await _context.PatientActivity.FirstOrDefaultAsync(a => a.Name.Equals(activityName));
+            return await _context.PatientActivity.FirstOrDefaultAsync(a => a.ActivityName.Equals(activityName));
         }
 
-        private async Task<bool> PatientActivityExists(string name)
+         public async Task<bool> PatientActivityExists(string name)
         {
             return await _context.PatientActivity.FindAsync(name) != null;
         }

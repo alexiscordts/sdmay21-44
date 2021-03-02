@@ -27,7 +27,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
         public async Task<ActionResult<IEnumerable<PatientActivity>>> GetPatientActivity()
         {
             var allPatientActivity = await _service.GetAllPatientActivity();
-            
+
             return Ok(allPatientActivity);
         }
 
@@ -45,41 +45,6 @@ namespace InpatientTherapySchedulingProgram.Controllers
             return patientActivity;
         }
 
-<<<<<<< HEAD
-=======
-        // PUT: api/PatientActivity/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutPatientActivity(string id, PatientActivity patientActivity)
-        {
-            if (id != patientActivity.ActivityName)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(patientActivity).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!PatientActivityExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
->>>>>>> master
         // POST: api/PatientActivity
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
@@ -90,24 +55,13 @@ namespace InpatientTherapySchedulingProgram.Controllers
             {
                 await _service.AddPatientActivity(patientActivity);
             }
-            catch(PatientActivityNameAlreadyExistsException e)
+            catch (PatientActivityNameAlreadyExistsException e)
             {
                 return BadRequest(e);
             }
             catch (DbUpdateException)
             {
-<<<<<<< HEAD
                 throw;
-=======
-                if (PatientActivityExists(patientActivity.ActivityName))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
->>>>>>> master
             }
 
             return CreatedAtAction("GetPatientActivity", new { id = patientActivity.ActivityName }, patientActivity);
@@ -133,13 +87,8 @@ namespace InpatientTherapySchedulingProgram.Controllers
                 throw;
             }
 
-<<<<<<< HEAD
             return Ok(patientActivity);
-=======
-        private bool PatientActivityExists(string id)
-        {
-            return _context.PatientActivity.Any(e => e.ActivityName.Equals(id));
->>>>>>> master
+
         }
     }
 }

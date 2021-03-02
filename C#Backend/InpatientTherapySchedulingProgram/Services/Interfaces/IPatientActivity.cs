@@ -14,4 +14,3 @@ namespace InpatientTherapySchedulingProgram.Services.Interfaces
         Task<PatientActivity> DeletePatientActivity(string activityName);
     }
 }
-}

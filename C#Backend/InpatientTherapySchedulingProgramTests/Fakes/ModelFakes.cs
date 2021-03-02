@@ -57,7 +57,7 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
         private static void BuildPatientActivityFakes()
         {
             PatientActivityFake = new Faker<PatientActivity>();
-            PatientActivityFake.RuleFor(m => m.Name, r => r.Name.FirstName() + r.UniqueIndex);
+            PatientActivityFake.RuleFor(m => m.ActivityName, r => r.Name.FirstName() + r.UniqueIndex);
         }
     }
     
