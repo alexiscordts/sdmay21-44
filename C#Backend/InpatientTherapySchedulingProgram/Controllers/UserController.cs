@@ -74,11 +74,11 @@ namespace InpatientTherapySchedulingProgram.Controllers
             {
                 return BadRequest(e);
             }
-            catch(UserDoesNotExistException e)
+            catch(UserDoesNotExistException)
             {
-                return BadRequest(e);
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
+            catch(DbUpdateConcurrencyException)
             {
                 throw;
             }
@@ -96,11 +96,11 @@ namespace InpatientTherapySchedulingProgram.Controllers
             {
                 await _service.AddUser(user);
             }
-            catch (UserIdAlreadyExistsException e)
+            catch(UserIdAlreadyExistException e)
             {
                 return Conflict(e);
             }
-            catch (UsernameAlreadyExistsException e)
+            catch(UsernameAlreadyExistException e)
             {
                 return Conflict(e);
             }
@@ -109,7 +109,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
                 throw;
             }
 
-            return CreatedAtAction("GetUser", new { id = user.Uid }, user);
+            return CreatedAtAction("GetUser", new { id = user.UserId }, user);
         }
 
         // DELETE: api/User/5
@@ -127,7 +127,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
                     return NotFound();
                 }
             }
-            catch (DbUpdateConcurrencyException)
+            catch(DbUpdateConcurrencyException)
             {
                 throw;
             }

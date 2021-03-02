@@ -6,24 +6,67 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace InpatientTherapySchedulingProgram.Models
 {
     [Table("location")]
-    public partial class Location
+    public partial class Location : IEquatable<Location>
     {
         public Location()
         {
             Appointment = new HashSet<Appointment>();
-            RoomNumber = new HashSet<RoomNumber>();
+            Patient = new HashSet<Patient>();
+            Room = new HashSet<Room>();
         }
 
         [Key]
-        [Column("lid")]
-        public int Lid { get; set; }
+        [Column("location_id")]
+        public int LocationId { get; set; }
+        [Required]
         [Column("name")]
         [StringLength(255)]
         public string Name { get; set; }
 
-        [InverseProperty("L")]
+        [InverseProperty("Location")]
         public virtual ICollection<Appointment> Appointment { get; set; }
-        [InverseProperty("L")]
-        public virtual ICollection<RoomNumber> RoomNumber { get; set; }
+        public virtual ICollection<Patient> Patient { get; set; }
+        [InverseProperty("Location")]
+        public virtual ICollection<Room> Room { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            return this.Equals(obj as Location);
+        }
+
+        public bool Equals(Location location)
+        {
+            if (location is null)
+            {
+                return false;
+            }
+
+            if(Object.ReferenceEquals(this, location))
+            {
+                return true;
+            }
+
+            return this.LocationId == location.LocationId && this.Name.Equals(location.Name);
+        }
+
+        public static bool operator ==(Location lhs, Location rhs)
+        {
+            if (Object.ReferenceEquals(lhs, rhs))
+            {
+                return true;
+            }
+            else if (lhs is null)
+            {
+                return false;
+            }
+
+            return lhs.Equals(rhs);
+        }
+
+        public static bool operator !=(Location lhs, Location rhs)
+        {
+            return !(lhs == rhs);
+        }
+        
     }
 }

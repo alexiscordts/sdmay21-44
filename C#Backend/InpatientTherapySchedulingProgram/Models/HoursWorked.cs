@@ -9,17 +9,17 @@ namespace InpatientTherapySchedulingProgram.Models
     public partial class HoursWorked
     {
         [Key]
-        [Column("start_datetime", TypeName = "datetime")]
-        public DateTime StartDatetime { get; set; }
-        [Key]
-        [Column("end_datetime", TypeName = "datetime")]
-        public DateTime EndDatetime { get; set; }
-        [Key]
-        [Column("uid")]
-        public int Uid { get; set; }
+        [Column("hours_worked_id")]
+        public int HoursWorkedId { get; set; }
+        [Column("start_time", TypeName = "datetime")]
+        public DateTime? StartTime { get; set; }
+        [Column("end_time", TypeName = "datetime")]
+        public DateTime? EndTime { get; set; }
+        [Column("user_id")]
+        public int? UserId { get; set; }
 
-        [ForeignKey(nameof(Uid))]
-        [InverseProperty(nameof(User.HoursWorked))]
-        public virtual User U { get; set; }
+        [ForeignKey(nameof(UserId))]
+        [InverseProperty("HoursWorked")]
+        public virtual User User { get; set; }
     }
 }

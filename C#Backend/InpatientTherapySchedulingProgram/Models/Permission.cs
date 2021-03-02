@@ -9,18 +9,15 @@ namespace InpatientTherapySchedulingProgram.Models
     public partial class Permission
     {
         [Key]
-        [Column("id")]
-        public int Id { get; set; }
+        [Column("user_id")]
+        public int UserId { get; set; }
         [Key]
         [Column("role")]
         [StringLength(255)]
         public string Role { get; set; }
-        [Column("type")]
-        [StringLength(10)]
-        public string Type { get; set; }
 
-        [ForeignKey(nameof(Id))]
-        [InverseProperty(nameof(User.Permission))]
-        public virtual User IdNavigation { get; set; }
+        [ForeignKey(nameof(UserId))]
+        [InverseProperty("Permission")]
+        public virtual User User { get; set; }
     }
 }

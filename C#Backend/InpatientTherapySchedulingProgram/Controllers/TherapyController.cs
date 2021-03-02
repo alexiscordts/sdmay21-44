@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using InpatientTherapySchedulingProgram.Models;
+using InpatientTherapySchedulingProgram.Services.Interfaces;
+using InpatientTherapySchedulingProgram.Exceptions.TherapyExceptions;
 
 namespace InpatientTherapySchedulingProgram.Controllers
 {
@@ -13,61 +15,89 @@ namespace InpatientTherapySchedulingProgram.Controllers
     [ApiController]
     public class TherapyController : ControllerBase
     {
-        private readonly CoreDbContext _context;
+        private readonly ITherapyService _service;
 
-        public TherapyController(CoreDbContext context)
+        public TherapyController(ITherapyService service)
         {
-            _context = context;
+            _service = service;
         }
 
         // GET: api/Therapy
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Therapy>>> GetTherapy()
         {
-            return await _context.Therapy.ToListAsync();
+            var allTherapies = await _service.GetAllTherapies();
+
+            return Ok(allTherapies);
         }
 
-        // GET: api/Therapy/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Therapy>> GetTherapy(string id)
+        // GET: api/Therapy/adl
+        [HttpGet("adl")]
+        public async Task<ActionResult<IEnumerable<Therapy>>> GetTherapyAdl()
         {
-            var therapy = await _context.Therapy.FindAsync(id);
+            var allAdls = await _service.GetAllAdls();
+
+            return Ok(allAdls);
+        }
+
+        // GET: api/Therapy/type
+        [HttpGet("type")]
+        public async Task<ActionResult<IEnumerable<Therapy>>> GetTherapyType()
+        {
+            var allTypes = await _service.GetAllTypes();
+
+            return Ok(allTypes);
+        }
+
+        // GET: api/Therapy/ovm
+        [HttpGet("{adl}")]
+        public async Task<ActionResult<Therapy>> GetTherapy(string adl)
+        {
+            var therapy = await _service.GetTherapyByAdl(adl);
 
             if (therapy == null)
             {
                 return NotFound();
             }
 
-            return therapy;
+            return Ok(therapy);
+        }
+
+        // GET: api/Therapy/abbreviation/ABRV
+        [HttpGet("abbreviation/{abbreviation}")]
+        public async Task<ActionResult<Therapy>> GetTherapyByAbbreviation(string abbreviation)
+        {
+            var therapy = await _service.GetTherapyByAbbreviation(abbreviation);
+
+            if (therapy == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(therapy);
         }
 
         // PUT: api/Therapy/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTherapy(string id, Therapy therapy)
+        [HttpPut("{adl}")]
+        public async Task<IActionResult> PutTherapy(string adl, Therapy therapy)
         {
-            if (id != therapy.Adl)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(therapy).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _service.UpdateTherapy(adl, therapy);
             }
-            catch (DbUpdateConcurrencyException)
+            catch(TherapyAdlsDoNotMatchException e)
             {
-                if (!TherapyExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(e);
+            }
+            catch(TherapyDoesNotExistException)
+            {
+                return NotFound();
+            }
+            catch(DbUpdateConcurrencyException)
+            {
+                throw;
             }
 
             return NoContent();
@@ -79,45 +109,47 @@ namespace InpatientTherapySchedulingProgram.Controllers
         [HttpPost]
         public async Task<ActionResult<Therapy>> PostTherapy(Therapy therapy)
         {
-            _context.Therapy.Add(therapy);
             try
             {
-                await _context.SaveChangesAsync();
+                await _service.AddTherapy(therapy);
             }
-            catch (DbUpdateException)
+            catch(TherapyAdlAlreadyExistException e)
             {
-                if (TherapyExists(therapy.Adl))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
+                return Conflict(e);
+            }
+            catch(TherapyAbbreviationAlreadyExistException e)
+            {
+                return Conflict(e);
+            }
+            catch(DbUpdateException)
+            {
+                throw;
             }
 
             return CreatedAtAction("GetTherapy", new { id = therapy.Adl }, therapy);
         }
 
         // DELETE: api/Therapy/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Therapy>> DeleteTherapy(string id)
+        [HttpDelete("{adl}")]
+        public async Task<ActionResult<Therapy>> DeleteTherapy(string adl)
         {
-            var therapy = await _context.Therapy.FindAsync(id);
+            Therapy therapy;
+
+            try
+            {
+                therapy = await _service.DeleteTherapy(adl);
+            }
+            catch(DbUpdateException)
+            {
+                throw;
+            }
+
             if (therapy == null)
             {
                 return NotFound();
             }
 
-            _context.Therapy.Remove(therapy);
-            await _context.SaveChangesAsync();
-
-            return therapy;
-        }
-
-        private bool TherapyExists(string id)
-        {
-            return _context.Therapy.Any(e => e.Adl == id);
+            return Ok(therapy);
         }
     }
 }

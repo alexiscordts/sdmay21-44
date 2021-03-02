@@ -19,13 +19,13 @@ namespace InpatientTherapySchedulingProgram.Services
 
         public async Task<Therapy> AddTherapy(Therapy therapy)
         {
-            if(TherapyExistsByAdl(therapy.Adl))
+            if(await TherapyExistsByAdl(therapy.Adl))
             {
-                throw new TherapyAdlAlreadyExistsException();
+                throw new TherapyAdlAlreadyExistException();
             }
-            if(TherapyExistsByAbbreviation(therapy.Abbreviation))
+            if(await TherapyExistsByAbbreviation(therapy.Abbreviation))
             {
-                throw new TherapyAbbreviationAlreadyExistsException();
+                throw new TherapyAbbreviationAlreadyExistException();
             }
 
             _context.Therapy.Add(therapy);
@@ -67,7 +67,7 @@ namespace InpatientTherapySchedulingProgram.Services
 
         public async Task<IEnumerable<string>> GetAllAdls()
         {
-            return await _context.Therapy.Select(t => t.Adl).ToListAsync();
+            return await _context.Therapy.Select(t => t.Adl).Distinct().ToListAsync();
         }
 
         public async Task<IEnumerable<Therapy>> GetAllTherapies()
@@ -77,7 +77,7 @@ namespace InpatientTherapySchedulingProgram.Services
 
         public async Task<IEnumerable<string>> GetAllTypes()
         {
-            return await _context.Therapy.Select(t => t.Type).ToListAsync();
+            return await _context.Therapy.Select(t => t.TherapyType).Distinct().ToListAsync();
         }
 
         public async Task<Therapy> GetTherapyByAdl(string adl)
@@ -96,10 +96,16 @@ namespace InpatientTherapySchedulingProgram.Services
             {
                 throw new TherapyAdlsDoNotMatchException();
             }
-            if(TherapyExistsByAdl(therapy.Adl))
+            if(!await TherapyExistsByAdl(therapy.Adl))
             {
-                throw new TherapyDoesNotExistsException();
+                throw new TherapyDoesNotExistException();
             }
+
+            var local = _context.Set<Therapy>()
+                .Local
+                .FirstOrDefault(t => t.Adl == adl);
+
+            _context.Entry(local).State = EntityState.Detached;
 
             _context.Entry(therapy).State = EntityState.Modified;
 
@@ -115,14 +121,14 @@ namespace InpatientTherapySchedulingProgram.Services
             return therapy;
         }
 
-        private bool TherapyExistsByAdl(string adl)
+        private async Task<bool> TherapyExistsByAdl(string adl)
         {
-            return _context.Therapy.Any(t => t.Adl == adl);
+            return await _context.Therapy.FindAsync(adl) != null;
         }
 
-        private bool TherapyExistsByAbbreviation(string abbreviation)
+        private async Task<bool> TherapyExistsByAbbreviation(string abbreviation)
         {
-            return _context.Therapy.Any(t => t.Abbreviation == abbreviation);
+            return await _context.Therapy.FirstOrDefaultAsync(t => t.Abbreviation.Equals(abbreviation)) != null;
         }
     }
 }

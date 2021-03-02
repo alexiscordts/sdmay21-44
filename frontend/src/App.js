@@ -18,7 +18,9 @@ import Settings from "./Settings";
 import AddLocation from "./AddLocation";
 import ViewLocations from "./ViewLocations";
 import EditLocation from "./EditLocation";
-import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
+import AddRoom from "./Rooms/AddRoom";
+import ViewRoom from "./Rooms/ViewRooms";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 class App extends React.Component {
   constructor(props) {
@@ -39,28 +41,31 @@ class App extends React.Component {
   }
 
   render() {
-    return (  
-          <Router>
-            <Switch>
-               <Route path="/dashboard" component={Dashboard} />
-               <Route path="/add_admin" component={AddAdmin} />
-               <Route path="/add_nurse" component={AddNurse} />
-               <Route path="/add_patient" component={AddPatient} />
-               <Route path="/add_therapist" component={AddTherapist} />
-               <Route path="/edit_admin" component={EditAdmin} />
-               <Route path="/edit_nurse" component={EditNurse} />
-               <Route path="/edit_therapist" component={EditTherapist} />
-               <Route path="/view_admin" component={ViewAdmin} />
-               <Route path="/view_nurse" component={ViewNurse} />
-               <Route path="/view_patient" component={ViewPatient} />
-               <Route path="/view_therapist" component={ViewTherapist} />
-               <Route path="/settings" component={Settings} />
-               <Route path="/manage_locations" component={ViewLocations} />
-               <Route path="/add_location" component={AddLocation} />
-               <Route path="/edit_location" component={EditLocation} />
-               <Route path="/" component={Login} handleLogin={this.handleLogin} />
-            </Switch>
-          </Router>
+    return (
+      <Router>
+        <Switch>
+          <Route path="/dashboard" component={Dashboard} />
+          <Route path="/add_admin" component={AddAdmin} />
+          <Route path="/add_nurse" component={AddNurse} />
+          <Route path="/add_patient" component={AddPatient} />
+          <Route path="/add_therapist" component={AddTherapist} />
+          <Route path="/edit_admin" component={EditAdmin} />
+          <Route path="/edit_nurse" component={EditNurse} />
+          <Route path="/edit_therapist" component={EditTherapist} />
+          <Route path="/view_admin" component={ViewAdmin} />
+          <Route path="/view_nurse" component={ViewNurse} />
+          <Route path="/view_patient" component={ViewPatient} />
+          <Route path="/view_therapist" component={ViewTherapist} />
+          <Route path="/settings" component={Settings} />
+          <Route path="/manage_locations" component={ViewLocations} />
+          <Route path="/add_location" component={AddLocation} />
+          <Route path="/edit_location" component={EditLocation} />
+          <Route path="/manage_rooms" component={ViewRoom} />
+          <Route path="/add_room" component={AddRoom} />
+
+          <Route path="/" component={Login} handleLogin={this.handleLogin} />
+        </Switch>
+      </Router>
     );
   }
 }
