@@ -34,7 +34,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
         }
 
         // GET: api/User/5
-        [HttpGet("{id}")]
+        /*[HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
             var user = await _service.GetUserById(id);
@@ -45,7 +45,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
             }
 
             return Ok(user);
-        }
+        }*/
 
         [HttpGet("{username}")]
         public async Task<ActionResult<User>> GetUser(string username)
