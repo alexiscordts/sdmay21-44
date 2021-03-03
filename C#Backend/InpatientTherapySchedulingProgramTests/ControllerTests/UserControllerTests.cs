@@ -64,7 +64,7 @@ namespace InpatientTherapySchedulingProgramTests
             responseResult.Value.Should().BeOfType<List<User>>();
         }
 
-        [TestMethod]
+        /*[TestMethod]
         public async Task ValidGetUserByUserIdReturnsOkResponse()
         {
             var response = await _testController.GetUser(_testUsers[0].UserId);
@@ -90,7 +90,7 @@ namespace InpatientTherapySchedulingProgramTests
             var responseResult = response.Result;
 
             responseResult.Should().BeOfType<NotFoundResult>();
-        }
+        }*/
 
         [TestMethod]
         public async Task ValidGetUserByUsernameReturnsOkResponse()

@@ -34,6 +34,7 @@ namespace InpatientTherapySchedulingProgram
             //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             //    .AddMicrosoftIdentityWebApi(Configuration, "AzureAd");
 
+            services.AddCors();
             services.AddDbContext<CoreDbContext>(op => op.UseSqlServer(Configuration.GetConnectionString("Database")));
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITherapyService, TherapyService>();
@@ -49,6 +50,12 @@ namespace InpatientTherapySchedulingProgram
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors(
+                options => options.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+            );
 
             app.UseHttpsRedirection();
 
