@@ -67,7 +67,7 @@ namespace InpatientTherapySchedulingProgram.Services
         {
             var therapistEvent = await _context.TherapistEvent.FindAsync(eventId);
 
-            if (therapistEvent == null)
+            if (therapistEvent is null)
             {
                 return null;
             }
