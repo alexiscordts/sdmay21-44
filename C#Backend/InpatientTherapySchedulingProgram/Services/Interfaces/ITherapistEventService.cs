@@ -8,8 +8,8 @@ namespace InpatientTherapySchedulingProgram.Services.Interfaces
 {
     public interface ITherapistEventService
     {
-        Task<IEnumerable<TherapistEvent>> GetTherapistEvents(TherapistEvent therapistEvent);
-        Task<IEnumerable<TherapistEvent>> GetTherapistEventsByTherapistId(TherapistEvent therapistEvent);
+        Task<IEnumerable<TherapistEvent>> GetAllTherapistEvents(TherapistEvent therapistEvent);
+        Task<IEnumerable<TherapistEvent>> GetAllTherapistEventsByTherapistId(TherapistEvent therapistEvent);
         Task<TherapistEvent> UpdateTherapistEvent(int eventId, TherapistEvent therapistEvent);
         Task<TherapistEvent> DeleteTherapistEvent(int eventId);
         Task<TherapistEvent> AddTherapistEvent(TherapistEvent therapistEvent);

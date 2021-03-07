@@ -28,7 +28,12 @@ namespace InpatientTherapySchedulingProgram.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TherapistEvent>>> GetTherapistEvent(TherapistEvent therapistEvent)
         {
-            var allTherapistEvents = await _service.GetTherapistEvents(therapistEvent);
+            if (therapistEvent == null)
+            {
+                return BadRequest();
+            }
+
+            var allTherapistEvents = await _service.GetAllTherapistEvents(therapistEvent);
 
             return Ok(allTherapistEvents);
         }
@@ -38,12 +43,12 @@ namespace InpatientTherapySchedulingProgram.Controllers
         [HttpGet("getTherapistEventsByTherapistId")]
         public async Task<ActionResult<IEnumerable<TherapistEvent>>> GetTherapistEventByTherapistId(TherapistEvent therapistEvent)
         {
-            var allTherapistEvents = await _service.GetTherapistEventsByTherapistId(therapistEvent);
-
-            if (allTherapistEvents == null)
+            if (therapistEvent == null)
             {
-                return NotFound();
+                return BadRequest();
             }
+
+            var allTherapistEvents = await _service.GetAllTherapistEventsByTherapistId(therapistEvent);
 
             return Ok(allTherapistEvents);
         }
@@ -128,7 +133,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
                 return NotFound();
             }
 
-            return therapistEvent;
+            return Ok(therapistEvent);
         }
     }
 }

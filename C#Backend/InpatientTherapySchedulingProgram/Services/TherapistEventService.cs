@@ -91,7 +91,7 @@ namespace InpatientTherapySchedulingProgram.Services
         /// </summary>
         /// <param name="therapistEvent">The therapist event to compare against existing therapist event records</param>
         /// <returns>All therapist event records within date range</returns>
-        public async Task<IEnumerable<TherapistEvent>> GetTherapistEvents(TherapistEvent therapistEvent)
+        public async Task<IEnumerable<TherapistEvent>> GetAllTherapistEvents(TherapistEvent therapistEvent)
         {
             return await _context.TherapistEvent
                 .Where(d => d.StartTime >= therapistEvent.StartTime && d.EndTime <= therapistEvent.EndTime)
@@ -105,7 +105,7 @@ namespace InpatientTherapySchedulingProgram.Services
         /// <param name="therapistEvent">The therapist event to compare against existing therapist event records</param>
         /// <returns>All therapist events records within date range and match therapist ids</returns>
         /// <exception cref="UserDoesNotExistException">Thrown if therapist id does not match a user</exception>
-        public async Task<IEnumerable<TherapistEvent>> GetTherapistEventsByTherapistId(TherapistEvent therapistEvent)
+        public async Task<IEnumerable<TherapistEvent>> GetAllTherapistEventsByTherapistId(TherapistEvent therapistEvent)
         {
             if (!await TherapistExists(therapistEvent.TherapistId))
             {
@@ -133,10 +133,6 @@ namespace InpatientTherapySchedulingProgram.Services
             if (eventId != therapistEvent.EventId)
             {
                 throw new TherapistEventEventIdsDoNotMatchException();
-            }
-            if (!await TherapistEventExistsById(eventId))
-            {
-                throw new TherapistEventDoesNotExistException();
             }
             if (!await ActivityNameExists(therapistEvent.ActivityName))
             {

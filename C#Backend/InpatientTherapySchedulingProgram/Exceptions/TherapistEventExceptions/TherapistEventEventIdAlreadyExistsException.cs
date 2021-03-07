@@ -3,16 +3,16 @@
 namespace InpatientTherapySchedulingProgram.Exceptions.TherapistEventExceptions
 {
     [Serializable]
-    public class EventIdAlreadyExistsException : Exception
+    public class TherapistEventEventIdAlreadyExistsException : Exception
     {
-        public EventIdAlreadyExistsException()
+        public TherapistEventEventIdAlreadyExistsException()
         { }
 
-        public EventIdAlreadyExistsException(string message)
+        public TherapistEventEventIdAlreadyExistsException(string message)
             : base(message)
         { }
 
-        public EventIdAlreadyExistsException(string message, Exception innerException)
+        public TherapistEventEventIdAlreadyExistsException(string message, Exception innerException)
             : base(message, innerException)
         { }
     }
