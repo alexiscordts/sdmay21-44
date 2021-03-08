@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using InpatientTherapySchedulingProgram.Models;
+using InpatientTherapySchedulingProgram.Exceptions.PatientExceptions;
 using InpatientTherapySchedulingProgram.Services.Interfaces;
 
 
@@ -34,14 +35,14 @@ namespace InpatientTherapySchedulingProgram.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Patient>> GetPatient(int id)
         {
-            var patient = await _context.Patient.FindAsync(id);
+            var patient = await _service.GetPatientByPid(id);
 
             if (patient == null)
             {
                 return NotFound();
             }
 
-            return patient;
+            return Ok(patient);
         }
 
         // PUT: api/Patient/5
@@ -50,27 +51,20 @@ namespace InpatientTherapySchedulingProgram.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPatient(int id, Patient patient)
         {
-            if (id != patient.Pid)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(patient).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _service.UpdatePatient(id, patient);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (PatientPidsDoNotMatchException e)
             {
-                if (!PatientExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(e);
+            }
+            catch (PatientDoesNotExistException e)
+            {
+                return BadRequest(e);
+            }
+            catch (DbUpdateConcurrencyException) {
+                throw;
             }
 
             return NoContent();
@@ -82,21 +76,17 @@ namespace InpatientTherapySchedulingProgram.Controllers
         [HttpPost]
         public async Task<ActionResult<Patient>> PostPatient(Patient patient)
         {
-            _context.Patient.Add(patient);
             try
             {
-                await _context.SaveChangesAsync();
+                await _service.AddPatient(patient);
+            }
+            catch (PidAlreadyExistsException e)
+            {
+                return Conflict(e);
             }
             catch (DbUpdateException)
             {
-                if (PatientExists(patient.Pid))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
             return CreatedAtAction("GetPatient", new { id = patient.Pid }, patient);
@@ -106,21 +96,22 @@ namespace InpatientTherapySchedulingProgram.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Patient>> DeletePatient(int id)
         {
-            var patient = await _context.Patient.FindAsync(id);
-            if (patient == null)
+            Patient patient;
+
+            try
             {
-                return NotFound();
+                patient = await _service.DeletePatient(id);
+
+                if (patient == null)
+                {
+                    return NotFound();
+                }
+            }
+            catch (DbUpdateConcurrencyException) {
+                throw;
             }
 
-            _context.Patient.Remove(patient);
-            await _context.SaveChangesAsync();
-
-            return patient;
-        }
-
-        private bool PatientExists(int id)
-        {
-            return _context.Patient.Any(e => e.Pid == id);
+            return Ok(patient);
         }
     }
 }
