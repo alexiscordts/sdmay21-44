@@ -1,7 +1,6 @@
 ﻿using System;
 
-namespace InpatientTherapySchedulingProgram.Exceptions.PatientExceptions;
-
+namespace InpatientTherapySchedulingProgram.Exceptions.PatientExceptions
 {
     [Serializable]
     public class PatientDoesNotExistException : Exception
