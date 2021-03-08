@@ -19,7 +19,7 @@ namespace InpatientTherapySchedulingProgram.Services
 
         public async Task<Patient> AddPatient(Patient patient)
         {
-            if (await PatientExists(patient.Pid)) {
+            if (PatientExists(patient.Pid)) {
                 throw new PidAlreadyExistsException();
             }
 
@@ -37,29 +37,73 @@ namespace InpatientTherapySchedulingProgram.Services
             return patient;
         }
 
-        public Task<Patient> DeletePatient(int pid)
+        public async Task<Patient> DeletePatient(int pid)
         {
-            throw new System.NotImplementedException();
+            var patient = await _context.Patient.FindAsync(pid);
+
+            if (patient == null)
+            {
+                return null;
+            }
+
+            _context.Patient.Remove(patient);
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return patient;
         }
 
-        public Task<IEnumerable<Patient>> GetAllPatients()
+        public async Task<IEnumerable<Patient>> GetAllPatients()
         {
-            throw new System.NotImplementedException();
+            return await _context.Patient.ToListAsync();
         }
 
-        public Task<Patient> GetPatientByPid(int pid)
+        public async Task<Patient> GetPatientByPid(int pid)
         {
-            throw new System.NotImplementedException();
+            return await _context.Patient.FindAsync(pid);
         }
 
-        public Task<Patient> UpdatePatient(int pid, Patient patient)
+        public async Task<Patient> UpdatePatient(int pid, Patient patient)
         {
-            throw new System.NotImplementedException();
+            if (pid != patient.Pid)
+            {
+                throw new PatientPidsDoNotMatchException();
+            }
+            if (!PatientExists(pid))
+            {
+                throw new PatientDoesNotExistException();
+            }
+
+            var local = _context.Set<Patient>()
+                .Local
+                .FirstOrDefault(p => p.Pid == patient.Pid);
+
+            _context.Entry(local).State = EntityState.Detached;
+
+            _context.Entry(patient).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return patient;
         }
 
-        private async Task<bool> PatientExists(int pid) 
+        private bool PatientExists(int pid) 
         {
-            return await _context.Patient.FindAsync(pid) != null;
+            return _context.Patient.Any(p => p.Pid == pid);
         }
     }
 }
