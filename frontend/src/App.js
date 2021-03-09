@@ -34,9 +34,11 @@ class App extends React.Component {
   }
 
   handleLogin(data) {
-    this.setState = {
+    console.log("Parent handled login");
+    this.setState({
       loggedIn: true,
-    };
+    });
+    console.log(this.state.loggedIn);
     return true;
   }
 
@@ -62,8 +64,16 @@ class App extends React.Component {
           <Route path="/edit_location" component={EditLocation} />
           <Route path="/manage_rooms" component={ViewRoom} />
           <Route path="/add_room" component={AddRoom} />
-
-          <Route path="/" component={Login} handleLogin={this.handleLogin} />
+          <Route
+            path="/"
+            render={(props) => {
+              if (!this.state.loggedIn) {
+                return <Login handleLogin={this.handleLogin} />;
+              } else {
+                return <Dashboard />;
+              }
+            }}
+          />
         </Switch>
       </Router>
     );

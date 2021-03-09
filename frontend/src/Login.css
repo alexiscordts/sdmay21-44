@@ -33,3 +33,9 @@
     url(./UnityPointHealthSources/Fonts//Adelle/Adelle_Semibold.otf)
     format("otf");
 }
+
+h3 {
+  font-family: "AdelleSemiBold";
+  color: rgb(253, 254, 254);
+  font-size: larger;
+}
