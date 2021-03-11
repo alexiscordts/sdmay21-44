@@ -45,9 +45,9 @@ namespace InpatientTherapySchedulingProgram.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAppointment(DateTime id, Appointment appointment)
+        public async Task<IActionResult> PutAppointment(int id, Appointment appointment)
         {
-            if (id != appointment.StartDatetime)
+            if (id != appointment.AppointmentId)
             {
                 return BadRequest();
             }
@@ -86,7 +86,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
             }
             catch (DbUpdateException)
             {
-                if (AppointmentExists(appointment.StartDatetime))
+                if (AppointmentExists(appointment.AppointmentId))
                 {
                     return Conflict();
                 }
@@ -96,7 +96,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
                 }
             }
 
-            return CreatedAtAction("GetAppointment", new { id = appointment.StartDatetime }, appointment);
+            return CreatedAtAction("GetAppointment", new { id = appointment.AppointmentId }, appointment);
         }
 
         // DELETE: api/Appointments/5
@@ -115,9 +115,9 @@ namespace InpatientTherapySchedulingProgram.Controllers
             return appointment;
         }
 
-        private bool AppointmentExists(DateTime id)
+        private bool AppointmentExists(int id)
         {
-            return _context.Appointment.Any(e => e.StartDatetime == id);
+            return _context.Appointment.Any(e => e.AppointmentId == id);
         }
     }
 }

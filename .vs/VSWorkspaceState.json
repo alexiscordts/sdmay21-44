@@ -1,0 +1,14 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\C#Backend",
+    "\\C#Backend\\InpatientTherapySchedulingProgramTests",
+    "\\C#Backend\\InpatientTherapySchedulingProgramTests\\ControllerTests",
+    "\\C#Backend\\InpatientTherapySchedulingProgramTests\\Fakes",
+    "\\C#Backend\\InpatientTherapySchedulingProgramTests\\IntegrationTests",
+    "\\C#Backend\\InpatientTherapySchedulingProgramTests\\ServiceTests",
+    "\\C#Backend\\InpatientTherapySchedulingProgramTests\\Utilities"
+  ],
+  "SelectedNode": "\\C#Backend\\InpatientTherapySchedulingProgramTests\\IntegrationTests\\UserServiceControllerTests.cs",
+  "PreviewInSolutionExplorer": false
+}

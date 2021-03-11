@@ -57,13 +57,13 @@ namespace InpatientTherapySchedulingProgram.Services
 
         public async Task<User> AddUser(User user)
         {
-            if (UserExists(user.Uid))
+            if (await UserExists(user.UserId))
             {
-                throw new UserIdAlreadyExistsException();
+                throw new UserIdAlreadyExistException();
             }
-            if (UserExists(user.Username))
+            if (await UserExists(user.Username))
             {
-                throw new UsernameAlreadyExistsException();
+                throw new UsernameAlreadyExistException();
             }
 
             _context.User.Add(user);
@@ -82,18 +82,18 @@ namespace InpatientTherapySchedulingProgram.Services
 
         public async Task<User> UpdateUser(int id, User user)
         {
-            if(id != user.Uid)
+            if(id != user.UserId)
             {
                 throw new UserIdsDoNotMatchException();
             }
-            if(!UserExists(id))
+            if(!await UserExists(id))
             {
                 throw new UserDoesNotExistException();
             }
 
             var local = _context.Set<User>()
                 .Local
-                .FirstOrDefault(u => u.Uid == user.Uid);
+                .FirstOrDefault(u => u.UserId == user.UserId);
 
             _context.Entry(local).State = EntityState.Detached;
 
@@ -111,14 +111,14 @@ namespace InpatientTherapySchedulingProgram.Services
             return user;
         }
 
-        private bool UserExists(int id)
+        private async Task<bool> UserExists(int id)
         {
-            return _context.User.Any(u => u.Uid == id);
+            return await _context.User.FindAsync(id) != null;
         }
 
-        private bool UserExists(string username)
+        private async Task<bool> UserExists(string username)
         {
-            return _context.User.Any(u => u.Username == username);
+            return await _context.User.FirstOrDefaultAsync(u => u.Username == username) != null;
         }
     }
 }

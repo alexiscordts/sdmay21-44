@@ -59,14 +59,14 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
 
         [TestMethod]
         public async Task GetPatientByPidReturnsCorrectType() {
-            var returnPatient = await _testService.GetPatientByPid(_testPatients[0].Pid);
+            var returnPatient = await _testService.GetPatientByPid(_testPatients[0].PatientId);
 
             returnPatient.Should().BeOfType<Patient>();
         }
 
         [TestMethod]
         public async Task GetPatientByPidReturnsCorrectPatient() {
-            var returnPatient = await _testService.GetPatientByPid(_testPatients[0].Pid);
+            var returnPatient = await _testService.GetPatientByPid(_testPatients[0].PatientId);
             returnPatient.Should().Be(_testPatients[0]);
         }
        
@@ -97,7 +97,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
             var newPatient = ModelFakes.PatientFake.Generate();
             await _testService.AddPatient(newPatient);
 
-            var returnPatient = await _testService.GetPatientByPid(newPatient.Pid);
+            var returnPatient = await _testService.GetPatientByPid(newPatient.PatientId);
 
             returnPatient.Should().Be(newPatient);
         }
@@ -105,9 +105,9 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task AddPatientWithExistingIdThrowsError()
         {
-            int existingId = _testPatients[0].Pid;
+            int existingId = _testPatients[0].PatientId;
             var newPatient = ModelFakes.PatientFake.Generate();
-            newPatient.Pid = existingId;
+            newPatient.PatientId = existingId;
 
             await _testService.Invoking(s => s.AddPatient(newPatient)).Should().ThrowAsync<PidAlreadyExistsException>();
         }
@@ -115,7 +115,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task DeletePatientDecrementsCount()
         {
-            await _testService.DeletePatient(_testPatients[0].Pid);
+            await _testService.DeletePatient(_testPatients[0].PatientId);
 
             var allPatients = await _testService.GetAllPatients();
             List<Patient> listOfPatients = (List<Patient>)allPatients;
@@ -126,7 +126,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task DeletePatientRemovesPatientFromDatabase()
         {
-            await _testService.DeletePatient(_testPatients[0].Pid);
+            await _testService.DeletePatient(_testPatients[0].PatientId);
 
             var allPatients = await _testService.GetAllPatients();
             List<Patient> listOfPatients = (List<Patient>)allPatients;
@@ -137,7 +137,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task DeletePatientReturnsCorrectPatient()
         {
-            var returnPatient = await _testService.DeletePatient(_testPatients[0].Pid);
+            var returnPatient = await _testService.DeletePatient(_testPatients[0].PatientId);
 
             bool isEqual = returnPatient.Equals(_testPatients[0]);
 
@@ -155,7 +155,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task UpdatePatientReturnsCorrectType()
         {
-            var returnPatient = await _testService.UpdatePatient(_testPatients[0].Pid, _testPatients[0]);
+            var returnPatient = await _testService.UpdatePatient(_testPatients[0].PatientId, _testPatients[0]);
 
             returnPatient.Should().BeOfType<Patient>();
         }
@@ -163,7 +163,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task UpdatePatientReturnsCorrectPatient()
         {
-            var returnPatient = await _testService.UpdatePatient(_testPatients[0].Pid, _testPatients[0]);
+            var returnPatient = await _testService.UpdatePatient(_testPatients[0].PatientId, _testPatients[0]);
 
             returnPatient.Should().Be(_testPatients[0]);
         }
@@ -174,9 +174,9 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
             var newAddress = ModelFakes.PatientFake.Generate().Address;
             _testPatients[0].Address = newAddress;
 
-            await _testService.UpdatePatient(_testPatients[0].Pid, _testPatients[0]);
+            await _testService.UpdatePatient(_testPatients[0].PatientId, _testPatients[0]);
 
-            var returnPatient = await _testService.GetPatientByPid(_testPatients[0].Pid);
+            var returnPatient = await _testService.GetPatientByPid(_testPatients[0].PatientId);
 
             returnPatient.Address.Should().Be(newAddress);
         }
@@ -184,13 +184,13 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task UpdatePatientWithNonMatchingIdsThrowsError()
         {
-            await _testService.Invoking(s => s.UpdatePatient(_testPatients[1].Pid, _testPatients[0])).Should().ThrowAsync<PatientPidsDoNotMatchException>();
+            await _testService.Invoking(s => s.UpdatePatient(_testPatients[1].PatientId, _testPatients[0])).Should().ThrowAsync<PatientPidsDoNotMatchException>();
         }
 
         [TestMethod]
         public async Task UpdatePatientWithNonExistingUserThrowsError()
         {
-            _testPatients[0].Pid = -1;
+            _testPatients[0].PatientId = -1;
 
             await _testService.Invoking(s => s.UpdatePatient(-1, _testPatients[0])).Should().ThrowAsync<PatientDoesNotExistException>();
         }

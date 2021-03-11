@@ -29,7 +29,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
 
         // GET: api/TherapistEvent/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<TherapistEvent>> GetTherapistEvent(DateTime id)
+        public async Task<ActionResult<TherapistEvent>> GetTherapistEvent(int id)
         {
             var therapistEvent = await _context.TherapistEvent.FindAsync(id);
 
@@ -45,9 +45,9 @@ namespace InpatientTherapySchedulingProgram.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTherapistEvent(DateTime id, TherapistEvent therapistEvent)
+        public async Task<IActionResult> PutTherapistEvent(int id, TherapistEvent therapistEvent)
         {
-            if (id != therapistEvent.StartDatetime)
+            if (id != therapistEvent.EventId)
             {
                 return BadRequest();
             }
@@ -86,7 +86,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
             }
             catch (DbUpdateException)
             {
-                if (TherapistEventExists(therapistEvent.StartDatetime))
+                if (TherapistEventExists(therapistEvent.EventId))
                 {
                     return Conflict();
                 }
@@ -96,7 +96,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
                 }
             }
 
-            return CreatedAtAction("GetTherapistEvent", new { id = therapistEvent.StartDatetime }, therapistEvent);
+            return CreatedAtAction("GetTherapistEvent", new { id = therapistEvent.EventId }, therapistEvent);
         }
 
         // DELETE: api/TherapistEvent/5
@@ -115,9 +115,9 @@ namespace InpatientTherapySchedulingProgram.Controllers
             return therapistEvent;
         }
 
-        private bool TherapistEventExists(DateTime id)
+        private bool TherapistEventExists(int id)
         {
-            return _context.TherapistEvent.Any(e => e.StartDatetime == id);
+            return _context.TherapistEvent.Any(e => e.EventId == id);
         }
     }
 }

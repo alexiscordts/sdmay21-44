@@ -4,6 +4,7 @@
 logs
 **/*.backup.*
 **/*.back.*
+C#Backend/InpatientTherapySchedulingProgram/.vs/*
 
 node_modules
 bower_components

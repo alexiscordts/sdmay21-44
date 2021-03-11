@@ -86,7 +86,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         [TestMethod]
         public async Task ValidGetPatientByIdReturnsOkResponse()
         {
-            var response = await _testController.GetPatient(_testPatients[0].Pid);
+            var response = await _testController.GetPatient(_testPatients[0].PatientId);
             var responseResult = response.Result;
 
             responseResult.Should().BeOfType<OkObjectResult>();
@@ -95,7 +95,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         [TestMethod]
         public async Task ValidGetPatientByIdReturnsCorrectType()
         {
-            var response = await _testController.GetPatient(_testPatients[0].Pid);
+            var response = await _testController.GetPatient(_testPatients[0].PatientId);
             var responseResult = response.Result as OkObjectResult;
             var patient = responseResult.Value;
 
@@ -105,7 +105,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         [TestMethod]
         public async Task ValidGetPatientByIdReturnsCorrectPatient()
         {
-            var response = await _testController.GetPatient(_testPatients[0].Pid);
+            var response = await _testController.GetPatient(_testPatients[0].PatientId);
             var responseResult = response.Result as OkObjectResult;
             var patient = responseResult.Value;
 
@@ -124,7 +124,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         [TestMethod]
         public async Task ValidPutPatientReturnsNoContentResponse()
         {
-            var response = await _testController.PutPatient(_testPatients[0].Pid, _testPatients[0]);
+            var response = await _testController.PutPatient(_testPatients[0].PatientId, _testPatients[0]);
 
             response.Should().BeOfType<NoContentResult>();
         }
@@ -162,7 +162,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
             var newPatient = ModelFakes.PatientFake.Generate();
             await _testController.PostPatient(newPatient);
 
-            var response = await _testController.GetPatient(newPatient.Pid);
+            var response = await _testController.GetPatient(newPatient.PatientId);
             var responseResult = response.Result as OkObjectResult;
             var patient = responseResult.Value;
 
@@ -173,7 +173,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         public async Task ExistingPatientIdPostPatientReturnsConflict()
         {
             var newPatient = ModelFakes.PatientFake.Generate();
-            newPatient.Pid = _testPatients[0].Pid;
+            newPatient.PatientId = _testPatients[0].PatientId;
 
             var response = await _testController.PostPatient(newPatient);
             var responseResult = response.Result;
@@ -185,11 +185,11 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         public async Task ExistingPatientIdPostPatientDoesNotAddPatient()
         {
             var newPatient = ModelFakes.PatientFake.Generate();
-            newPatient.Pid = _testPatients[0].Pid;
+            newPatient.PatientId = _testPatients[0].PatientId;
             
             await _testController.PostPatient(newPatient);
 
-            var getResponse = await _testController.GetPatient(newPatient.Pid);
+            var getResponse = await _testController.GetPatient(newPatient.PatientId);
             var getResponseResult = getResponse.Result as OkObjectResult;
             var getPatient = getResponseResult.Value;
 
@@ -200,7 +200,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         [TestMethod]
         public async Task ValidDeletePatientReturnsOkResponse()
         {
-            var response = await _testController.DeletePatient(_testPatients[0].Pid);
+            var response = await _testController.DeletePatient(_testPatients[0].PatientId);
             var responseResult = response.Result;
 
             responseResult.Should().BeOfType<OkObjectResult>();
@@ -209,7 +209,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         [TestMethod]
         public async Task ValidDeletePatientReturnsCorrectType()
         {
-            var response = await _testController.DeletePatient(_testPatients[0].Pid);
+            var response = await _testController.DeletePatient(_testPatients[0].PatientId);
             var responseResult = response.Result as OkObjectResult;
             var patient = responseResult.Value; 
 
@@ -219,7 +219,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         [TestMethod]
         public async Task ValidDeletePatientReturnsCorrectPatient()
         {
-            var response = await _testController.DeletePatient(_testPatients[0].Pid);
+            var response = await _testController.DeletePatient(_testPatients[0].PatientId);
             var responseResult = response.Result as OkObjectResult;
             var patient = responseResult.Value;
 
@@ -229,9 +229,9 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         [TestMethod]
         public async Task ValidDeletePatientCorrectlyRemovesPatient()
         {
-            await _testController.DeletePatient(_testPatients[0].Pid);
+            await _testController.DeletePatient(_testPatients[0].PatientId);
 
-            var response = await _testController.GetPatient(_testPatients[0].Pid);
+            var response = await _testController.GetPatient(_testPatients[0].PatientId);
             var responseResult = response.Result;
 
             responseResult.Should().BeOfType<NotFoundResult>();

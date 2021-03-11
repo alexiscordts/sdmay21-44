@@ -89,7 +89,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
                 throw;
             }
 
-            return CreatedAtAction("GetPatient", new { id = patient.Pid }, patient);
+            return CreatedAtAction("GetPatient", new { id = patient.PatientId }, patient);
         }
 
         // DELETE: api/Patient/5
@@ -110,7 +110,6 @@ namespace InpatientTherapySchedulingProgram.Controllers
             catch (DbUpdateConcurrencyException) {
                 throw;
             }
-
             return Ok(patient);
         }
     }

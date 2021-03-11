@@ -67,7 +67,7 @@ namespace InpatientTherapySchedulingProgramTests
         [TestMethod]
         public async Task ValidGetPatientByPatientIdReturnsOkResponse()
         {
-            var response = await _testController.GetPatient(_testPatients[0].Pid);
+            var response = await _testController.GetPatient(_testPatients[0].PatientId);
 
             response.Result.Should().BeOfType<OkObjectResult>();
         }
@@ -75,7 +75,7 @@ namespace InpatientTherapySchedulingProgramTests
         [TestMethod]
         public async Task ValidGetPatientByPatientIdReturnsCorrectType()
         {
-            var response = await _testController.GetPatient(_testPatients[0].Pid);
+            var response = await _testController.GetPatient(_testPatients[0].PatientId);
             var responseResult = response.Result as OkObjectResult;
 
             responseResult.Value.Should().BeOfType<Patient>();
@@ -96,7 +96,7 @@ namespace InpatientTherapySchedulingProgramTests
         [TestMethod]
         public async Task ValidPutPatientReturnsNoContentResponse()
         {
-            var response = await _testController.PutPatient(_testPatients[0].Pid, _testPatients[0]);
+            var response = await _testController.PutPatient(_testPatients[0].PatientId, _testPatients[0]);
 
             response.Should().BeOfType<NoContentResult>();
         }
@@ -116,7 +116,7 @@ namespace InpatientTherapySchedulingProgramTests
         {
             _fakeService.Setup(s => s.UpdatePatient(It.IsAny<int>(), It.IsAny<Patient>())).ThrowsAsync(new PatientDoesNotExistException());
 
-            var response = await _testController.PutPatient(_testPatients[0].Pid, new Patient());
+            var response = await _testController.PutPatient(_testPatients[0].PatientId, new Patient());
 
             response.Should().BeOfType<BadRequestObjectResult>();
         }
@@ -126,7 +126,7 @@ namespace InpatientTherapySchedulingProgramTests
         {
             _fakeService.Setup(s => s.UpdatePatient(It.IsAny<int>(), It.IsAny<Patient>())).ThrowsAsync(new DbUpdateConcurrencyException());
 
-            await _testController.Invoking(c => c.PutPatient(_testPatients[0].Pid, _testPatients[0])).Should().ThrowAsync<DbUpdateConcurrencyException>();
+            await _testController.Invoking(c => c.PutPatient(_testPatients[0].PatientId, _testPatients[0])).Should().ThrowAsync<DbUpdateConcurrencyException>();
         }
 
         [TestMethod]
@@ -169,7 +169,7 @@ namespace InpatientTherapySchedulingProgramTests
         [TestMethod]
         public async Task ValidDeletePatientReturnsOkResponse()
         {
-            var response = await _testController.DeletePatient(_testPatients[0].Pid);
+            var response = await _testController.DeletePatient(_testPatients[0].PatientId);
             var responseResult = response.Result;
 
             responseResult.Should().BeOfType<OkObjectResult>();
@@ -178,7 +178,7 @@ namespace InpatientTherapySchedulingProgramTests
         [TestMethod]
         public async Task ValidDeletePatientReturnsCorrectType()
         {
-            var response = await _testController.DeletePatient(_testPatients[0].Pid);
+            var response = await _testController.DeletePatient(_testPatients[0].PatientId);
             var responseResult = response.Result as OkObjectResult;
 
             responseResult.Value.Should().BeOfType<Patient>();

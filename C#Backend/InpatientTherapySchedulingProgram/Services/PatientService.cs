@@ -19,7 +19,7 @@ namespace InpatientTherapySchedulingProgram.Services
 
         public async Task<Patient> AddPatient(Patient patient)
         {
-            if (PatientExists(patient.Pid)) {
+            if (PatientExists(patient.PatientId)) {
                 throw new PidAlreadyExistsException();
             }
 
@@ -72,7 +72,7 @@ namespace InpatientTherapySchedulingProgram.Services
 
         public async Task<Patient> UpdatePatient(int pid, Patient patient)
         {
-            if (pid != patient.Pid)
+            if (pid != patient.PatientId)
             {
                 throw new PatientPidsDoNotMatchException();
             }
@@ -83,7 +83,7 @@ namespace InpatientTherapySchedulingProgram.Services
 
             var local = _context.Set<Patient>()
                 .Local
-                .FirstOrDefault(p => p.Pid == patient.Pid);
+                .FirstOrDefault(p => p.PatientId == patient.PatientId);
 
             _context.Entry(local).State = EntityState.Detached;
 
@@ -103,7 +103,7 @@ namespace InpatientTherapySchedulingProgram.Services
 
         private bool PatientExists(int pid) 
         {
-            return _context.Patient.Any(p => p.Pid == pid);
+            return _context.Patient.Any(p => p.PatientId == pid);
         }
     }
 }

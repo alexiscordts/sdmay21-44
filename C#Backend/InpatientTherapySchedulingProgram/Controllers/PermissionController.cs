@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using InpatientTherapySchedulingProgram.Models;
+using InpatientTherapySchedulingProgram.Services.Interfaces;
+using InpatientTherapySchedulingProgram.Exceptions.PermissionExceptions;
+using InpatientTherapySchedulingProgram.Exceptions.UserExceptions;
 
 namespace InpatientTherapySchedulingProgram.Controllers
 {
@@ -13,64 +13,34 @@ namespace InpatientTherapySchedulingProgram.Controllers
     [ApiController]
     public class PermissionController : ControllerBase
     {
-        private readonly CoreDbContext _context;
+        private readonly IPermissionService _permissionService;
 
-        public PermissionController(CoreDbContext context)
+        public PermissionController(IPermissionService permissionService)
         {
-            _context = context;
+            _permissionService = permissionService;
         }
 
         // GET: api/Permission
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Permission>>> GetPermission()
         {
-            return await _context.Permission.ToListAsync();
+            var allPermissions = await _permissionService.GetAllPermissions();
+
+            return Ok(allPermissions);
         }
 
         // GET: api/Permission/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Permission>> GetPermission(int id)
+        [HttpGet("{userId}")]
+        public async Task<ActionResult<Permission>> GetPermission(int userId)
         {
-            var permission = await _context.Permission.FindAsync(id);
+            var permission = await _permissionService.GetPermissionByUserId(userId);
 
             if (permission == null)
             {
                 return NotFound();
             }
 
-            return permission;
-        }
-
-        // PUT: api/Permission/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutPermission(int id, Permission permission)
-        {
-            if (id != permission.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(permission).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!PermissionExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return Ok(permission);
         }
 
         // POST: api/Permission
@@ -79,45 +49,51 @@ namespace InpatientTherapySchedulingProgram.Controllers
         [HttpPost]
         public async Task<ActionResult<Permission>> PostPermission(Permission permission)
         {
-            _context.Permission.Add(permission);
             try
             {
-                await _context.SaveChangesAsync();
+                await _permissionService.AddPermission(permission);
+            }
+            catch (PermissionRoleIsInvalidException e)
+            {
+                return BadRequest(e);
+            }
+            catch (UserDoesNotExistException e)
+            {
+                return BadRequest(e);
+            }
+            catch (PermissionAlreadyExistsException e)
+            {
+                return Conflict(e);
             }
             catch (DbUpdateException)
             {
-                if (PermissionExists(permission.Id))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
-            return CreatedAtAction("GetPermission", new { id = permission.Id }, permission);
+            return CreatedAtAction("GetPermission", new { id = permission.UserId, permission.Role }, permission);
         }
 
         // DELETE: api/Permission/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Permission>> DeletePermission(int id)
+        [HttpDelete("{userId}")]
+        public async Task<ActionResult<Permission>> DeletePermission(int userId)
         {
-            var permission = await _context.Permission.FindAsync(id);
-            if (permission == null)
+            Permission permission;
+
+            try
             {
-                return NotFound();
+                permission = await _permissionService.DeletePermission(userId);
+            }
+            catch (DbUpdateException)
+            {
+                throw;
             }
 
-            _context.Permission.Remove(permission);
-            await _context.SaveChangesAsync();
+            if (permission is null)
+            {
+                return NotFound(); 
+            }
 
-            return permission;
-        }
-
-        private bool PermissionExists(int id)
-        {
-            return _context.Permission.Any(e => e.Id == id);
+            return Ok(permission);
         }
     }
 }
