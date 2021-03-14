@@ -135,7 +135,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
                 throw;
             }
 
-            if(location == null)
+            if(location is null)
             {
                 return NotFound();
             }

@@ -27,7 +27,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
             _testLocations = new List<Location>();
             _testLocationNames = new List<string>();
 
-            for(var i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
                 var newLocation = ModelFakes.LocationFake.Generate();
                 _testLocations.Add(newLocation);
@@ -223,7 +223,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         }
 
         [TestMethod]
-        public async Task DbUpdateExceptionPostLocationReturnsConflictResponse()
+        public async Task DbUpdateExceptionPostLocationThrowsException()
         {
             _fakeLocationService.Setup(s => s.AddLocation(It.IsAny<Location>())).ThrowsAsync(new DbUpdateException());
 

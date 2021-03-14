@@ -1,5 +1,6 @@
 ﻿using Bogus;
 using InpatientTherapySchedulingProgram.Models;
+using System.Collections.Generic;
 
 namespace InpatientTherapySchedulingProgramTests.Fakes
 {
@@ -10,6 +11,7 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
         public static Faker<TherapistActivity>TherapistActivityFake { get; set; }
         public static Faker<Location> LocationFake { get; set; }
         public static Faker<TherapistEvent> TherapistEventFake { get; set; }
+        public static Faker<Permission> PermissionFake { get; set; }
 
         static ModelFakes()
         {
@@ -18,6 +20,7 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
             BuildTherapistActivityFakes();
             BuildLocationFakes();
             BuildTherapistEventFakes();
+            BuildPermissionFakes();
         }
 
         private static void BuildTherapistActivityFakes()
@@ -64,6 +67,20 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
             TherapistEventFake.RuleFor(m => m.EndTime, r => r.Date.Soon());
             TherapistEventFake.RuleFor(m => m.ActivityName, r => r.IndexGlobal + r.Random.AlphaNumeric(10));
             TherapistEventFake.RuleFor(m => m.Notes, r => r.Commerce.ProductDescription());
+        }
+        
+        private static void BuildPermissionFakes()
+        {
+            List<string> roles = new List<string>
+            {
+                "therapist",
+                "nurse",
+                "admin"
+            };
+
+            PermissionFake = new Faker<Permission>();
+            PermissionFake.RuleFor(m => m.UserId, r => r.UniqueIndex);
+            PermissionFake.RuleFor(m => m.Role, r => roles[r.Random.Int(0, 2)]);
         }
     }
     
