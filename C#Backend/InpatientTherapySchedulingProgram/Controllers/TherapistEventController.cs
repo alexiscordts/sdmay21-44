@@ -79,6 +79,10 @@ namespace InpatientTherapySchedulingProgram.Controllers
             {
                 return BadRequest(e);
             }
+            catch (UserIsNotATherapistException e)
+            {
+                return BadRequest(e);
+            }
 
             return NoContent();
         }
@@ -104,6 +108,10 @@ namespace InpatientTherapySchedulingProgram.Controllers
             catch (UserDoesNotExistException e)
             {
                 return NotFound(e);
+            }
+            catch (UserIsNotATherapistException e)
+            {
+                return BadRequest(e);
             }
             catch (DbUpdateException)
             {

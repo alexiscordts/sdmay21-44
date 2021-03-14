@@ -19,6 +19,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
     public class TherapistEventControllerTests
     {
         private static List<TherapistEvent> _testTherapistEvents;
+        private static User _testNonTherapistUser;
         private Mock<ITherapistEventService> _fakeTherapistEventService;
         private TherapistEventController _testTherapistEventController;
 
@@ -32,6 +33,8 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
                 var newTherapistEvent = ModelFakes.TherapistEventFake.Generate();
                 _testTherapistEvents.Add(newTherapistEvent);
             }
+
+            _testNonTherapistUser = ModelFakes.UserFake.Generate();
         }
 
         [TestInitialize]
@@ -48,6 +51,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
             _testTherapistEventController = new TherapistEventController(_fakeTherapistEventService.Object);
         }
 
+        [TestMethod]
         public async Task ValidGetAllTherapistEventsReturnsOkResponse()
         {
             var response = await _testTherapistEventController.GetTherapistEvent(_testTherapistEvents[0]);
@@ -55,21 +59,24 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
             response.Result.Should().BeOfType<OkObjectResult>();
         }
 
+        [TestMethod]
         public async Task ValidGetAllTherapistEventsReturnsCorrectType()
         {
             var response = await _testTherapistEventController.GetTherapistEvent(_testTherapistEvents[0]);
             var responseResult = response.Result as OkObjectResult;
 
-            responseResult.Value.Should().BeOfType<TherapistEvent>();
+            responseResult.Value.Should().BeOfType<List<TherapistEvent>>();
         }
 
+        [TestMethod]
         public async Task NullParameterGetAllTherapistEventsReturnsBadRequestResponse()
         {
             var response = await _testTherapistEventController.GetTherapistEvent((TherapistEvent)null);
 
-            response.Result.Should().BeOfType<BadRequestObjectResult>();
+            response.Result.Should().BeOfType<BadRequestResult>();
         }
 
+        [TestMethod]
         public async Task ValidGetAllTherapistEventsByTherapistIdReturnsOkResponse()
         {
             var response = await _testTherapistEventController.GetTherapistEventByTherapistId(_testTherapistEvents[0]);
@@ -77,21 +84,24 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
             response.Result.Should().BeOfType<OkObjectResult>();
         }
 
+        [TestMethod]
         public async Task ValidGetAllTherapistEventsByTherapistIdReturnsCorrectType()
         {
             var response = await _testTherapistEventController.GetTherapistEventByTherapistId(_testTherapistEvents[0]);
             var responseResult = response.Result as OkObjectResult;
 
-            responseResult.Value.Should().BeOfType<TherapistEvent>();
+            responseResult.Value.Should().BeOfType<List<TherapistEvent>>();
         }
 
+        [TestMethod]
         public async Task NullParameterGetAllTherapistEventsByTherapistIdReturnsBadRequestResponse()
         {
             var response = await _testTherapistEventController.GetTherapistEventByTherapistId((TherapistEvent)null);
 
-            response.Result.Should().BeOfType<BadRequestObjectResult>();
+            response.Result.Should().BeOfType<BadRequestResult>();
         }
 
+        [TestMethod]
         public async Task ValidPutTherapistEventReturnsNoContentResponse()
         {
             var response = await _testTherapistEventController.PutTherapistEvent(_testTherapistEvents[0].EventId, _testTherapistEvents[0]);
@@ -99,7 +109,8 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
             response.Should().BeOfType<NoContentResult>();
         }
 
-        public async Task TherapistEventEventIdsDoNotMatchExceptionPutTherapistReturnsBadRequestResponse()
+        [TestMethod]
+        public async Task TherapistEventEventIdsDoNotMatchExceptionPutTherapistEventReturnsBadRequestResponse()
         {
             _fakeTherapistEventService.Setup(s => s.UpdateTherapistEvent(It.IsAny<int>(), It.IsAny<TherapistEvent>())).ThrowsAsync(new TherapistEventEventIdsDoNotMatchException());
 
@@ -108,7 +119,8 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
             response.Should().BeOfType<BadRequestObjectResult>();
         }
 
-        public async Task TherapistEventDoesNotExistExceptionPutTherapistReturnsNotFoundResponse()
+        [TestMethod]
+        public async Task TherapistEventDoesNotExistExceptionPutTherapistEventReturnsNotFoundResponse()
         {
             _fakeTherapistEventService.Setup(s => s.UpdateTherapistEvent(It.IsAny<int>(), It.IsAny<TherapistEvent>())).ThrowsAsync(new TherapistEventDoesNotExistException());
 
@@ -116,10 +128,11 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
 
             var response = await _testTherapistEventController.PutTherapistEvent(fakeTherapistEvent.EventId, fakeTherapistEvent);
 
-            response.Should().BeOfType<NotFoundResult>();
+            response.Should().BeOfType<NotFoundObjectResult>();
         }
 
-        public async Task TherapistActivityDoesNotExistExceptionPutTherapistReturnsBadRequestResponse()
+        [TestMethod]
+        public async Task TherapistActivityDoesNotExistExceptionPutTherapistEventReturnsBadRequestResponse()
         {
             _fakeTherapistEventService.Setup(s => s.UpdateTherapistEvent(It.IsAny<int>(), It.IsAny<TherapistEvent>())).ThrowsAsync(new TherapistActivityDoesNotExistException());
 
@@ -130,7 +143,8 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
             response.Should().BeOfType<BadRequestObjectResult>();
         }
 
-        public async Task UserDoesNotExistExceptionPutTherapistReturnsBadRequestResponse()
+        [TestMethod]
+        public async Task UserDoesNotExistExceptionPutTherapistEventReturnsBadRequestResponse()
         {
             _fakeTherapistEventService.Setup(s => s.UpdateTherapistEvent(It.IsAny<int>(), It.IsAny<TherapistEvent>())).ThrowsAsync(new UserDoesNotExistException());
 
@@ -141,6 +155,19 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
             response.Should().BeOfType<BadRequestObjectResult>();
         }
 
+        [TestMethod]
+        public async Task UserIsNotATherapistExceptionPutTherapistEventReturnsBadRequestResponse()
+        {
+            _fakeTherapistEventService.Setup(s => s.UpdateTherapistEvent(It.IsAny<int>(), It.IsAny<TherapistEvent>())).ThrowsAsync(new UserIsNotATherapistException());
+
+            _testTherapistEvents[0].TherapistId = _testNonTherapistUser.UserId;
+
+            var response = await _testTherapistEventController.PutTherapistEvent(_testTherapistEvents[0].EventId, _testTherapistEvents[0]);
+
+            response.Should().BeOfType<BadRequestObjectResult>();
+        }
+
+        [TestMethod]
         public async Task ValidPostTherapistEventReturnsCreatedAtActionResponse()
         {
             var newTherapistEvent = ModelFakes.TherapistEventFake.Generate();
@@ -150,6 +177,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
             response.Result.Should().BeOfType<CreatedAtActionResult>();
         }
 
+        [TestMethod]
         public async Task TherapistEventEventIdAlreadyExistsExceptionPostTherapistEventReturnsConflictResponse()
         {
             _fakeTherapistEventService.Setup(s => s.AddTherapistEvent(It.IsAny<TherapistEvent>())).ThrowsAsync(new TherapistEventEventIdAlreadyExistsException());
@@ -162,6 +190,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
             response.Result.Should().BeOfType<ConflictObjectResult>();
         }
 
+        [TestMethod]
         public async Task TherapistActivityDoesNotExistExceptionPostTherapistEventReturnsNotFoundResponse()
         {
             _fakeTherapistEventService.Setup(s => s.AddTherapistEvent(It.IsAny<TherapistEvent>())).ThrowsAsync(new TherapistActivityDoesNotExistException());
@@ -171,9 +200,10 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
 
             var response = await _testTherapistEventController.PostTherapistEvent(newTherapistEvent);
 
-            response.Result.Should().BeOfType<NotFoundResult>();
+            response.Result.Should().BeOfType<NotFoundObjectResult>();
         }
 
+        [TestMethod]
         public async Task UserDoesNotExistExceptionPostTherapistEventReturnsNotFoundResponse()
         {
             _fakeTherapistEventService.Setup(s => s.AddTherapistEvent(It.IsAny<TherapistEvent>())).ThrowsAsync(new UserDoesNotExistException());
@@ -183,9 +213,23 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
 
             var response = await _testTherapistEventController.PostTherapistEvent(newTherapistEvent);
 
-            response.Result.Should().BeOfType<NotFoundResult>();
+            response.Result.Should().BeOfType<NotFoundObjectResult>();
         }
 
+        [TestMethod]
+        public async Task UserIsNotATherapistExceptionPostTherapistEventReturnsBadRequestException()
+        {
+            _fakeTherapistEventService.Setup(s => s.AddTherapistEvent(It.IsAny<TherapistEvent>())).ThrowsAsync(new UserIsNotATherapistException());
+
+            var newTherapistEvent = ModelFakes.TherapistEventFake.Generate();
+            newTherapistEvent.TherapistId = _testNonTherapistUser.UserId;
+
+            var response = await _testTherapistEventController.PostTherapistEvent(newTherapistEvent);
+
+            response.Result.Should().BeOfType<BadRequestObjectResult>();
+        }
+
+        [TestMethod]
         public async Task DbUpdateExceptionPostTherapistEventThrowsDbUpdateException()
         {
             _fakeTherapistEventService.Setup(s => s.AddTherapistEvent(It.IsAny<TherapistEvent>())).ThrowsAsync(new DbUpdateException());
@@ -195,6 +239,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
             await _testTherapistEventController.Invoking(c => c.PostTherapistEvent(newTherapistEvent)).Should().ThrowAsync<DbUpdateException>();
         }
 
+        [TestMethod]
         public async Task ValidDeleteTherapistEventReturnsOkResponse()
         {
             var response = await _testTherapistEventController.DeleteTherapistEvent(_testTherapistEvents[0].EventId);
@@ -202,6 +247,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
             response.Result.Should().BeOfType<OkObjectResult>();
         }
 
+        [TestMethod]
         public async Task NullDeleteTherapistEventReturnsNotFoundResponse()
         {
             _fakeTherapistEventService.Setup(s => s.DeleteTherapistEvent(It.IsAny<int>())).ReturnsAsync((TherapistEvent)null);
@@ -211,6 +257,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
             response.Result.Should().BeOfType<NotFoundResult>();
         }
 
+        [TestMethod]
         public async Task DbUpdateConcurrencyExceptionDeleteTherapistEventThrowsDbUpdateConcurrencyException()
         {
             _fakeTherapistEventService.Setup(s => s.DeleteTherapistEvent(It.IsAny<int>())).ThrowsAsync(new DbUpdateConcurrencyException());

@@ -22,6 +22,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         private DateTime _testTargetStartDateTime;
         private DateTime _testTargetEndDateTime;
         private TherapistEvent _testTherapistEvent;
+        private User _testNonTherapistUser;
         private CoreDbContext _testContext;
         private TherapistEventService _testTherapistEventService;
 
@@ -46,6 +47,12 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
                 _testContext.Add(newUser);
                 _testContext.SaveChanges();
 
+                Permission newPermission = new Permission();
+                newPermission.UserId = newUser.UserId;
+                newPermission.Role = "therapist";
+                _testContext.Add(newPermission);
+                _testContext.SaveChanges();
+
                 var newTherapistActivity = ModelFakes.TherapistActivityFake.Generate();
                 _testTherapistActivities.Add(ObjectExtensions.Copy(newTherapistActivity));
                 _testContext.Add(newTherapistActivity);
@@ -65,6 +72,11 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
                 _testContext.Add(newTherapistEvent);
                 _testContext.SaveChanges();
             }
+
+            _testNonTherapistUser = ModelFakes.UserFake.Generate();
+            _testUsers.Add(ObjectExtensions.Copy(_testNonTherapistUser));
+            _testContext.Add(_testNonTherapistUser);
+            _testContext.SaveChanges();
 
             var newEdgeTherapistEvent = ModelFakes.TherapistEventFake.Generate();
             newEdgeTherapistEvent.TherapistId = _testUsers[0].UserId;
@@ -284,6 +296,16 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         }
 
         [TestMethod]
+        public async Task AddTherapistEventWithNonTherapistIdUserThrowsUserIsNotATherapistException()
+        {
+            var newTherapistEvent = ModelFakes.TherapistEventFake.Generate();
+            newTherapistEvent.TherapistId = _testNonTherapistUser.UserId;
+            newTherapistEvent.ActivityName = _testTherapistActivities[0].ActivityName;
+            
+            await _testTherapistEventService.Invoking(s => s.AddTherapistEvent(newTherapistEvent)).Should().ThrowAsync<UserIsNotATherapistException>();
+        }
+
+        [TestMethod]
         public async Task DeleteTherapistEventReturnsCorrectType()
         {
             var returnTherapistEvent = await _testTherapistEventService.DeleteTherapistEvent(_testTherapistEvents[0].EventId);
@@ -379,6 +401,14 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
             _testTherapistEvents[0].TherapistId = -1;
 
             await _testTherapistEventService.Invoking(s => s.UpdateTherapistEvent(_testTherapistEvents[0].EventId, _testTherapistEvents[0])).Should().ThrowAsync<UserDoesNotExistException>();
+        }
+
+        [TestMethod]
+        public async Task UpdateTherapistEventWithNonTherapistIdUserThrowsUserIsNotATherapistException()
+        {
+            _testTherapistEvents[0].TherapistId = _testNonTherapistUser.UserId;
+
+            await _testTherapistEventService.Invoking(s => s.UpdateTherapistEvent(_testTherapistEvents[0].EventId, _testTherapistEvents[0])).Should().ThrowAsync<UserIsNotATherapistException>();
         }
     }
 }

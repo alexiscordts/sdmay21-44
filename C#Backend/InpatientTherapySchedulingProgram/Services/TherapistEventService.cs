@@ -38,9 +38,13 @@ namespace InpatientTherapySchedulingProgram.Services
             {
                 throw new TherapistActivityDoesNotExistException();
             }
-            if (!await TherapistExists(therapistEvent.TherapistId))
+            if (!await UserExists(therapistEvent.TherapistId))
             {
                 throw new UserDoesNotExistException();
+            }
+            if (!await IsTherapist(therapistEvent.TherapistId))
+            {
+                throw new UserIsNotATherapistException();
             }
 
             _context.TherapistEvent.Add(therapistEvent);
@@ -107,7 +111,7 @@ namespace InpatientTherapySchedulingProgram.Services
         /// <exception cref="UserDoesNotExistException">Thrown if therapist id does not match a user</exception>
         public async Task<IEnumerable<TherapistEvent>> GetAllTherapistEventsByTherapistId(TherapistEvent therapistEvent)
         {
-            if (!await TherapistExists(therapistEvent.TherapistId))
+            if (!await UserExists(therapistEvent.TherapistId))
             {
                 throw new UserDoesNotExistException();
             }
@@ -138,9 +142,13 @@ namespace InpatientTherapySchedulingProgram.Services
             {
                 throw new TherapistActivityDoesNotExistException();
             }
-            if (!await TherapistExists(therapistEvent.TherapistId))
+            if (!await UserExists(therapistEvent.TherapistId))
             {
                 throw new UserDoesNotExistException();
+            }
+            if (!await IsTherapist(therapistEvent.TherapistId))
+            {
+                throw new UserIsNotATherapistException();
             }
 
             var local = _context.Set<TherapistEvent>()
@@ -176,7 +184,7 @@ namespace InpatientTherapySchedulingProgram.Services
         /// <summary>
         /// Checks to see if therapist event activity name exists
         /// </summary>
-        /// <param name="activityName">Activity name of a therapist event</param>
+        /// <param name="activityName">Activity name to check against therapist activity</param>
         /// <returns>Whether or not a record exists in the database that matches the activity name</returns>
         private async Task<bool> ActivityNameExists(string activityName)
         {
@@ -186,11 +194,21 @@ namespace InpatientTherapySchedulingProgram.Services
         /// <summary>
         /// Checks to see if therapist event therapist id exists
         /// </summary>
-        /// <param name="therapistId">Therapist id of therapist event</param>
+        /// <param name="therapistId">Therapist id to check against User database</param>
         /// <returns>Whether or not a record exists in the database that matches the therapist event id</returns>
-        private async Task<bool> TherapistExists(int? therapistId)
+        private async Task<bool> UserExists(int? therapistId)
         {
             return await _context.User.FindAsync(therapistId) != null;
+        }
+
+        /// <summary>
+        /// Checks to see if user is a therapist
+        /// </summary>
+        /// <param name="therapistId">Therapist id</param>
+        /// <returns></returns>
+        private async Task<bool> IsTherapist(int? therapistId)
+        {
+            return await _context.Permission.FirstOrDefaultAsync(p => p.UserId == therapistId && p.Role.Equals("therapist")) != null;
         }
     }
 }

@@ -21,6 +21,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         private DateTime _testTargetStartDateTime;
         private DateTime _testTargetEndDateTime;
         private TherapistEvent _testTherapistEvent;
+        private User _testNonTherapistUser;
         private CoreDbContext _testContext;
         private TherapistEventService _testTherapistEventService;
         private TherapistEventController _testTherapistEventController;
@@ -46,6 +47,12 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
                 _testContext.Add(newUser);
                 _testContext.SaveChanges();
 
+                Permission newPermission = new Permission();
+                newPermission.UserId = newUser.UserId;
+                newPermission.Role = "therapist";
+                _testContext.Add(newPermission);
+                _testContext.SaveChanges();
+
                 var newTherapistActivity = ModelFakes.TherapistActivityFake.Generate();
                 _testTherapistActivities.Add(ObjectExtensions.Copy(newTherapistActivity));
                 _testContext.Add(newTherapistActivity);
@@ -65,6 +72,11 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
                 _testContext.Add(newTherapistEvent);
                 _testContext.SaveChanges();
             }
+
+            _testNonTherapistUser = ModelFakes.UserFake.Generate();
+            _testUsers.Add(ObjectExtensions.Copy(_testNonTherapistUser));
+            _testContext.Add(_testNonTherapistUser);
+            _testContext.SaveChanges();
 
             var newEdgeTherapistEvent = ModelFakes.TherapistEventFake.Generate();
             newEdgeTherapistEvent.TherapistId = _testUsers[0].UserId;
@@ -311,6 +323,16 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         }
 
         [TestMethod]
+        public async Task UpdateTherapistIdToNonTherapistUserReturnsBadRequestResponse()
+        {
+            _testTherapistEvents[0].TherapistId = _testNonTherapistUser.UserId;
+
+            var response = await _testTherapistEventController.PutTherapistEvent(_testTherapistEvents[0].EventId, _testTherapistEvents[0]);
+
+            response.Should().BeOfType<BadRequestObjectResult>();
+        }
+
+        [TestMethod]
         public async Task ValidPostTherapistEventReturnsCreatedAtActionResponse()
         {
             var newTherapistEvent = ModelFakes.TherapistEventFake.Generate();
@@ -390,6 +412,19 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
             var responseResult = response.Result;
 
             responseResult.Should().BeOfType<NotFoundObjectResult>();
+        }
+
+        [TestMethod]
+        public async Task NonTherapistIdUserPostTherapistEventReturnsBadRequestResponse()
+        {
+            var newTherapistEvent = ModelFakes.TherapistEventFake.Generate();
+            newTherapistEvent.TherapistId = _testNonTherapistUser.UserId;
+            newTherapistEvent.ActivityName = _testTherapistActivities[0].ActivityName;
+
+            var response = await _testTherapistEventController.PostTherapistEvent(newTherapistEvent);
+            var responseResult = response.Result;
+
+            responseResult.Should().BeOfType<BadRequestObjectResult>();
         }
 
         [TestMethod]
