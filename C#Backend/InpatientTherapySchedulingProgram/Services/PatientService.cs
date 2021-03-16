@@ -19,7 +19,7 @@ namespace InpatientTherapySchedulingProgram.Services
 
         public async Task<Patient> AddPatient(Patient patient)
         {
-            if (PatientExists(patient.PatientId)) {
+            if (await PatientExists(patient.PatientId)) {
                 throw new PidAlreadyExistsException();
             }
 
@@ -76,7 +76,7 @@ namespace InpatientTherapySchedulingProgram.Services
             {
                 throw new PatientPidsDoNotMatchException();
             }
-            if (!PatientExists(pid))
+            if (!await PatientExists(pid))
             {
                 throw new PatientDoesNotExistException();
             }
@@ -101,9 +101,9 @@ namespace InpatientTherapySchedulingProgram.Services
             return patient;
         }
 
-        private bool PatientExists(int pid) 
+        private async Task<bool> PatientExists(int patientId)
         {
-            return _context.Patient.Any(p => p.PatientId == pid);
+            return await _context.Patient.FindAsync(patientId) != null;
         }
     }
 }

@@ -65,8 +65,8 @@ namespace InpatientTherapySchedulingProgram.Models
                 return true;
             }
 
-            return this.PatientId == patient.PatientId && this.FirstName == patient.FirstName && this.MiddleName == patient.MiddleName &&
-                this.LastName == patient.LastName;
+            return this.PatientId == patient.PatientId && this.FirstName.Equals(patient.FirstName) && this.MiddleName.Equals(patient.MiddleName) &&
+                this.LastName.Equals(patient.LastName);
         }
 
         public static bool operator ==(Patient lhs, Patient rhs)
