@@ -10,6 +10,7 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
         public static Faker<Therapy>TherapyFake { get; set; }
         public static Faker<TherapistActivity>TherapistActivityFake { get; set; }
         public static Faker<Location> LocationFake { get; set; }
+        public static Faker<TherapistEvent> TherapistEventFake { get; set; }
         public static Faker<Permission> PermissionFake { get; set; }
 
         static ModelFakes()
@@ -18,6 +19,7 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
             BuildTherapyFakes();
             BuildTherapistActivityFakes();
             BuildLocationFakes();
+            BuildTherapistEventFakes();
             BuildPermissionFakes();
         }
 
@@ -56,6 +58,17 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
             LocationFake.RuleFor(m => m.Name, r => r.UniqueIndex + r.Random.String2(10));
         }
 
+        private static void BuildTherapistEventFakes()
+        {
+            TherapistEventFake = new Faker<TherapistEvent>();
+            TherapistEventFake.RuleFor(m => m.EventId, r => r.UniqueIndex);
+            TherapistEventFake.RuleFor(m => m.TherapistId, r => r.Random.Int());
+            TherapistEventFake.RuleFor(m => m.StartTime, r => r.Date.Recent());
+            TherapistEventFake.RuleFor(m => m.EndTime, r => r.Date.Soon());
+            TherapistEventFake.RuleFor(m => m.ActivityName, r => r.IndexGlobal + r.Random.AlphaNumeric(10));
+            TherapistEventFake.RuleFor(m => m.Notes, r => r.Commerce.ProductDescription());
+        }
+        
         private static void BuildPermissionFakes()
         {
             List<string> roles = new List<string>
