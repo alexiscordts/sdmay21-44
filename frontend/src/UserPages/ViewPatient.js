@@ -11,6 +11,21 @@ class ViewPatient extends React.Component {
     this.state = {
       patientList: [],
     };
+
+    this.onDelete = this.onDelete.bind(this);
+  }
+
+  onDelete(userID) {
+    const url = "http://localhost:52723/api/Patient/";
+    // axios
+    //   .delete(url + userID)
+    //   .then((res) => {
+    //     console.log(res);
+    //   })
+    //   .catch((error) => {
+    //     console.log("Error caught");
+    //     console.log(error);
+    //   });
   }
 
   componentDidMount() {
@@ -37,7 +52,10 @@ class ViewPatient extends React.Component {
             <td>{patient.lastName}</td>
             <td>{patient.startDate}</td>
             <td>
-              <button class="iconButton">
+              <button
+                class="iconButton"
+                onClick={this.onDelete(patient.patientId)}
+              >
                 <img
                   src={require("../Icons/icons8-delete-64.png")}
                   alt="delete"

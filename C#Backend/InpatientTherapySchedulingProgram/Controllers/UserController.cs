@@ -33,19 +33,19 @@ namespace InpatientTherapySchedulingProgram.Controllers
             return Ok(allUsers);
         }
 
-        // GET: api/User/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
-        {
-            var user = await _service.GetUserById(id);
+        //// GET: api/User/5
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<User>> GetUser(int id)
+        //{
+        //    var user = await _service.GetUserById(id);
 
-            if (user == null)
-            {
-                return NotFound();
-            }
+        //    if (user == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return Ok(user);
-        }
+        //    return Ok(user);
+        //}
 
         [HttpGet("{username}")]
         public async Task<ActionResult<User>> GetUser(string username)
