@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -284,7 +283,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         }
 
         [TestMethod]
-        public async Task ExistingLocationidPostLocationReturnsConflictResponse()
+        public async Task ExistingLocationIdPostLocationReturnsConflictResponse()
         {
             var newLocation = ModelFakes.LocationFake.Generate();
             newLocation.LocationId = _testLocations[0].LocationId;
@@ -295,7 +294,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         }
 
         [TestMethod]
-        public async Task ExistingLocationidPostLocationDoesNotAddLocationToDatabase()
+        public async Task ExistingLocationIdPostLocationDoesNotAddLocationToDatabase()
         {
             var newLocation = ModelFakes.LocationFake.Generate();
             newLocation.LocationId = _testLocations[0].LocationId;

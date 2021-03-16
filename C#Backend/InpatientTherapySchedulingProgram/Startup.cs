@@ -40,6 +40,7 @@ namespace InpatientTherapySchedulingProgram
             services.AddScoped<ITherapyService, TherapyService>();
             services.AddScoped<ITherapistActivityService, TherapistActivityService>();
             services.AddScoped<ILocationService, LocationService>();
+            services.AddScoped<IPermissionService, PermissionService>();
             services.AddControllers();
         }
 
