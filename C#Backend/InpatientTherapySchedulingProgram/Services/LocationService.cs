@@ -99,7 +99,7 @@ namespace InpatientTherapySchedulingProgram.Services
 
             var local = _context.Set<Location>()
                 .Local
-                .FirstOrDefault(l => l.LocationId == id);
+                .FirstOrDefault(t => t.LocationId == id);
 
             _context.Entry(local).State = EntityState.Detached;
 
@@ -109,7 +109,7 @@ namespace InpatientTherapySchedulingProgram.Services
             {
                 await _context.SaveChangesAsync();
             }
-            catch(DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException)
             {
                 throw;
             }
