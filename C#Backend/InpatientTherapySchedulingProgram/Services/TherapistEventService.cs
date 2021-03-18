@@ -151,9 +151,7 @@ namespace InpatientTherapySchedulingProgram.Services
                 throw new UserIsNotATherapistException();
             }
 
-            var local = _context.Set<TherapistEvent>()
-                .Local
-                .FirstOrDefault(t => t.EventId == therapistEvent.EventId);
+            var local = await _context.TherapistEvent.FindAsync(eventId);
 
             _context.Entry(local).State = EntityState.Detached;
 
@@ -178,6 +176,8 @@ namespace InpatientTherapySchedulingProgram.Services
         /// <returns>Whether or not a record exists in database that matches the event id</returns>
         private async Task<bool> TherapistEventExistsById(int eventId)
         {
+            var therapistEvent = await _context.TherapistEvent.FindAsync(eventId);
+
             return await _context.TherapistEvent.FindAsync(eventId) != null;
         }
 

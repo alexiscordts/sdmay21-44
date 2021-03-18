@@ -185,7 +185,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         [TestMethod]
         public async Task ValidGetAllTherapistEventsByTherapistIdReturnsOkResponse()
         {
-            var response = await _testTherapistEventController.GetTherapistEventByTherapistId(_testTherapistEvent);
+            var response = await _testTherapistEventController.GetTherapistEventsByTherapistId(_testTherapistEvent);
             var responseResult = response.Result;
 
             responseResult.Should().BeOfType<OkObjectResult>();
@@ -194,7 +194,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         [TestMethod]
         public async Task ValidGetAllTherapistEventsByTherapistIdReturnsCorrectType()
         {
-            var response = await _testTherapistEventController.GetTherapistEventByTherapistId(_testTherapistEvent);
+            var response = await _testTherapistEventController.GetTherapistEventsByTherapistId(_testTherapistEvent);
             var responseResult = response.Result as OkObjectResult;
 
             responseResult.Value.Should().BeOfType<List<TherapistEvent>>();
@@ -203,7 +203,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         [TestMethod]
         public async Task ValidGetAllTherapistEventsByTherapistIdReturnsCorrectNumberOfTherapistEvents()
         {
-            var response = await _testTherapistEventController.GetTherapistEventByTherapistId(_testTherapistEvent);
+            var response = await _testTherapistEventController.GetTherapistEventsByTherapistId(_testTherapistEvent);
             var responseResult = response.Result as OkObjectResult;
             List<TherapistEvent> listOfTherapistEvents = (List<TherapistEvent>)responseResult.Value;
 
@@ -213,7 +213,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         [TestMethod]
         public async Task ValidGetAllTherapistEventsByTherapistIdReturnsCorrectTherapistEvents()
         {
-            var response = await _testTherapistEventController.GetTherapistEventByTherapistId(_testTherapistEvent);
+            var response = await _testTherapistEventController.GetTherapistEventsByTherapistId(_testTherapistEvent);
             var responseResult = response.Result as OkObjectResult;
             List<TherapistEvent> listOfTherapistEvents = (List<TherapistEvent>)responseResult.Value;
 
@@ -228,7 +228,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         {
             _testTherapistEvent.StartTime = _testTargetStartDateTime;
             _testTherapistEvent.EndTime = _testTargetEndDateTime;
-            var response = await _testTherapistEventController.GetTherapistEventByTherapistId(_testTherapistEvent);
+            var response = await _testTherapistEventController.GetTherapistEventsByTherapistId(_testTherapistEvent);
             var responseResult = response.Result as OkObjectResult;
             List<TherapistEvent> listOfTherapistEvents = (List<TherapistEvent>)responseResult.Value;
 
@@ -240,7 +240,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         {
             _testTherapistEvent.StartTime = _testTargetStartDateTime;
             _testTherapistEvent.EndTime = _testTargetEndDateTime;
-            var response = await _testTherapistEventController.GetTherapistEventByTherapistId(_testTherapistEvent);
+            var response = await _testTherapistEventController.GetTherapistEventsByTherapistId(_testTherapistEvent);
             var responseResult = response.Result as OkObjectResult;
             List<TherapistEvent> listOfTherapistEvents = (List<TherapistEvent>)responseResult.Value;
 
@@ -253,7 +253,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         [TestMethod]
         public async Task NullParameterGetAllTherapistEventsByTherapistIdReturnsBadRequestResponse()
         {
-            var response = await _testTherapistEventController.GetTherapistEventByTherapistId((TherapistEvent)null);
+            var response = await _testTherapistEventController.GetTherapistEventsByTherapistId((TherapistEvent)null);
             var responseResult = response.Result;
 
             responseResult.Should().BeOfType<BadRequestResult>();
@@ -276,7 +276,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
 
             await _testTherapistEventController.PutTherapistEvent(_testTherapistEvents[0].EventId, _testTherapistEvents[0]);
 
-            var response = await _testTherapistEventController.GetTherapistEventByTherapistId(_testTherapistEvents[0]);
+            var response = await _testTherapistEventController.GetTherapistEventsByTherapistId(_testTherapistEvents[0]);
             var responseResult = response.Result as OkObjectResult;
             List<TherapistEvent> listOfTherapistEvents = (List<TherapistEvent>)responseResult.Value;
 
@@ -367,7 +367,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
 
             await _testTherapistEventController.PostTherapistEvent(newTherapistEvent);
 
-            var response = await _testTherapistEventController.GetTherapistEventByTherapistId(newTherapistEvent);
+            var response = await _testTherapistEventController.GetTherapistEventsByTherapistId(newTherapistEvent);
             var responseResult = response.Result as OkObjectResult;
             List<TherapistEvent> listOfTherapistEvents = (List<TherapistEvent>)responseResult.Value;
 
