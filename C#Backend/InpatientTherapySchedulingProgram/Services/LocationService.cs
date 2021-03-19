@@ -97,9 +97,7 @@ namespace InpatientTherapySchedulingProgram.Services
                 throw new LocationDoesNotExistException();
             }
 
-            var local = _context.Set<Location>()
-                .Local
-                .FirstOrDefault(t => t.LocationId == id);
+            var local = await _context.Location.FindAsync(id);
 
             _context.Entry(local).State = EntityState.Detached;
 

@@ -410,5 +410,15 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
 
             await _testTherapistEventService.Invoking(s => s.UpdateTherapistEvent(_testTherapistEvents[0].EventId, _testTherapistEvents[0])).Should().ThrowAsync<UserIsNotATherapistException>();
         }
+
+        [TestMethod]
+        public async Task UpdateTherapistEventThatDoesNotExistThrowsTherapistEventDoesNotExistException()
+        {
+            var fakeTherapistEvent = ModelFakes.TherapistEventFake.Generate();
+            fakeTherapistEvent.ActivityName = _testTherapistActivities[0].ActivityName;
+            fakeTherapistEvent.TherapistId = _testUsers[0].UserId;
+
+            await _testTherapistEventService.Invoking(s => s.UpdateTherapistEvent(fakeTherapistEvent.EventId, fakeTherapistEvent)).Should().ThrowAsync<TherapistEventDoesNotExistException>();
+        }
     }
 }

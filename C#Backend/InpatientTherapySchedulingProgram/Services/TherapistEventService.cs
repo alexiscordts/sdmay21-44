@@ -153,6 +153,11 @@ namespace InpatientTherapySchedulingProgram.Services
 
             var local = await _context.TherapistEvent.FindAsync(eventId);
 
+            if (local == null)
+            {
+                throw new TherapistEventDoesNotExistException();
+            }
+
             _context.Entry(local).State = EntityState.Detached;
 
             _context.Entry(therapistEvent).State = EntityState.Modified;
