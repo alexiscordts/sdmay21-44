@@ -34,7 +34,7 @@
 }
 .form-style input.input-field, 
 .form-style .textarea-field, 
- .form-style .select-field{
+.form-style .select-field{
 	box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
@@ -86,6 +86,23 @@
 
 .checkBoxArea{
 	margin-left: 105px;
+}
+
+.subtypeInputContainer {
+	display: flex;
+	flex-direction: column;
+}
+
+.inputFieldSubtype {
+	margin-bottom: 5px;
+	box-sizing: border-box;
+	border: 1px solid #C2C2C2;
+	box-shadow: 1px 1px 4px #EBEBEB;
+	border-radius: 3px;
+	padding: 3px;
+	outline: none;
+	height: 30px;
+
 }
 
 @font-face {
