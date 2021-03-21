@@ -1,15 +1,15 @@
+import { getQueriesForElement } from "@testing-library/react";
 import React from "react";
-import "./TherapistSchedule.css";
-import Nav from "./Nav";
+import "./RoomSchedule.css";
 
-class TherapistSchedule extends React.Component {
+class RoomSchedule extends React.Component {
   constructor(props) {
     super(props);
     this.lines = {values: loadLines()};
     this.hours = {values: loadHours()};
     var d = new Date();
     this.time = {value: loadTimeLine()};
-    this.days = {values: getDays()};
+    this.rooms = {values: getRooms()};
     var appointments = getAppointments(d);
     var d = new Date();
     while (d.getDay() != 1) //get Monday
@@ -25,8 +25,6 @@ class TherapistSchedule extends React.Component {
             const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
              days.forEach(day => {
                 document.getElementById(day + "Toggle").style.backgroundColor = null;
-                document.getElementsByClassName(day)[0].style.display = null;
-                document.getElementsByClassName(day)[1].style.display = null;
              });
         }
   };
@@ -50,39 +48,20 @@ class TherapistSchedule extends React.Component {
 
   render() {
     this.time = {value: loadTimeLine()} //Update timeline
+    var roomSchedules = loadRooms();
+    var roomNumbers = loadRoomNumbers();
     return (
-        <div id="therapistSchedule">
-            <div id="days">
-                <div id="topRow"></div>
-                {this.days.values}              
-            </div>
+        <div>
+        <div id="roomSchedule">
             <div id="scheduleContainer">
+                
                 {this.time.value}
                 <div id="hourColumn">
                     {this.hours.values}
                 </div>
-                <div class="day Sunday">                   
-                    {this.lines.values}
-                </div>
-                <div class="day Monday">                   
-                    {this.lines.values}
-                </div>
-                <div class="day Tuesday">
-                    {this.lines.values}
-                    {this.tuesday.values}
-                </div>
-                <div class="day Wednesday">
-                    {this.lines.values}
-                </div>
-                <div class="day Thursday">
-                    {this.lines.values}
-                </div>
-                <div class="day Friday">
-                    {this.lines.values}
-                </div>
-                <div class="day Saturday">                   
-                    {this.lines.values}
-                </div>
+                    <div id="rooms">      
+                        {roomSchedules}
+                    </div>
             </div>
             <div id="toggle">
                 <div id="SundayToggle" class="daytoggle" onClick={() => toggleDay("Sunday")}>
@@ -106,10 +85,88 @@ class TherapistSchedule extends React.Component {
                 <div id="SaturdayToggle" class="daytoggle" onClick={() => toggleDay("Saturday")}>
                     Sa
                 </div>
+                <div id="LeftScroll" class="scroll daytoggle" onMouseDown={() => leftScroll()}>
+                    &#60;
+                </div>
+                <div id="RightScroll" class="scroll daytoggle" onMouseDown={() => rightScroll()}>
+                    &#62;
+                </div>
+            </div>
+        </div>
+        <div class="scheduleOptions">
+            <button class="adjustColWidth" onClick={() => incColWidth()}>
+                +
+            </button>
+
+            <button style={{marginRight: "10px"}} class="adjustColWidth" onClick={() => decColWidth()}>
+                -
+            </button>
+
+            <label class="scrollLabel" for="scrollCheck">
+            scroll
+            <input type = "checkbox" id="scrollCheck" onChange={() => showScroll()}/>
+            </label>
+
+            <label class="scrollLabel" for="scrollCheck">
+            show metrics
+            <input type = "checkbox" id="scrollCheck"/>
+            </label>
             </div>
         </div>
     );
   }
+
+  
+
+
+}
+
+function getRooms() {
+    return ["237", "123", "283", '111', '083', '162', '298', '293', '222', '105', '102', '112', '101', '103', '104', '105', '106', "237", "123", "283", '111', '083', '162', '298', '293', '222', '105', '102', '112', '101', '103', '104', '105', '106', '106', "237", "123", "283", '111', '083', '162', '298', '293', '222', '105', '102', '112', '101', '103', '104', '105', '106'];
+}
+
+function loadRooms()
+{
+    var lines = loadLines();
+    var hours = loadHours();
+    const rooms = getRooms();
+    const roomElements = [];
+    var appointments = getAppointments(new Date());
+    const tuesday = getAppointmentElements(appointments);
+    for (let i = 0; i < rooms.length; i++)
+    {
+        if (i % 10 == 0)
+            roomElements.push(<div class="printHours">{hours}</div>);
+        if (rooms[i] == "123")
+            roomElements.push(
+                <div class="room">
+                    <div class="roomLabel">{rooms[i]}</div>
+                    {lines}
+                    {tuesday}
+                </div>
+            );
+            else
+            roomElements.push(
+                <div class="room">
+                    <div class="roomLabel">{rooms[i]}</div>
+                    {lines}
+                </div>
+            );            
+    }
+    return roomElements;
+}
+
+function loadRoomNumbers()
+{
+    const rooms = getRooms();
+    const roomNumberElements = [];
+    for (let i = 0; i < rooms.length; i++)
+    {
+            roomNumberElements.push(
+                    <div class="roomLabel2">{rooms[i]}</div>
+            );            
+    }
+    return roomNumberElements;
 }
 
 function loadLines()
@@ -171,42 +228,20 @@ function loadTimeLine()
     const timeStyle = {
         top: position,
       };
-    if (position > 0 && position < 1230)
+    if (position > 0 && position < 780)
         return <div id="timeLine" style={timeStyle}></div>;
     else
-      return
+      return;
 }
 
-var position = 0;
 function getPositionForTimeLine()
 {
     var d = new Date();
     var hour = d.getHours() - 5;
     var minute = d.getMinutes();
-    return hour * 52 + minute * 52/60;
+    return hour * 52 + minute * 52/60 + 36;
 }
 
-function getDays()
-{
-    var d = new Date();
-    while (d.getDay() != 0) //get Monday
-    {
-        d.setDate(d.getDate() - 1);
-    }
-    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    const dayElements = [];
-    for (var i = 0; i < 7; i++)
-    {
-        dayElements.push(
-            <div className={'dayLabel ' + days[i]}> 
-                    {days[i]}<br />
-                    {d.getMonth() + 1}/{d.getDate()}
-            </div>
-            );
-        d.setDate(d.getDate() + 1);
-    }
-    return dayElements;
-}
 
 function getAppointments(date) {
     var d = new Date();
@@ -216,13 +251,13 @@ function getAppointments(date) {
     }
     //placeholder appointments
     d.setHours(13,0,0,0);
-    var appointment1 = { title: "Patient 1", room: "123", notes: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin porta sem ut ipsum dictum bibendum. Curabitur sodales interdum lorem, ac.", date: new Date(d), length: 1 };
+    var appointment1 = { title: "Patient 1", room: "123", notes: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin porta sem ut ipsum dictum bibendum. Curabitur sodales interdum lorem, ac.", date: new Date(d), length: 1, type: "1" };
     d.setHours(8,0,0,0);
-    var appointment2 = { title: "Patient 2", room: "123", notes: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque egestas, lectus in congue scelerisque.", date: new Date(d), length: 1 };
+    var appointment2 = { title: "Patient 2", room: "123", notes: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque egestas, lectus in congue scelerisque.", date: new Date(d), length: 1, type: "2" };
     d.setHours(9,0,0,0);
-    var appointment3 = { title: "Patient 3", room: "123", notes: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sed mauris at nisi consequat eleifend. Sed nulla quam, vehicula at turpis a, cursus aliquet justo. Donec et erat sed mauris semper.", date: new Date(d), length: 2 };
+    var appointment3 = { title: "Patient 3", room: "123", notes: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sed mauris at nisi consequat eleifend. Sed nulla quam, vehicula at turpis a, cursus aliquet justo. Donec et erat sed mauris semper.", date: new Date(d), length: 2, type: "2" };
     d.setHours(19,0,0,0);
-    var appointment4 = { title: "Patient 3", room: "123", notes: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sed mauris at nisi consequat eleifend. Sed nulla quam, vehicula at turpis a, cursus aliquet justo. Donec et erat sed mauris semper.", date: new Date(d), length: 1 };
+    var appointment4 = { title: "Patient 3", room: "123", notes: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sed mauris at nisi consequat eleifend. Sed nulla quam, vehicula at turpis a, cursus aliquet justo. Donec et erat sed mauris semper.", date: new Date(d), length: 1, type: "1" };
     var appointments = [];
     appointments.push(appointment1, appointment2, appointment3, appointment4);
     return appointments;
@@ -234,11 +269,20 @@ function getAppointmentElements(appointments)   {
     appointments.forEach(appointment => {
         var start = appointment.date.getHours();
         var end = appointment.date.getHours() + appointment.length;
-        var position = (start - 5) * 52 + appointment.date.getMinutes() * 52/60;
-        const style = {
+        var position = (start - 5) * 52 + appointment.date.getMinutes() * 52/60 + 36;
+        var style;
+        if (appointment.type == "1")
+            style = {
+                top: position,
+                height: appointment.length * 52, 
+                minHeight: appointment.length * 52,
+                backgroundColor: "#EA7600"
+            };
+        else
+        style = {
             top: position,
             height: appointment.length * 52, 
-            minHeight: appointment.length * 52,
+            minHeight: appointment.length * 52
         };
         var startAMOrPM = "AM";
         var endAMOrPM = "AM";
@@ -257,12 +301,12 @@ function getAppointmentElements(appointments)   {
             <div class="appointment" style={style} id={id} onClick={() => seeNotes(num)}>
                 <div class="hidden" id={id + "Height"}>{appointment.length * 52}px</div>
                 <div class="name">{appointment.title}</div>
+                <div class="time">Type {appointment.type}</div>
                 <div class="time">Room {appointment.room}</div>
-                <div class="time">{time}</div>
                 <div class="notes" id={"notes" + num}>Notes: {appointment.notes}</div>
-                <button class="editAppointmentButton" id={"editAppointmentButton" + num}>Edit</button>
-                <button class="editAppointmentButton" id={"copyAppointmentButton" + num}>Copy</button>
-                <button class="editAppointmentButton" id={"deleteAppointmentButton" + num}>Delete</button> 
+                <button class="editAppointmentButton" id={"editAppointmentButton" + num} onClick={() => showEditAppointment()}>Edit</button>
+                <button class="editAppointmentButton" id={"copyAppointmentButton" + num} onClick={() => showAddAppointment()}>Copy</button>
+                <button class="editAppointmentButton" id={"deleteAppointmentButton" + num}>Delete</button>             
             </div>
         );
         numAppointments++;
@@ -280,7 +324,7 @@ function seeNotes(id)   {
     if (document.getElementById(id).style.height != "auto" && idExpanded == null)
     {
         document.getElementById(id).style.height = "auto";
-        document.getElementById(id).style.backgroundColor = "#003e74";
+        document.getElementById(id).style.width = "200%";
         document.getElementById(id).style.zIndex = 4;
         document.getElementById(notes).style.display = "block";
         document.getElementById(edit).style.display = "block";
@@ -291,7 +335,7 @@ function seeNotes(id)   {
     else if (idExpanded == id)
     {
         document.getElementById(id).style.height = document.getElementById(id + "Height").innerHTML;
-        document.getElementById(id).style.backgroundColor = "#00529b";
+        document.getElementById(id).style.width = "100%";
         document.getElementById(id).style.zIndex = 2;
         document.getElementById(notes).style.display = "none";
         document.getElementById(edit).style.display = "none";
@@ -309,20 +353,80 @@ function toggleDay(toggleDay)
         if (day != toggleDay)
         {
             document.getElementById(day + "Toggle").style.backgroundColor = "#A8A9AD";
-            document.getElementsByClassName(day)[0].style.display = "none";
-            document.getElementsByClassName(day)[1].style.display = "none";
         }
         else
         {
             document.getElementById(day + "Toggle").style.backgroundColor = "#EA7600";
-            document.getElementsByClassName(day)[0].style.display = "block";
-            document.getElementsByClassName(day)[1].style.display = "block";
         }
     });
 }
 
-function showAddAppointment()   {
-    document.getElementById("addAppointment").style.display = "block";
+function leftScroll()   
+{
+    var w = document.getElementById("scheduleContainer").offsetWidth - 75;
+    w = w - (w % 101);
+    document.getElementById('rooms').scrollBy({
+        left: -w,
+        behavior: 'smooth'
+      });
 }
 
-export default TherapistSchedule;
+function rightScroll()   
+{
+    var w = document.getElementById("scheduleContainer").offsetWidth - 75;
+    w = w - (w % 101);
+    document.getElementById('rooms').scrollBy({
+        left: w,
+        behavior: 'smooth'
+      });
+}
+
+function showAddAppointment()   {
+    document.getElementById("addAppointment").style.display = "block";
+    document.getElementById("editAppointment").style.display = "none";
+}
+
+function showEditAppointment()   {
+    document.getElementById("editAppointment").style.display = "block";
+    document.getElementById("addAppointment").style.display = "none";
+}
+
+function showScroll()   {
+    let checked = document.getElementById("scrollCheck").checked;
+    if (checked == false)
+    {
+        document.getElementById("rooms").style.overflowX = "hidden";
+        checked = false;
+    }
+    else
+    {
+        document.getElementById("rooms").style.overflowX = "scroll";
+        checked = true;
+    }
+}
+
+function incColWidth()  {
+    var cols = document.getElementsByClassName("room");
+    for (var i = 0; i < cols.length; i++)
+    {
+        if (cols[i].getBoundingClientRect().width < 500)
+        {
+            cols[i].style.minWidth = (cols[i].getBoundingClientRect().width + 10) + "px";
+            cols[i].style.width = (cols[i].getBoundingClientRect().width + 10) + "px";
+        }
+    }
+}
+
+function decColWidth()  {
+    var cols = document.getElementsByClassName("room");
+    for (var i = 0; i < cols.length; i++)
+    {
+        if (cols[i].getBoundingClientRect().width > 100)
+        {
+             cols[i].style.minWidth = (cols[i].getBoundingClientRect().width - 10) + "px";
+             cols[i].style.width = (cols[i].getBoundingClientRect().width - 10) + "px";
+        }
+    }
+}
+
+export default RoomSchedule;

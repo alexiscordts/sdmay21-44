@@ -20,6 +20,7 @@ import ViewLocations from "./ViewLocations";
 import EditLocation from "./EditLocation";
 import AddRoom from "./Rooms/AddRoom";
 import ViewRoom from "./Rooms/ViewRooms";
+import ViewMetrics from "./ViewMetrics";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 class App extends React.Component {
@@ -62,6 +63,7 @@ class App extends React.Component {
           <Route path="/edit_location" component={EditLocation} />
           <Route path="/manage_rooms" component={ViewRoom} />
           <Route path="/add_room" component={AddRoom} />
+          <Route path="/view_Metrics" component={ViewMetrics} />
 
           <Route path="/" component={Login} handleLogin={this.handleLogin} />
         </Switch>

@@ -94,17 +94,28 @@ class AllTherapistSchedule extends React.Component {
                 </div>
             </div>
         </div>
-        <label class="scrollLabel" for="scrollCheck">
-        scroll
-        <input type = "checkbox" id="scrollCheck" onChange={() => showScroll()}/>
-        </label>
+        <div class="scheduleOptions">
+            <button class="adjustColWidth" onClick={() => incColWidth()}>
+                +
+            </button>
+
+            <button style={{marginRight: "10px"}} class="adjustColWidth" onClick={() => decColWidth()}>
+                -
+            </button>
+
+            <label class="scrollLabel" for="scrollCheck">
+            scroll
+            <input type = "checkbox" id="scrollCheck" onChange={() => showScroll()}/>
+            </label>
+
+            <label class="metricLabel" for="metricCheck">
+            show metrics
+            <input type = "checkbox" id="metricCheck" onChange={() => showMetrics()}/>
+            </label>
+            </div>
         </div>
     );
   }
-
-  
-
-
 }
 
 function getRooms() {
@@ -121,12 +132,15 @@ function loadRooms()
     const tuesday = getAppointmentElements(appointments);
     for (let i = 0; i < rooms.length; i++)
     {
+        let percent = Math.floor(Math.random() * 100);
+        var color = getColor(percent);
         if (i % 10 == 0)
             roomElements.push(<div class="printHours">{hours}</div>);
         if (i == 3)
             roomElements.push(
                 <div class="therapist">
                     <div class="roomLabel">{rooms[i]}</div>
+                    <div class="therapistMetrics" style={color}>{percent} %</div>
                     {lines}
                     {tuesday}
                 </div>
@@ -135,11 +149,23 @@ function loadRooms()
             roomElements.push(
                 <div class="therapist">
                     <div class="roomLabel">{rooms[i]}</div>
+                    <div class="therapistMetrics" style={color}>{percent} %</div>
                     {lines}
                 </div>
             );            
     }
     return roomElements;
+}
+
+function getColor(percent) {
+    if (percent <= 10)
+        return {backgroundColor: "#ED5314"};
+    else if (percent <= 35)
+        return {backgroundColor: "#FFB92A"};
+    else if (percent < 65)
+        return {backgroundColor: "#FEEB51"};
+    else
+        return {backgroundColor: "#9BCA3E"};
 }
 
 function loadRoomNumbers()
@@ -214,7 +240,7 @@ function loadTimeLine()
     const timeStyle = {
         top: position,
       };
-    if (position > 0 && position < 1230)
+    if (position > 0 && position < 780)
         return <div id="timeLine" style={timeStyle}></div>;
     else
       return
@@ -290,8 +316,8 @@ function getAppointmentElements(appointments)   {
                 <div class="time">Type {appointment.type}</div>
                 <div class="time">Room {appointment.room}</div>
                 <div class="notes" id={"notes" + num}>Notes: {appointment.notes}</div>
-                <button class="editAppointmentButton" id={"editAppointmentButton" + num}>Edit</button>
-                <button class="editAppointmentButton" id={"copyAppointmentButton" + num}>Copy</button>
+                <button class="editAppointmentButton" id={"editAppointmentButton" + num} onClick={() => showEditAppointment()}>Edit</button>
+                <button class="editAppointmentButton" id={"copyAppointmentButton" + num} onClick={() => showAddAppointment()}>Copy</button>
                 <button class="editAppointmentButton" id={"deleteAppointmentButton" + num}>Delete</button>             
             </div>
         );
@@ -369,19 +395,66 @@ function rightScroll()
 
 function showAddAppointment()   {
     document.getElementById("addAppointment").style.display = "block";
+    document.getElementById("editAppointment").style.display = "none";
+}
+
+function showEditAppointment()   {
+    document.getElementById("editAppointment").style.display = "block";
+    document.getElementById("addAppointment").style.display = "none";
 }
 
 function showScroll()   {
     let checked = document.getElementById("scrollCheck").checked;
-    if (checked == true)
+    if (checked == false)
     {
-        document.getElementById("rooms").style.overflowX = "initial";
-        checked = false;
+        document.getElementById("rooms").style.overflowX = "hidden";
     }
     else
     {
         document.getElementById("rooms").style.overflowX = "scroll";
-        checked = true;
+    }
+}
+
+function showMetrics()   {
+    let checked = document.getElementById("metricCheck").checked;
+    var cols = document.getElementsByClassName("therapistMetrics");
+    if (checked == true)
+    {
+        for (var i = 0; i < cols.length; i++)
+        {
+            cols[i].style.display = "block";
+        }
+    }
+    else
+    {
+        for (var i = 0; i < cols.length; i++)
+        {
+            cols[i].style.display = "none";
+        }
+    }
+}
+
+function incColWidth()  {
+    var cols = document.getElementsByClassName("therapist");
+    for (var i = 0; i < cols.length; i++)
+    {
+        if (cols[i].getBoundingClientRect().width < 500)
+        {
+            cols[i].style.minWidth = (cols[i].getBoundingClientRect().width + 10) + "px";
+            cols[i].style.width = (cols[i].getBoundingClientRect().width + 10) + "px";
+        }
+    }
+}
+
+function decColWidth()  {
+    var cols = document.getElementsByClassName("therapist");
+    for (var i = 0; i < cols.length; i++)
+    {
+        if (cols[i].getBoundingClientRect().width > 100)
+        {
+            cols[i].style.minWidth = (cols[i].getBoundingClientRect().width - 10) + "px";
+            cols[i].style.width = (cols[i].getBoundingClientRect().width + 10) + "px";
+        }
     }
 }
 

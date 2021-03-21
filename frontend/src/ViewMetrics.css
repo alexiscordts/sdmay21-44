@@ -1,0 +1,25 @@
+#chart  {
+    height: calc(80vh - 150px);
+    width: 100%;
+}
+
+#mystats    {
+    width: 90%;
+    margin-left: 5%;
+    clear: both;
+    display: inline-block;
+    font-size: 20px;
+}
+
+#mystats h3 {
+    padding-left: 20px;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin: 0;
+}
+
+#mystats .col    {
+    display: inline-block;
+    width: 31%;
+    padding: 1%;
+}

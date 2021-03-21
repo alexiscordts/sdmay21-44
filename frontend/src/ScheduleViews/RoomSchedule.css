@@ -8,47 +8,35 @@
 
 #roomSchedule #scheduleContainer  {
     overflow-y: scroll;
+    overflow-x: hidden;
     max-height: calc(100vh - 150px);
 }
 
 #roomSchedule #rooms  {
-    overflow-x: auto;
-    width: auto;
+    overflow-x: hidden;
     white-space: nowrap;
     position: relative;
-    display:flex;
-}
-
-#roomSchedule #roomNumbers  {
-    overflow-x:scroll;
-    overflow-y:hidden;
-    white-space: nowrap;
-    position: fixed;
-    width: inherit;
-    height: 36px;
-    background: green;
-    z-index: 20;
+    display: flex;
 }
 
 #roomSchedule .room    {
     min-width: 100px;
-    flex-grow: 1;
     height: 100%;
     text-align: center;
     border-right: 1px solid #D1D2D4;
     position: relative;
-    display: inline-block;
+    float: left;
+    display: block;
 }
 
-
 #roomSchedule .therapist    {
-    flex-grow: 1;
     min-width: 200px;
     height: 100%;
     text-align: center;
     border-right: 1px solid #D1D2D4;
     position: relative;
-    display: inline-block;
+    float: left;
+    display: block;
 }
 
 #roomSchedule .roomLabel  {
@@ -76,7 +64,7 @@
     width: 75px;
     border-right: 1px solid #D1D2D4;
     text-align: center;
-    display: inline-block;
+    display: block;
     float: left;
 }
 
@@ -221,10 +209,6 @@
     cursor: pointer;
 }
 
-#roomSchedule #rooms::-webkit-scrollbar   {
-    display: none;
-}
-
 #roomSchedule .scroll {
     background-color: #00A9D8;
     opacity: 100%;
@@ -322,10 +306,9 @@
         white-space: initial;
     }
 
-    .scrollLabel  {
-       display: none;
-    }
-    
+    .scheduleOptions  {
+        display: none;
+    }  
   }
   
   @page {
@@ -339,11 +322,43 @@
 }
 
 .scrollLabel    {
-    float: right;
+    
+    margin-right: 10px;
 }
 
 @media only screen and (max-width: 700px) {
-    .scrollLabel  {
+    .scheduleOptions  {
         display: none;
     }
+}
+
+.scheduleOptions    {
+    height: 50px;
+    float: right;
+}
+
+.adjustColWidth {
+    font-size: 20px;
+    height: 25px;
+    width: 25px;
+    border: none;
+    outline: none;
+    color: white;
+    background-color: #00529b;
+    margin: 2px;
+    border-radius: 16px;
+}
+
+.adjustColWidth:hover   {
+    cursor: pointer;
+}
+
+.therapistMetrics   {
+    width: 100%;
+    height: 25px;
+    top: 500;
+    line-height: 25px;
+    position: absolute;
+    z-Index: 3;
+    display: none;
 }

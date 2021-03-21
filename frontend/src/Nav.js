@@ -67,7 +67,11 @@ function loadMenuItems() {
       <div class="menuLabel">View Schedule</div>
     </button>,
 
-    <button class="menuButton">
+    <button class="menuButton"
+    onClick={() => {
+      window.location.href = "/view_metrics";
+    }}
+    >
       <img
         class="menuButtonImg"
         src={require("./Icons/icons8-combo-chart-50.png")}

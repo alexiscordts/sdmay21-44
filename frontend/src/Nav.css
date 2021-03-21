@@ -9,7 +9,7 @@ body    {
     color: white;
     transition: 0.5s;
     position: relative;
-    z-index: 6;
+    z-index: 20;
 }
 
 #userinfo   {
@@ -52,7 +52,7 @@ body    {
     float: left;
     transition: 0.5s;
     position: absolute;
-    z-index: 5;
+    z-index: 15;
 }
 
 #collapseMenuToggle:hover  {
