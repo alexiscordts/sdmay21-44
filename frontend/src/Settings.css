@@ -1,4 +1,4 @@
-.manageLocationButton{
+.linkButton{
     background: transparent;
     color: #00529B;
     padding: 16px;
@@ -8,8 +8,12 @@
     font-weight: 600;
 }
 
-.pageContainer{
+.settingsPageContainer{
     margin-left: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: baseline;
+    padding-bottom: 10px;
 }
 
 .iconAddLocation{

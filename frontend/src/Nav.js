@@ -139,7 +139,7 @@ function loadMenuItems() {
     >
       <img
         class="menuButtonImg"
-        src={require("./Icons/icons8-settings-48.png")}
+        src={require("./Icons/icons8-settings-52.png")}
       />
       <div class="menuLabel">Settings</div>
     </button>

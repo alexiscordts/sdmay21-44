@@ -6,23 +6,30 @@ const Settings = () => {
   return (
     <div>
       <Nav />
-      <div class="pageContainer">
+      <div class="settingsPageContainer">
         <button
-          class="manageLocationButton"
+          class="linkButton"
           onClick={() => {
             window.location.href = "/manage_locations";
           }}
         >
           Manage Locations
         </button>
-        <br></br>
         <button
-          class="manageLocationButton"
+          class="linkButton"
           onClick={() => {
             window.location.href = "/manage_rooms";
           }}
         >
           Manage Rooms
+        </button>
+        <button
+          class="linkButton"
+          onClick={() => {
+            window.location.href = "/view_therapy_types";
+          }}
+        >
+          Manage Therapy Types
         </button>
       </div>
     </div>
