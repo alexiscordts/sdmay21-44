@@ -14,7 +14,7 @@ class ViewLocations extends React.Component {
   }
 
   componentDidMount() {
-    const url = "http://localhost:52723/api/Location";
+    const url = "http://10.29.163.20:8081/api/Location";
 
     axios
       .get(url)

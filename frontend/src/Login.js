@@ -25,7 +25,7 @@ class Login extends React.Component {
       password: password,
     };
 
-    const url = "http://localhost:52723/api/user/";
+    const url = "http://10.29.163.20:8081/api/user/getUserByUsername/";
 
     // Confirm with db that the user exists
     axios
