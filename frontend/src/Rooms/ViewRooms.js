@@ -50,7 +50,7 @@ class ViewRooms extends React.Component {
             }}
           >
             <img
-              src={require("../Icons/icons8-plus-52.png")}
+              src={require("../Icons/icons8-plus-48.png")}
               alt="add"
               className="iconAddLocation"
             />

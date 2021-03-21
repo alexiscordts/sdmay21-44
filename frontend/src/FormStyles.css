@@ -120,3 +120,7 @@
 #delete:hover	{
 	opacity: 25%;
 }
+
+textarea, input	{
+	font-family: Arial, Sans-serif;
+}

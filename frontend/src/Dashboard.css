@@ -36,7 +36,7 @@ color: white;
 padding: 16px;
 font-size: 16px;
 border: none;
-cursor: pointer;
+outline: none;
 }
 
 /* The arrow in the droptown button */
@@ -57,6 +57,7 @@ transform: rotate(45deg);
 .dropdown {
 position: relative;
 display: inline-block;
+z-index: 10;
 }
 
 /* Dropdown Content (Hidden by Default) */
@@ -70,15 +71,14 @@ z-index: 1;
 }
 
 /* Links inside the dropdown */
-.dropdown-content a {
+.dropdown-content .link {
 color: black;
 padding: 12px 16px;
 text-decoration: none;
-display: block;
 }
 
 /* Change color of dropdown links on hover */
-.dropdown-content a:hover {background-color: #f1f1f1}
+.dropdown-content .link:hover {background-color: #E6E7E9}
 
 /* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content {
@@ -92,25 +92,23 @@ background-color:#8DD5ED;
 
 .topbtn {
     position: relative;
-    display: inline-block;
-    background-color: #E6E7E9;
+    background-color: #00529b;
     color: white;
-    padding: 16px;
-    font-size: 16px;
+    margin-top: 5px;
+    padding: 5px;
     border: none;
     cursor: pointer;
     float: right;
     color: rgba(0,0,0,0.7);
+    border-radius: 10px;
+    margin-right: 10px;
+    outline: none;
 }
 
-button.topbtn:hover {
-    background-color:#D1D2D4;
-    }
-
-#addAppointment {
+#addAppointment, #editAppointment {
     background-color: white;
     height: auto;
-    width: 500px;
+    width: 520px;
     position: absolute;
     left: 50%;
     top: 20%;
@@ -119,7 +117,13 @@ button.topbtn:hover {
     z-index: 10;
     display: none;
     border-radius: 5px;
-    overflow: hidden
+    overflow: hidden;
+    font-weight: bold;
+    color: #3E3E3F;
+}
+
+.AppointmentFormRow {
+    margin-bottom: 10px;
 }
 
 #dragMe {
@@ -142,4 +146,45 @@ button.topbtn:hover {
 
 .hidden {
     display: none;
+}
+
+.locations  {
+    display: none;
+    position: absolute;
+    background-color: white;
+    width: 200px;
+    left: 160px;
+    box-shadow: 10px 8px 16px 0px rgba(0,0,0,0.2);
+    top: 84px;
+}
+
+.link.byRoom:hover .locations {
+    display: block;
+}
+
+.link.byPatient:hover .locations {
+    display: block;
+    top: 126px;
+}
+
+.link:hover {
+    cursor: pointer;
+}
+
+.selectWeek {
+    border: none;
+    color: #00529B;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 50px;
+    width: 120px;
+    outline: none;
+}
+
+.selectWeek:hover   {
+    cursor: pointer;
+}
+
+.selectWeek:current  {
+    border: none;
 }

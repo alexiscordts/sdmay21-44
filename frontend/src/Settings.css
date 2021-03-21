@@ -8,7 +8,7 @@
     font-weight: 600;
 }
 
-.pageContainer{
+.settingsPageContainer{
     margin-left: 50px;
     display: flex;
     flex-direction: column;
