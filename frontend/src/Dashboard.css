@@ -1,22 +1,33 @@
 body    {
-    overflow-x: hidden;
+    overflow: hidden;
 }
 
 .pageContainer {
-    float: clear;
     margin-left: 100px;
-    margin-top: 25px;
+    padding: 0;
 }
 
-.scheduleTitle {
+#scheduleTitle {
     color: #00529B;
     margin-left: 50px;
-    font-size: 34px;
+    font-size: 20px;
     font-weight: 700;
+    line-height: 50px;
     display: inline-block;
     position: absolute;
-    padding-top: 10px;
     font-family: Arial, Sans-serif;
+}
+
+@media only screen and (max-width: 700px) {
+    #scheduleTitle  {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    .scheduleTitle {
+        font-size: 15px;
+    }
 }
 
 .dropbtn {
@@ -77,4 +88,58 @@ display: block;
 /* Change the background color of the dropdown button when the dropdown content is shown */
 .dropdown:hover .dropbtn {
 background-color:#8DD5ED;
+}
+
+.topbtn {
+    position: relative;
+    display: inline-block;
+    background-color: #E6E7E9;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    float: right;
+    color: rgba(0,0,0,0.7);
+}
+
+button.topbtn:hover {
+    background-color:#D1D2D4;
+    }
+
+#addAppointment {
+    background-color: white;
+    height: auto;
+    width: 500px;
+    position: absolute;
+    left: 50%;
+    top: 20%;
+    -webkit-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.5); 
+    box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.5);
+    z-index: 10;
+    display: none;
+    border-radius: 5px;
+    overflow: hidden
+}
+
+#dragMe {
+    background-color: #00529b;
+    height: 30px;
+    cursor: move;
+}
+
+#close  {
+    height: 100%;
+    width: 30px;
+    line-height: 30px;
+    vertical-align: center;
+    color: white;
+    background-color: #df0000;
+    text-align: center;
+    float: right;
+    cursor: pointer;
+}
+
+.hidden {
+    display: none;
 }

@@ -1,8 +1,8 @@
 import React from "react";
-import "./Schedule.css";
+import "./TherapistSchedule.css";
 import Nav from "./Nav";
 
-class Schedule extends React.Component {
+class TherapistSchedule extends React.Component {
   constructor(props) {
     super(props);
     this.lines = {values: loadLines()};
@@ -51,7 +51,7 @@ class Schedule extends React.Component {
   render() {
     this.time = {value: loadTimeLine()} //Update timeline
     return (
-        <div id="schedule">
+        <div id="therapistSchedule">
             <div id="days">
                 <div id="topRow"></div>
                 {this.days.values}              
@@ -115,11 +115,27 @@ class Schedule extends React.Component {
 function loadLines()
 {
     const items = [];
-    for (var i = 0; i < 30; i++)
+    for (var i = 0; i < 15; i++)
     {
-        items.push(
-            <div class="halfHour"></div>
-        );
+        if (i % 2)
+        {
+            items.push(
+                <div onClick={() => showAddAppointment()} class="halfHour"><div class="hide">+</div></div>
+            );
+            items.push(
+                <div onClick={() => showAddAppointment()} class="halfHour"><div class="hide">+</div></div>
+            );
+        }
+        else
+        {
+            items.push(
+                <div onClick={() => showAddAppointment()} class="halfHour printGrey"><div class="hide">+</div></div>
+            );
+             items.push(
+                <div onClick={() => showAddAppointment()} class="halfHour printGrey"><div class="hide">+</div></div>
+            );
+
+        }
     }
     return items;
 }
@@ -127,6 +143,7 @@ function loadLines()
 function loadHours()
 {
     const hours = [];
+    hours.push(<div id="topSpace"></div>);
     var AMPM = "AM"
     for (var i = 5; i < 20; i++)
     {
@@ -135,9 +152,15 @@ function loadHours()
             AMPM = "PM"
         else if (i > 12)
             time = i - 12;
-        hours.push(
-            <div class="hour">{time} {AMPM}</div>
-        );
+        
+        if(i % 2 == 0)
+            hours.push(
+                <div class="hour">{time} {AMPM}</div>
+            );
+        else 
+            hours.push(
+                <div class="hour printGrey">{time} {AMPM}</div>
+            );
     }
     return hours;
 }
@@ -160,7 +183,7 @@ function getPositionForTimeLine()
     var d = new Date();
     var hour = d.getHours() - 5;
     var minute = d.getMinutes();
-    return hour * 72 + minute * 72/60;
+    return hour * 52 + minute * 52/60;
 }
 
 function getDays()
@@ -211,11 +234,11 @@ function getAppointmentElements(appointments)   {
     appointments.forEach(appointment => {
         var start = appointment.date.getHours();
         var end = appointment.date.getHours() + appointment.length;
-        var position = (start - 5) * 72 + appointment.date.getMinutes() * 72/60;
+        var position = (start - 5) * 52 + appointment.date.getMinutes() * 52/60;
         const style = {
             top: position,
-            height: appointment.length * 72, 
-            minHeight: appointment.length * 72,
+            height: appointment.length * 52, 
+            minHeight: appointment.length * 52,
         };
         var startAMOrPM = "AM";
         var endAMOrPM = "AM";
@@ -232,11 +255,14 @@ function getAppointmentElements(appointments)   {
         var num = numAppointments.toString();
         appointmentElements.push(
             <div class="appointment" style={style} id={id} onClick={() => seeNotes(num)}>
-                <div class="hidden" id={id + "Height"}>{appointment.length * 72}px</div>
+                <div class="hidden" id={id + "Height"}>{appointment.length * 52}px</div>
                 <div class="name">{appointment.title}</div>
-                <div class="time">{time}</div>
                 <div class="time">Room {appointment.room}</div>
+                <div class="time">{time}</div>
                 <div class="notes" id={"notes" + num}>Notes: {appointment.notes}</div>
+                <button class="editAppointmentButton" id={"editAppointmentButton" + num}>Edit</button>
+                <button class="editAppointmentButton" id={"copyAppointmentButton" + num}>Copy</button>
+                <button class="editAppointmentButton" id={"deleteAppointmentButton" + num}>Delete</button> 
             </div>
         );
         numAppointments++;
@@ -246,7 +272,10 @@ function getAppointmentElements(appointments)   {
 
 var idExpanded = null;
 function seeNotes(id)   {
-    var notes = "notes" + id;
+    let notes = "notes" + id;
+    let edit = "editAppointmentButton" + id;
+    let copy = "copyAppointmentButton" + id;
+    let deleteApp = "deleteAppointmentButton" + id;
     id = "appointment" + id;
     if (document.getElementById(id).style.height != "auto" && idExpanded == null)
     {
@@ -254,6 +283,9 @@ function seeNotes(id)   {
         document.getElementById(id).style.backgroundColor = "#003e74";
         document.getElementById(id).style.zIndex = 4;
         document.getElementById(notes).style.display = "block";
+        document.getElementById(edit).style.display = "block";
+        document.getElementById(copy).style.display = "block";
+        document.getElementById(deleteApp).style.display = "block";
         idExpanded = id;
     }
     else if (idExpanded == id)
@@ -262,6 +294,9 @@ function seeNotes(id)   {
         document.getElementById(id).style.backgroundColor = "#00529b";
         document.getElementById(id).style.zIndex = 2;
         document.getElementById(notes).style.display = "none";
+        document.getElementById(edit).style.display = "none";
+        document.getElementById(copy).style.display = "none";
+        document.getElementById(deleteApp).style.display = "none";
         idExpanded = null;
     }
 }
@@ -286,4 +321,8 @@ function toggleDay(toggleDay)
     });
 }
 
-export default Schedule;
+function showAddAppointment()   {
+    document.getElementById("addAppointment").style.display = "block";
+}
+
+export default TherapistSchedule;
