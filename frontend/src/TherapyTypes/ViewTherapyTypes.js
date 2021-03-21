@@ -1,38 +1,38 @@
 import React from "react";
-import Nav from "./Nav";
-import "./TableStyles.css";
-import "./UserPages/UserStyles.css";
-import "./Settings.css";
+import Nav from "../Nav";
+import "../TableStyles.css";
+import "../UserPages/UserStyles.css";
+import "../Settings.css";
 
-class ViewLocations extends React.Component {
+class ViewTherapyTypes extends React.Component {
   constructor(props) {
     super(props);
   }
 
   render() {
-    var locationsList = [
-      { name: "Des Moines", address: "123 4th Street West Des Moines" },
-      { name: "Downtown", address: "123 Court Ave Des Moines" },
+    var therapyList = [
+      { name: "Speech", subtypes: ['type1', 'type2'] },
+      { name: "Physical", subtypes: ['type1', 'type2', 'type3'] },
     ];
     var rows = [];
 
-    locationsList.forEach(
-      function (location) {
+    therapyList.forEach(
+      function (therapyType) {
         rows.push(
           <tr>
-            <td>{location.name}</td>
-            <td>{location.address}</td>
+            <td>{therapyType.name}</td>
+            <td>{therapyType.subtypes}</td>
             <td>
               <button
                 class="iconButton"
                 onClick={() => {
-                  sessionStorage.setItem("name", location.name);
-                  sessionStorage.setItem("address", location.address);
-                  window.location.href = "/edit_location";
+                  sessionStorage.setItem("name", therapyType.name);
+                  sessionStorage.setItem("subtypes", therapyType.subtypes);
+                  window.location.href = "/edit_therapy_types";
                 }}
               >
                 <img
-                  src={require("./Icons/icons8-edit-64.png")}
+                  src={require("../Icons/icons8-edit-64.png")}
                   alt="edit"
                   className="icon"
                 />
@@ -47,15 +47,15 @@ class ViewLocations extends React.Component {
       <div>
         <Nav />
         <div class="userHeaderRow">
-          <h2>Addresses</h2>
+          <h2>Therapy Types</h2>
           <button
             class="iconAddUserButton"
             onClick={() => {
-              window.location.href = "/add_location";
+              window.location.href = "/add_therapy_types";
             }}
           >
             <img
-              src={require("./Icons/icons8-plus-52.png")}
+              src={require("../Icons/icons8-plus-52.png")}
               alt="add"
               className="iconAddLocation"
             />
@@ -65,7 +65,7 @@ class ViewLocations extends React.Component {
           <thead>
             <tr>
               <th>Name</th>
-              <th>Address</th>
+              <th>Subtypes</th>
               <th>Edit</th>
             </tr>
           </thead>
@@ -75,4 +75,4 @@ class ViewLocations extends React.Component {
     );
   }
 }
-export default ViewLocations;
+export default ViewTherapyTypes;

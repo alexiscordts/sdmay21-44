@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using InpatientTherapySchedulingProgram.Models;
+using InpatientTherapySchedulingProgram.Services.Interfaces;
+using InpatientTherapySchedulingProgram.Exceptions.UserExceptions;
+using InpatientTherapySchedulingProgram.Exceptions.TherapistActivityExceptions;
+using InpatientTherapySchedulingProgram.Exceptions.TherapistEventExceptions;
 
 namespace InpatientTherapySchedulingProgram.Controllers
 {
@@ -13,61 +14,74 @@ namespace InpatientTherapySchedulingProgram.Controllers
     [ApiController]
     public class TherapistEventController : ControllerBase
     {
-        private readonly CoreDbContext _context;
+        private readonly ITherapistEventService _service;
 
-        public TherapistEventController(CoreDbContext context)
+        public TherapistEventController(ITherapistEventService service)
         {
-            _context = context;
+            _service = service;
         }
 
         // GET: api/TherapistEvent
+        // Maybe get all therapist event in a given week?
+        // Force a JSON object to be passed in
+        // Force route to use getByTherapistId
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TherapistEvent>>> GetTherapistEvent()
+        public async Task<ActionResult<IEnumerable<TherapistEvent>>> GetTherapistEvent(TherapistEvent therapistEvent)
         {
-            return await _context.TherapistEvent.ToListAsync();
+            if (therapistEvent == null)
+            {
+                return BadRequest();
+            }
+
+            var allTherapistEvents = await _service.GetAllTherapistEvents(therapistEvent);
+
+            return Ok(allTherapistEvents);
         }
 
         // GET: api/TherapistEvent/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<TherapistEvent>> GetTherapistEvent(int id)
+        // Probably need to get all therapist event's within a given time frame for therapist id
+        [HttpGet("getTherapistEventsByTherapistId")]
+        public async Task<ActionResult<IEnumerable<TherapistEvent>>> GetTherapistEventByTherapistId(TherapistEvent therapistEvent)
         {
-            var therapistEvent = await _context.TherapistEvent.FindAsync(id);
-
             if (therapistEvent == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            return therapistEvent;
+            var allTherapistEvents = await _service.GetAllTherapistEventsByTherapistId(therapistEvent);
+
+            return Ok(allTherapistEvents);
         }
 
         // PUT: api/TherapistEvent/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTherapistEvent(int id, TherapistEvent therapistEvent)
+        [HttpPut("{eventId}")]
+        public async Task<IActionResult> PutTherapistEvent(int eventId, TherapistEvent therapistEvent)
         {
-            if (id != therapistEvent.EventId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(therapistEvent).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _service.UpdateTherapistEvent(eventId, therapistEvent);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (TherapistEventEventIdsDoNotMatchException e)
             {
-                if (!TherapistEventExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(e);
+            }
+            catch (TherapistEventDoesNotExistException e)
+            {
+                return NotFound(e);
+            }
+            catch (TherapistActivityDoesNotExistException e)
+            {
+                return BadRequest(e);
+            }
+            catch (UserDoesNotExistException e)
+            {
+                return BadRequest(e);
+            }
+            catch (UserIsNotATherapistException e)
+            {
+                return BadRequest(e);
             }
 
             return NoContent();
@@ -79,45 +93,55 @@ namespace InpatientTherapySchedulingProgram.Controllers
         [HttpPost]
         public async Task<ActionResult<TherapistEvent>> PostTherapistEvent(TherapistEvent therapistEvent)
         {
-            _context.TherapistEvent.Add(therapistEvent);
             try
             {
-                await _context.SaveChangesAsync();
+                await _service.AddTherapistEvent(therapistEvent);
+            }
+            catch (TherapistEventEventIdAlreadyExistsException e)
+            {
+                return Conflict(e);
+            }
+            catch (TherapistActivityDoesNotExistException e)
+            {
+                return NotFound(e);
+            }
+            catch (UserDoesNotExistException e)
+            {
+                return NotFound(e);
+            }
+            catch (UserIsNotATherapistException e)
+            {
+                return BadRequest(e);
             }
             catch (DbUpdateException)
             {
-                if (TherapistEventExists(therapistEvent.EventId))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
             return CreatedAtAction("GetTherapistEvent", new { id = therapistEvent.EventId }, therapistEvent);
         }
 
         // DELETE: api/TherapistEvent/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<TherapistEvent>> DeleteTherapistEvent(DateTime id)
+        [HttpDelete("{eventId}")]
+        public async Task<ActionResult<TherapistEvent>> DeleteTherapistEvent(int eventId)
         {
-            var therapistEvent = await _context.TherapistEvent.FindAsync(id);
+            TherapistEvent therapistEvent;
+
+            try
+            {
+                therapistEvent = await _service.DeleteTherapistEvent(eventId);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
             if (therapistEvent == null)
             {
                 return NotFound();
             }
 
-            _context.TherapistEvent.Remove(therapistEvent);
-            await _context.SaveChangesAsync();
-
-            return therapistEvent;
-        }
-
-        private bool TherapistEventExists(int id)
-        {
-            return _context.TherapistEvent.Any(e => e.EventId == id);
+            return Ok(therapistEvent);
         }
     }
 }

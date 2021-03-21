@@ -11,7 +11,7 @@ using InpatientTherapySchedulingProgram.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using InpatientTherapySchedulingProgram.Exceptions.UserExceptions;
 
-namespace InpatientTherapySchedulingProgramTests
+namespace InpatientTherapySchedulingProgramTests.ControllerTests
 {
     [TestClass]
     public class UserControllerTests

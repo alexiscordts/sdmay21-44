@@ -48,7 +48,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         }
 
         [TestMethod]
-        public async Task GetAllLocationsReturnsNumberOfLocations()
+        public async Task GetAllLocationsReturnsCorrectNumberOfLocations()
         {
             var allLocations = await _testLocationService.GetAllLocations();
             List<Location> listOfLocations = (List<Location>)allLocations;
