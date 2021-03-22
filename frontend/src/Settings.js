@@ -6,7 +6,7 @@ const Settings = () => {
   return (
     <div>
       <Nav />
-      <div class="pageContainer">
+      <div class="settingsPageContainer">
         <button
           class="linkButton"
           onClick={() => {

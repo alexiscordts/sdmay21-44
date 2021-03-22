@@ -20,11 +20,11 @@ import ViewLocations from "./ViewLocations";
 import EditLocation from "./EditLocation";
 import AddRoom from "./Rooms/AddRoom";
 import ViewRoom from "./Rooms/ViewRooms";
+import ViewMetrics from "./ViewMetrics";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import AddTherapyTypes from "./TherapyTypes/AddTherapyTypes";
 import EditTherapyTypes from "./TherapyTypes/EditTherapyTypes";
 import ViewTherapyTypes from "./TherapyTypes/ViewTherapyTypes";
-
 
 class App extends React.Component {
   constructor(props) {
@@ -71,6 +71,7 @@ class App extends React.Component {
           <Route path="/edit_location" component={EditLocation} />
           <Route path="/manage_rooms" component={ViewRoom} />
           <Route path="/add_room" component={AddRoom} />
+          {/* <<<<<<< HEAD */}
           <Route
             path="/"
             render={(props) => {
@@ -81,6 +82,11 @@ class App extends React.Component {
               }
             }}
           />
+          {/* ======= */}
+          <Route path="/view_Metrics" component={ViewMetrics} />
+
+          {/* <Route path="/" component={Login} handleLogin={this.handleLogin} /> */}
+          {/* >>>>>>> 81eddc17e459a1530ae41a01d1bf5a15541784f7 */}
         </Switch>
       </Router>
     );

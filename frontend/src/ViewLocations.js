@@ -72,7 +72,11 @@ class ViewLocations extends React.Component {
             }}
           >
             <img
+              // <<<<<<< HEAD
               src={require("./Icons/icons8-plus-50.png")}
+              // =======
+              //               src={require("./Icons/icons8-plus-48.png")}
+              // >>>>>>> 81eddc17e459a1530ae41a01d1bf5a15541784f7
               alt="add"
               className="iconAddLocation"
             />
