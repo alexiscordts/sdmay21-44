@@ -71,6 +71,8 @@ class App extends React.Component {
           <Route path="/edit_location" component={EditLocation} />
           <Route path="/manage_rooms" component={ViewRoom} />
           <Route path="/add_room" component={AddRoom} />
+          <Route path="/view_Metrics" component={ViewMetrics} />
+
           {/* <<<<<<< HEAD */}
           <Route
             path="/"
@@ -83,7 +85,6 @@ class App extends React.Component {
             }}
           />
           {/* ======= */}
-          <Route path="/view_Metrics" component={ViewMetrics} />
 
           {/* <Route path="/" component={Login} handleLogin={this.handleLogin} /> */}
           {/* >>>>>>> 81eddc17e459a1530ae41a01d1bf5a15541784f7 */}
