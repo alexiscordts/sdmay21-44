@@ -41,10 +41,10 @@ namespace InpatientTherapySchedulingProgram.Controllers
         }
 
         // GET: api/Location/5
-        [HttpGet("{lid}")]
-        public async Task<ActionResult<Location>> GetLocation(int lid)
+        [HttpGet("getLocationByLocationId/{locationId}")]
+        public async Task<ActionResult<Location>> GetLocation(int locationId)
         {
-            var location = await _locationService.GetLocationByLocationId(lid);
+            var location = await _locationService.GetLocationByLocationId(locationId);
 
             if (location == null)
             {
@@ -55,7 +55,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
         }
 
         // GET: api/Location/Hopkins
-        [HttpGet("{name}")]
+        [HttpGet("getLocationByLocationName/{name}")]
         public async Task<ActionResult<Location>> GetLocation(string name)
         {
             var location = await _locationService.GetLocationByName(name);
@@ -71,12 +71,12 @@ namespace InpatientTherapySchedulingProgram.Controllers
         // PUT: api/Location/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{lid}")]
-        public async Task<IActionResult> PutLocation(int lid, Location location)
+        [HttpPut("{locationId}")]
+        public async Task<IActionResult> PutLocation(int locationId, Location location)
         {
             try
             {
-                await _locationService.UpdateLocation(lid, location);
+                await _locationService.UpdateLocation(locationId, location);
             }
             catch (LocationIdsDoNotMatchException e)
             {
