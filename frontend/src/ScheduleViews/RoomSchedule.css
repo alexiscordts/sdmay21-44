@@ -1,0 +1,364 @@
+#roomSchedule   {
+    background-color: white;
+    float: clear;
+    border: 1px solid #D1D2D4;
+    width: 100%;
+    
+}
+
+#roomSchedule #scheduleContainer  {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    max-height: calc(100vh - 150px);
+}
+
+#roomSchedule #rooms  {
+    overflow-x: hidden;
+    white-space: nowrap;
+    position: relative;
+    display: flex;
+}
+
+#roomSchedule .room    {
+    min-width: 100px;
+    height: 100%;
+    text-align: center;
+    border-right: 1px solid #D1D2D4;
+    position: relative;
+    float: left;
+    display: block;
+}
+
+#roomSchedule .therapist    {
+    min-width: 200px;
+    height: 100%;
+    text-align: center;
+    border-right: 1px solid #D1D2D4;
+    position: relative;
+    float: left;
+    display: block;
+}
+
+#roomSchedule .roomLabel  {
+    height: 36px;
+    width: 100%;
+    line-height: 36px;
+    background-color: #00A9D8;
+    color: white;
+    overflow: hidden;
+}
+
+#roomSchedule .roomLabel2  {
+    height: 36px;
+    width: 100px;
+    line-height: 36px;
+    background-color: orange;
+    border-right: 1px solid #D1D2D4;
+    text-align: center;
+    color: white;
+    display: inline-block;
+    position: relative;
+}
+
+#roomSchedule #hourColumn    {
+    width: 75px;
+    border-right: 1px solid #D1D2D4;
+    text-align: center;
+    display: block;
+    float: left;
+}
+
+#roomSchedule .hour   {
+    height: 50px;
+    width: 100%;
+    background-color: white;
+    line-height: 50px;
+    vertical-align: middle;
+    border-bottom: 1px solid #D1D2D4;
+    border-top: 1px solid white;
+}
+
+#roomSchedule .halfHour   {
+    height: 25px;
+    line-height: 25px;
+    background-color: white;
+    vertical-align: middle;
+    border-bottom: 1px solid #D1D2D4;
+    cursor: pointer;
+}
+
+#roomSchedule .halfHour .hide {
+    background-color: #D1D2D4;
+    height: 100%;
+    width: 100%;
+    line-height: 25px;
+    transition: 0.2s;
+    opacity: 0;
+}
+
+#roomSchedule .halfHour .hide:hover   {
+    opacity: 1;
+}
+
+#roomSchedule ::-webkit-scrollbar {
+    width: 15px;
+  }
+  
+  /* Track */
+  #roomSchedule ::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+  }
+   
+  /* Handle */
+  #roomSchedule ::-webkit-scrollbar-thumb {
+    background: #888; 
+    border-radius: 7px;
+  }
+
+  #roomSchedule #topSpace   {
+      width: 100%;
+      height:36px;
+      background-color: #00A9D8;
+  }
+
+  #roomSchedule .appointment  {
+      height: 72px;
+      width: 100%;
+      background-color: #00529b;
+      position: absolute;
+      top: 72px;
+      text-align: left;
+      color: white;
+      overflow: hidden;
+      transition: 0.5s;
+      border-radius: 10px;
+      -webkit-box-shadow: inset 0px 0px 15px 0px rgba(0,0,0,0.2);
+     -moz-box-shadow: inset 0px 0px 15px 0px rgba(0,0,0,0.2);
+     box-shadow: inset 0px 0px 15px 0px rgba(0,0,0,0.2);
+     z-index: 2;
+  }
+
+  #roomSchedule .name {
+
+      font-size: 0.9em;
+      margin-top: 8px;
+      margin-left: 10px;
+  }
+
+  #roomSchedule .time  {
+    font-size: 0.9em;
+    margin-top: 5px;
+    margin-left: 10px;
+  }
+
+  #roomSchedule .notes    {
+    font-size: 0.8em;
+    margin-top: 15px;
+    padding: 10px;
+    display: none;
+    white-space: normal;
+  }
+
+  #roomSchedule .editAppointmentButton    {
+    font-size: 0.8em;
+    margin: 10px;
+    display: none;
+    white-space: normal;
+    border: none;
+    float: left;
+  }
+
+  #roomSchedule button.editAppointmentButton:hover   {
+      cursor: pointer;
+  }
+
+  #roomSchedule #timeLine {
+    height: 2px;
+    width: 100%;
+    background-color:red;
+    position: absolute;
+    text-align: left;
+    z-index: 3;
+    position: relative;
+  }
+
+  #roomSchedule .hidden   {
+      display: none;
+  }
+
+  #roomSchedule  #toggle   {
+    width: 360px;
+    margin: auto;
+}
+
+#roomSchedule .daytoggle    {
+    float: left;
+    height: 30px;
+    width: 30px;
+    border-radius: 15px;
+    text-align: center;
+    line-height: 30px;
+    margin: 5px;
+    background-color: #A8A9AD;
+    color: rgb(228, 228, 228);
+    font-weight: 600;
+    transition: 0.5s;
+}
+
+#roomSchedule .daytoggle:hover  {
+    cursor: pointer;
+}
+
+#roomSchedule .scroll {
+    background-color: #00A9D8;
+    opacity: 100%;
+}
+
+@media print {
+    #roomSchedule #scheduleContainer {
+      overflow-x: visible;
+      overflow-y: hidden;
+      width: 1100px;
+      max-height: fit-content;
+    }
+
+    #roomSchedule #timeLine    {
+        display: none;
+    }
+
+    .page-break {
+        margin-top: 1rem;
+        display: block;
+        page-break-before: auto;
+      }
+
+      #roomSchedule  #toggle    {
+          display: none;
+      }
+      #roomSchedule #rooms  {
+        overflow-x: auto;
+        width: auto;
+        white-space: nowrap;
+        position: relative;
+        display: block;
+    }
+
+    #roomSchedule .room    {
+        min-width: 100px;
+        width: 100px;
+        height: 100%;
+        text-align: center;
+        border-right: 2px solid #D1D2D4;
+        position: relative;      
+        float: left;
+        display: block;
+    }
+
+    #roomSchedule .therapist    {
+        min-width: 100px;
+        width: 100px;
+        height: 100%;
+        text-align: center;
+        border-right: 2px solid #D1D2D4;
+        position: relative;      
+        float: left;
+        display: block;
+    }
+      
+    .printHours {
+        width: 75px;
+        float: left;
+    }
+
+    #roomSchedule #hourColumn    {
+        display: none;
+    }
+
+    #roomSchedule .halfhour   {
+        border: none;
+        border-bottom: 1px solid white;
+    }
+
+    #roomSchedule .printGrey  {
+        background-color: #D1D2D4;
+    }
+
+    #roomSchedule .halfhour.printGrey  {
+        border-bottom: 1px solid #D1D2D4;
+    }
+
+    #roomSchedule .hour  {
+        border-top: 1px solid white;
+        border-bottom: 1px solid white;
+    }
+
+    #roomSchedule .hour.printGrey  {
+        border-bottom: 1px solid #D1D2D4;
+        border-top: 1px solid #D1D2D4;
+    }
+
+    #roomSchedule .roomLabel  {
+        height: 36px;
+        width: 100%;
+        line-height: 18px;
+        background-color: #00A9D8;
+        color: white;
+        white-space: initial;
+    }
+
+    .scheduleOptions  {
+        display: none;
+    }  
+  }
+  
+  @page {
+    margin: 10mm;
+  }
+
+.printHours {
+    width: 0px;
+    float: left;
+    overflow: hidden;
+}
+
+.scrollLabel    {
+    
+    margin-right: 10px;
+}
+
+@media only screen and (max-width: 700px) {
+    .scheduleOptions  {
+        display: none;
+    }
+}
+
+.scheduleOptions    {
+    height: 50px;
+    float: right;
+}
+
+.adjustColWidth {
+    font-size: 20px;
+    height: 25px;
+    width: 25px;
+    border: none;
+    outline: none;
+    color: white;
+    background-color: #00529b;
+    margin: 2px;
+    border-radius: 16px;
+}
+
+.adjustColWidth:hover   {
+    cursor: pointer;
+}
+
+.therapistMetrics   {
+    width: 100%;
+    height: 25px;
+    top: 500;
+    line-height: 25px;
+    position: absolute;
+    z-Index: 3;
+    display: none;
+}

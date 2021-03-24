@@ -24,6 +24,7 @@ class Dashboard extends React.Component {
             ☰
           </div>
           <img src="https://www.unitypoint.org/images/unitypoint/UnityPointHealthLogo.svg" />
+          <div id="appName"> - &nbsp;Therapy Scheduler</div>
           <div id="signout">
             <img src={require("./Icons/icons8-exit-48.png")} />
           </div>
@@ -66,7 +67,11 @@ function loadMenuItems() {
       <div class="menuLabel">View Schedule</div>
     </button>,
 
-    <button class="menuButton">
+    <button class="menuButton"
+    onClick={() => {
+      window.location.href = "/view_metrics";
+    }}
+    >
       <img
         class="menuButtonImg"
         src={require("./Icons/icons8-combo-chart-50.png")}
@@ -134,7 +139,7 @@ function loadMenuItems() {
     >
       <img
         class="menuButtonImg"
-        src={require("./Icons/icons8-settings-52.png")}
+        src={require("./Icons/icons8-settings-48.png")}
       />
       <div class="menuLabel">Settings</div>
     </button>
