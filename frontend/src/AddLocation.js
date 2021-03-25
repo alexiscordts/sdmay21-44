@@ -3,83 +3,106 @@ import "./FormStyles.css";
 import Nav from "./Nav";
 import axios from "axios";
 
-const AddLocation = () => {
-  const [name, setName] = useState("");
-  const [address, setAddress] = useState("");
+class AddLocation extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      locationId: "8",
+      name: "",
+      appointment: [],
+      patient: [],
+      room: [],
+    };
+    this.handleChange = this.handleChange.bind(this);
+    this.handlePost = this.handlePost.bind(this);
+  }
 
-  return (
-    <div>
-      {/* <Nav /> */}
-      {/* <div class="formScreen">
-        <div class="form-style">
-          <div class="form-style-heading"> Add a Location </div>
-          <form>
-            <label for="name">
-              <span>
-                Name
-                <span class="required">*</span>
-              </span>
-              <input
-                type="text"
-                class="input-field"
-                name="name"
-                value={name}
-                onClick={(e) => setName(e.target.value)}
-              />
-            </label>
-            <label for="name">
-              <span>
-                Address
-                <span class="required">*</span>
-              </span>
-              <input
-                type="text"
-                class="input-field"
-                name="address"
-                value={address}
-                onClick={(e) => setAddress(e.target.value)}
-              />
-            </label>
-            <div class="submitLabel">
-              <input
-                type="submit"
-                value="Create"
-                onClick={() => {
-                  console.log("submitted");
-                  const url = " https://localhost:44348/api/location/";
-                  axios.post(" https://localhost:44348/api/location/", {
-                    locationID: 4,
-                    name: "Other",
-                    appointment: [],
-                    patient: [],
-                    room: [],
-                  });
-                }}
-              />
-            </div>
-          </form> */}
-      {/* </div> */}
-      {/* </div> */}
-      <button
+  handlePost(event) {
+    event.preventDefault();
+    console.log("submitted");
+    const url = "http://10.29.163.20:8081/api/location/";
+    axios
+      .post(url, this.state)
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
+  handleChange(event) {
+    this.setState({
+      [event.target.name]: event.target.value,
+    });
+  }
+  render() {
+    // const AddLocation = () => {
+    //   const [name, setName] = useState("");
+    //   const [address, setAddress] = useState("");
+
+    return (
+      <div>
+        <Nav />
+        <div class="formScreen">
+          <div class="form-style">
+            <div class="form-style-heading"> Add a Location </div>
+            <form onSubmit={this.handlePost}>
+              <label for="name">
+                <span>
+                  Name
+                  <span class="required">*</span>
+                </span>
+                <input
+                  type="text"
+                  class="input-field"
+                  name="name"
+                  onChange={this.handleChange}
+                />
+              </label>
+              <label for="name">
+                <span>
+                  Location ID
+                  <span class="required">*</span>
+                </span>
+                <input
+                  type="text"
+                  class="input-field"
+                  name="address"
+                  onChange={this.handleChange}
+                />
+              </label>
+              <div class="submitLabel">
+                <input type="submit" value="Create" />
+              </div>
+            </form>
+          </div>
+        </div>
+        {/* <button
         onClick={() => {
           console.log("submitted");
-          const url = "https://localhost:44348/api/location/";
+          const url = "http://10.29.163.20:8081/api/location/";
           axios
             .post(url, {
-              locationID: "5",
-              name: "blah",
-              appointment: "[]",
-              patient: "[]",
-              room: "[]",
+              locationID: "7",
+              name: "test",
+              appointment: [],
+              patient: [],
+              room: [],
             })
             .then(function (response) {
               console.log(response);
+            })
+            .catch(function (error) {
+              console.log(error);
             });
         }}
       >
         Click
-      </button>
-    </div>
-  );
-};
+      </button> */}
+      </div>
+    );
+  }
+}
+
 export default AddLocation;
