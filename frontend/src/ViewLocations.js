@@ -20,7 +20,7 @@ class ViewLocations extends React.Component {
       .get(url)
       // .then((json = {}) => json.data)
       .then((response) => {
-        // console.log(response.data);
+        console.log(response.data);
         const locationList = response.data;
         this.setState({ locationList });
       });

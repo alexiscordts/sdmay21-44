@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./FormStyles.css";
 import Nav from "./Nav";
+import axios from "axios";
 
 const AddLocation = () => {
   const [name, setName] = useState("");
@@ -8,11 +9,11 @@ const AddLocation = () => {
 
   return (
     <div>
-      <Nav />
-      <div class="formScreen">
+      {/* <Nav /> */}
+      {/* <div class="formScreen">
         <div class="form-style">
           <div class="form-style-heading"> Add a Location </div>
-          <form action="" method="post">
+          <form>
             <label for="name">
               <span>
                 Name
@@ -40,11 +41,44 @@ const AddLocation = () => {
               />
             </label>
             <div class="submitLabel">
-              <input type="submit" value="Create" />
+              <input
+                type="submit"
+                value="Create"
+                onClick={() => {
+                  console.log("submitted");
+                  const url = " https://localhost:44348/api/location/";
+                  axios.post(" https://localhost:44348/api/location/", {
+                    locationID: 4,
+                    name: "Other",
+                    appointment: [],
+                    patient: [],
+                    room: [],
+                  });
+                }}
+              />
             </div>
-          </form>
-        </div>
-      </div>
+          </form> */}
+      {/* </div> */}
+      {/* </div> */}
+      <button
+        onClick={() => {
+          console.log("submitted");
+          const url = "https://localhost:44348/api/location/";
+          axios
+            .post(url, {
+              locationID: "5",
+              name: "blah",
+              appointment: "[]",
+              patient: "[]",
+              room: "[]",
+            })
+            .then(function (response) {
+              console.log(response);
+            });
+        }}
+      >
+        Click
+      </button>
     </div>
   );
 };
