@@ -34,10 +34,6 @@ namespace InpatientTherapySchedulingProgram.Services
             {
                 throw new TherapistEventEventIdAlreadyExistsException();
             }
-            if (!await ActivityNameExists(therapistEvent.ActivityName))
-            {
-                throw new TherapistActivityDoesNotExistException();
-            }
             if (!await UserExists(therapistEvent.TherapistId))
             {
                 throw new UserDoesNotExistException();
@@ -138,10 +134,6 @@ namespace InpatientTherapySchedulingProgram.Services
             {
                 throw new TherapistEventEventIdsDoNotMatchException();
             }
-            if (!await ActivityNameExists(therapistEvent.ActivityName))
-            {
-                throw new TherapistActivityDoesNotExistException();
-            }
             if (!await UserExists(therapistEvent.TherapistId))
             {
                 throw new UserDoesNotExistException();
@@ -184,16 +176,6 @@ namespace InpatientTherapySchedulingProgram.Services
             var therapistEvent = await _context.TherapistEvent.FindAsync(eventId);
 
             return await _context.TherapistEvent.FindAsync(eventId) != null;
-        }
-
-        /// <summary>
-        /// Checks to see if therapist event activity name exists
-        /// </summary>
-        /// <param name="activityName">Activity name to check against therapist activity</param>
-        /// <returns>Whether or not a record exists in the database that matches the activity name</returns>
-        private async Task<bool> ActivityNameExists(string activityName)
-        {
-            return await _context.TherapistActivity.FindAsync(activityName) != null;
         }
 
         /// <summary>

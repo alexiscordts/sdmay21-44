@@ -47,7 +47,7 @@ namespace InpatientTherapySchedulingProgram.Services
 
             return user;
         }
-
+        
         public async Task<IEnumerable<User>> GetAllUsers()
         {
             return await _context.User.Where(u => u.Active).ToListAsync();

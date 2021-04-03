@@ -40,7 +40,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
                 var newTherapy = ModelFakes.TherapyFake.Generate();
                 _testTherapies.Add(ObjectExtensions.Copy(newTherapy));
                 _testAdls.Add(newTherapy.Adl);
-                _testTypes.Add(newTherapy.TherapyType);
+                _testTypes.Add(newTherapy.Type);
                 _testContext.Add(newTherapy);
                 _testContext.SaveChanges();
             }

@@ -8,6 +8,7 @@ using InpatientTherapySchedulingProgramTests.Fakes;
 using System.Threading.Tasks;
 using InpatientTherapySchedulingProgram.Exceptions.UserExceptions;
 using System;
+using System.Linq;
 
 namespace InpatientTherapySchedulingProgramTests.ServiceTests
 {
@@ -17,6 +18,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         private List<User> _testUsers;
         private CoreDbContext _testContext;
         private UserService _testUserService;
+        private User _nonActiveUser;
 
         [TestInitialize]
         public void Initialize()
@@ -31,10 +33,16 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
             for(var i = 0; i < 10; i++)
             {
                 var newUser = ModelFakes.UserFake.Generate();
-                _testUsers.Add(ObjectExtensions.Copy(newUser));
                 _testContext.Add(newUser);
                 _testContext.SaveChanges();
+                _testUsers.Add(ObjectExtensions.Copy(_testContext.User.FirstOrDefault(u => u.Username.Equals(newUser.Username))));
             }
+
+            _nonActiveUser = ModelFakes.UserFake.Generate();
+            _nonActiveUser.Active = false;
+            _testContext.Add(_nonActiveUser);
+            _testContext.SaveChanges();
+            _testUsers.Add(ObjectExtensions.Copy(_testContext.User.FirstOrDefault(u => u.Username.Equals(_nonActiveUser.Username))));
 
             _testUserService = new UserService(_testContext);
         }
@@ -148,16 +156,6 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
             var returnUser = await _testUserService.GetUserById(newUser.UserId);
 
             returnUser.Should().Be(newUser);
-        }
-
-        [TestMethod]
-        public async Task AddUserWithExistingIdThrowsError()
-        {
-            int existingId = _testUsers[0].UserId;
-            var newUser = ModelFakes.UserFake.Generate();
-            newUser.UserId = existingId;
-
-            await _testUserService.Invoking(s => s.AddUser(newUser)).Should().ThrowAsync<UserIdAlreadyExistException>();
         }
 
         [TestMethod]

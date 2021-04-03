@@ -8,7 +8,6 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
     {
         public static Faker<User>UserFake { get; set; }
         public static Faker<Therapy>TherapyFake { get; set; }
-        public static Faker<TherapistActivity>TherapistActivityFake { get; set; }
         public static Faker<Location> LocationFake { get; set; }
         public static Faker<TherapistEvent> TherapistEventFake { get; set; }
         public static Faker<Permission> PermissionFake { get; set; }
@@ -19,18 +18,10 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
         {
             BuildUserFakes();
             BuildTherapyFakes();
-            BuildTherapistActivityFakes();
             BuildLocationFakes();
             BuildTherapistEventFakes();
             BuildPermissionFakes();
             BuildPatientFakes();
-        }
-
-        private static void BuildTherapistActivityFakes()
-        {
-            TherapistActivityFake = new Faker<TherapistActivity>();
-            TherapistActivityFake.RuleFor(m => m.ActivityName, r => r.IndexGlobal + r.Random.AlphaNumeric(10));
-            TherapistActivityFake.RuleFor(m => m.IsProductive, r => r.Random.Bool());
         }
 
         private static void BuildTherapyFakes()
@@ -45,7 +36,7 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
         private static void BuildUserFakes()
         {
             UserFake = new Faker<User>();
-            UserFake.RuleFor(m => m.UserId, r => r.UniqueIndex);
+            //UserFake.RuleFor(m => m.UserId, r => r.UniqueIndex);
             UserFake.RuleFor(m => m.FirstName, r => r.Name.FirstName());
             UserFake.RuleFor(m => m.MiddleName, r => r.Name.FirstName());
             UserFake.RuleFor(m => m.LastName, r => r.Name.LastName());

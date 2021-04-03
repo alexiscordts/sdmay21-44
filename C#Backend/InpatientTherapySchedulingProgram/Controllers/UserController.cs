@@ -74,10 +74,6 @@ namespace InpatientTherapySchedulingProgram.Controllers
             {
                 return BadRequest(e);
             }
-            catch (UserIsNoLongerActiveException e)
-            {
-                return BadRequest(e);
-            }
             catch (UserDoesNotExistException)
             {
                 return NotFound();

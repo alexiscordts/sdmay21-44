@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using InpatientTherapySchedulingProgram.Exceptions.PatientExceptions;
 
 
-namespace InpatientTherapySchedulingProgramTests
+namespace InpatientTherapySchedulingProgramTests.ControllerTests
 {
     [TestClass]
     public class PatientControllerTests

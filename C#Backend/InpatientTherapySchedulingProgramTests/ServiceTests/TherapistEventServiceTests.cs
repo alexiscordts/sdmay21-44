@@ -17,7 +17,6 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
     public class TherapistEventServiceTests
     {
         private List<User> _testUsers;
-        private List<TherapistActivity> _testTherapistActivities;
         private List<TherapistEvent> _testTherapistEvents;
         private DateTime _testTargetStartDateTime;
         private DateTime _testTargetEndDateTime;
@@ -35,7 +34,6 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
             _testContext = new CoreDbContext(options);
             _testContext.Database.EnsureDeleted();
             _testUsers = new List<User>();
-            _testTherapistActivities = new List<TherapistActivity>();
             _testTherapistEvents = new List<TherapistEvent>();
             _testTargetStartDateTime = new DateTime(2010, 2, 8);
             _testTargetEndDateTime = new DateTime(2010, 2, 12);
@@ -53,14 +51,8 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
                 _testContext.Add(newPermission);
                 _testContext.SaveChanges();
 
-                var newTherapistActivity = ModelFakes.TherapistActivityFake.Generate();
-                _testTherapistActivities.Add(ObjectExtensions.Copy(newTherapistActivity));
-                _testContext.Add(newTherapistActivity);
-                _testContext.SaveChanges();
-
                 var newTherapistEvent = ModelFakes.TherapistEventFake.Generate();
                 newTherapistEvent.TherapistId = newUser.UserId;
-                newTherapistEvent.ActivityName = newTherapistActivity.ActivityName;
                 
                 if (i <= 2)
                 {
@@ -80,7 +72,6 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
 
             var newEdgeTherapistEvent = ModelFakes.TherapistEventFake.Generate();
             newEdgeTherapistEvent.TherapistId = _testUsers[0].UserId;
-            newEdgeTherapistEvent.ActivityName = _testTherapistActivities[0].ActivityName;
             newEdgeTherapistEvent.StartTime = _testTargetStartDateTime.AddDays(-1);
             _testTherapistEvents.Add(ObjectExtensions.Copy(newEdgeTherapistEvent));
             _testContext.Add(newEdgeTherapistEvent);
@@ -88,7 +79,6 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
 
             newEdgeTherapistEvent = ModelFakes.TherapistEventFake.Generate();
             newEdgeTherapistEvent.TherapistId = _testUsers[0].UserId;
-            newEdgeTherapistEvent.ActivityName = _testTherapistActivities[0].ActivityName;
             newEdgeTherapistEvent.EndTime = _testTargetEndDateTime.AddDays(1);
             _testTherapistEvents.Add(ObjectExtensions.Copy(newEdgeTherapistEvent));
             _testContext.Add(newEdgeTherapistEvent);
@@ -217,7 +207,6 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         {
             var newTherapistEvent = ModelFakes.TherapistEventFake.Generate();
             newTherapistEvent.TherapistId = _testUsers[0].UserId;
-            newTherapistEvent.ActivityName = _testTherapistActivities[0].ActivityName;
 
             var returnTherapistEvent = await _testTherapistEventService.AddTherapistEvent(newTherapistEvent);
 
@@ -229,7 +218,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         {
             var newTherapistEvent = ModelFakes.TherapistEventFake.Generate();
             newTherapistEvent.TherapistId = _testUsers[0].UserId;
-            newTherapistEvent.ActivityName = _testTherapistActivities[0].ActivityName;
+           // newTherapistEvent.ActivityName = _testTherapistActivities[0].ActivityName;
 
             var returnTherapistEvent = await _testTherapistEventService.AddTherapistEvent(newTherapistEvent);
 
@@ -241,7 +230,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         {
             var newTherapistEvent = ModelFakes.TherapistEventFake.Generate();
             newTherapistEvent.TherapistId = _testUsers[0].UserId;
-            newTherapistEvent.ActivityName = _testTherapistActivities[0].ActivityName;
+            //newTherapistEvent.ActivityName = _testTherapistActivities[0].ActivityName;
 
             await _testTherapistEventService.AddTherapistEvent(newTherapistEvent);
             var allTherapistEvents = await _testTherapistEventService.GetAllTherapistEvents(_testTherapistEvent);
@@ -255,7 +244,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         {
             var newTherapistEvent = ModelFakes.TherapistEventFake.Generate();
             newTherapistEvent.TherapistId = _testUsers[0].UserId;
-            newTherapistEvent.ActivityName = _testTherapistActivities[0].ActivityName;
+            //newTherapistEvent.ActivityName = _testTherapistActivities[0].ActivityName;
 
             await _testTherapistEventService.AddTherapistEvent(newTherapistEvent);
             var allTherapistEvents = await _testTherapistEventService.GetAllTherapistEvents(_testTherapistEvent);
@@ -269,7 +258,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         {
             var newTherapistEvent = ModelFakes.TherapistEventFake.Generate();
             newTherapistEvent.TherapistId = _testUsers[0].UserId;
-            newTherapistEvent.ActivityName = _testTherapistActivities[0].ActivityName;
+            //newTherapistEvent.ActivityName = _testTherapistActivities[0].ActivityName;
             newTherapistEvent.EventId = _testTherapistEvents[0].EventId;
 
             await _testTherapistEventService.Invoking(s => s.AddTherapistEvent(newTherapistEvent)).Should().ThrowAsync<TherapistEventEventIdAlreadyExistsException>();
@@ -290,7 +279,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         {
             var newTherapistEvent = ModelFakes.TherapistEventFake.Generate();
             newTherapistEvent.TherapistId = -1;
-            newTherapistEvent.ActivityName = _testTherapistActivities[0].ActivityName;
+            //newTherapistEvent.ActivityName = _testTherapistActivities[0].ActivityName;
 
             await _testTherapistEventService.Invoking(s => s.AddTherapistEvent(newTherapistEvent)).Should().ThrowAsync<UserDoesNotExistException>();
         }
@@ -300,7 +289,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         {
             var newTherapistEvent = ModelFakes.TherapistEventFake.Generate();
             newTherapistEvent.TherapistId = _testNonTherapistUser.UserId;
-            newTherapistEvent.ActivityName = _testTherapistActivities[0].ActivityName;
+            //newTherapistEvent.ActivityName = _testTherapistActivities[0].ActivityName;
             
             await _testTherapistEventService.Invoking(s => s.AddTherapistEvent(newTherapistEvent)).Should().ThrowAsync<UserIsNotATherapistException>();
         }
@@ -415,7 +404,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         public async Task UpdateTherapistEventThatDoesNotExistThrowsTherapistEventDoesNotExistException()
         {
             var fakeTherapistEvent = ModelFakes.TherapistEventFake.Generate();
-            fakeTherapistEvent.ActivityName = _testTherapistActivities[0].ActivityName;
+            //fakeTherapistEvent.ActivityName = _testTherapistActivities[0].ActivityName;
             fakeTherapistEvent.TherapistId = _testUsers[0].UserId;
 
             await _testTherapistEventService.Invoking(s => s.UpdateTherapistEvent(fakeTherapistEvent.EventId, fakeTherapistEvent)).Should().ThrowAsync<TherapistEventDoesNotExistException>();
