@@ -70,15 +70,19 @@ namespace InpatientTherapySchedulingProgram.Controllers
             {
                 await _service.UpdateUser(id, user);
             }
-            catch(UserIdsDoNotMatchException e)
+            catch (UserIdsDoNotMatchException e)
             {
                 return BadRequest(e);
             }
-            catch(UserDoesNotExistException)
+            catch (UserIsNoLongerActiveException e)
+            {
+                return BadRequest(e);
+            }
+            catch (UserDoesNotExistException)
             {
                 return NotFound();
             }
-            catch(DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException)
             {
                 throw;
             }
@@ -96,15 +100,11 @@ namespace InpatientTherapySchedulingProgram.Controllers
             {
                 await _service.AddUser(user);
             }
-            catch(UserIdAlreadyExistException e)
+            catch (UsernameAlreadyExistException e)
             {
                 return Conflict(e);
             }
-            catch(UsernameAlreadyExistException e)
-            {
-                return Conflict(e);
-            }
-            catch(DbUpdateException)
+            catch (DbUpdateException)
             {
                 throw;
             }
@@ -122,12 +122,12 @@ namespace InpatientTherapySchedulingProgram.Controllers
             {
                 user = await _service.DeleteUser(id);
 
-                if(user == null)
+                if (user == null)
                 {
                     return NotFound();
                 }
             }
-            catch(DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException)
             {
                 throw;
             }
