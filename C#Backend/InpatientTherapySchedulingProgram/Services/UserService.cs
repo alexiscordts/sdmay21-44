@@ -55,7 +55,7 @@ namespace InpatientTherapySchedulingProgram.Services
 
         public async Task<User> GetUserById(int id)
         {
-            return await _context.User.Where(u => u.UserId == id && u.Active).FirstOrDefaultAsync();
+            return await _context.User.FirstOrDefaultAsync(u => u.UserId == id && u.Active);
         }
 
         public async Task<User> GetUserByUsername(string username)

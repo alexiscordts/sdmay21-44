@@ -37,8 +37,9 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
         {
             TherapyFake = new Faker<Therapy>();
             TherapyFake.RuleFor(m => m.Adl, r => r.IndexGlobal + r.Company.CompanyName());
-            TherapyFake.RuleFor(m => m.TherapyType, r => r.Random.String2(10));
+            TherapyFake.RuleFor(m => m.Type, r => r.Random.String2(10));
             TherapyFake.RuleFor(m => m.Abbreviation, r => r.IndexGlobal + r.Company.CompanySuffix());
+            TherapyFake.RuleFor(m => m.Active, true);
         }
 
         private static void BuildUserFakes()
@@ -52,6 +53,7 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
             UserFake.RuleFor(m => m.PhoneNumber, r => r.Phone.PhoneNumber());
             UserFake.RuleFor(m => m.Username, r => r.IndexGlobal + r.Person.UserName);
             UserFake.RuleFor(m => m.Password, r => r.Internet.Password());
+            UserFake.RuleFor(m => m.Active, true);
         }
         private static void BuildPatientFakes()
         {
@@ -62,9 +64,11 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
             PatientFake.RuleFor(m => m.LastName, r => r.Name.LastName());
             PatientFake.RuleFor(m => m.Address, r => r.Address.FullAddress());
             PatientFake.RuleFor(m => m.PhoneNumber, r => r.Phone.PhoneNumber());
-            PatientFake.RuleFor(m => m.LocationName, r => r.Company.CompanyName());
+            PatientFake.RuleFor(m => m.RoomNumber, r => r.Random.Int(400, 1000));
+            PatientFake.RuleFor(m => m.LocationId, r => r.Random.Int(0, 10000));
             PatientFake.RuleFor(m => m.StartDate, r => r.Date.Past());
-            PatientFake.RuleFor(m => m.PmrPhysician, r => r.Name.FullName());
+            PatientFake.RuleFor(m => m.PmrPhysicianId, r => r.Random.Int(0, 10000));
+            PatientFake.RuleFor(m => m.Active, true);
 
         }
         private static void BuildLocationFakes()
@@ -72,6 +76,9 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
             LocationFake = new Faker<Location>();
             LocationFake.RuleFor(m => m.LocationId, r => r.UniqueIndex);
             LocationFake.RuleFor(m => m.Name, r => r.UniqueIndex + r.Random.String2(10));
+            LocationFake.RuleFor(m => m.Address, r => r.Address.FullAddress());
+            LocationFake.RuleFor(m => m.PhoneNumber, r => r.Phone.PhoneNumber());
+            LocationFake.RuleFor(m => m.Active, true);
         }
 
         private static void BuildTherapistEventFakes()
@@ -83,6 +90,7 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
             TherapistEventFake.RuleFor(m => m.EndTime, r => r.Date.Soon());
             TherapistEventFake.RuleFor(m => m.ActivityName, r => r.IndexGlobal + r.Random.AlphaNumeric(10));
             TherapistEventFake.RuleFor(m => m.Notes, r => r.Commerce.ProductDescription());
+            TherapistEventFake.RuleFor(m => m.Active, true);
         }
         
         private static void BuildPermissionFakes()
