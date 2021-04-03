@@ -117,15 +117,15 @@ namespace InpatientTherapySchedulingProgram.Controllers
             try
             {
                 user = await _service.DeleteUser(id);
-
-                if (user == null)
-                {
-                    return NotFound();
-                }
             }
             catch (DbUpdateConcurrencyException)
             {
                 throw;
+            }
+
+            if (user == null)
+            {
+                return NotFound();
             }
 
             return Ok(user);
