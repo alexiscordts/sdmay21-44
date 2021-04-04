@@ -12,7 +12,7 @@ namespace InpatientTherapySchedulingProgram.Services
     public class PermissionService : IPermissionService
     {
         private readonly CoreDbContext _context;
-        HashSet<string> _validRoles;
+        private readonly HashSet<string> _validRoles;
 
         public PermissionService(CoreDbContext context)
         {
@@ -89,7 +89,7 @@ namespace InpatientTherapySchedulingProgram.Services
 
         private async Task<bool> UserExists(int userId)
         {
-            return await _context.User.FindAsync(userId) != null;
+            return await _context.User.FirstOrDefaultAsync(u => u.UserId == userId && u.Active) != null;
         }
 
         private async Task<bool> PermissionExists(Permission permission)
