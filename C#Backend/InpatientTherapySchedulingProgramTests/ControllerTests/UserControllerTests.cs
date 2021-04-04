@@ -49,7 +49,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         }
 
         [TestMethod]
-        public async Task ValidGetAllReturnsOkResponse()
+        public async Task ValidGetAllUsersReturnsOkResponse()
         {
             var response = await _testUserController.GetUser();
 
@@ -130,7 +130,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         }
 
         [TestMethod]
-        public async Task NonMatchingUserIdPutUserReturnsBadRequest()
+        public async Task NonMatchingUserIdPutUserReturnsBadRequestResponse()
         {
             _fakeUserService.Setup(s => s.UpdateUser(It.IsAny<int>(), It.IsAny<User>())).ThrowsAsync(new UserIdsDoNotMatchException());
 
@@ -140,7 +140,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         }
 
         [TestMethod]
-        public async Task NonExistingUserPostUserReturnsNotFound()
+        public async Task NonExistingUserPostUserReturnsNotFoundResponse()
         {
             _fakeUserService.Setup(s => s.UpdateUser(It.IsAny<int>(), It.IsAny<User>())).ThrowsAsync(new UserDoesNotExistException());
 

@@ -48,7 +48,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         }
 
         [TestMethod]
-        public async Task GetAllReturnsCorrectType()
+        public async Task GetAllUsersReturnsCorrectType()
         {
             var allUsers = await _testUserService.GetAllUsers();
             
@@ -56,7 +56,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         }
 
         [TestMethod]
-        public async Task GetAllReturnsCorrectNumberOfUsers()
+        public async Task GetAllUsersReturnsCorrectNumberOfUsers()
         {
             var allUsers = await _testUserService.GetAllUsers();
             List<User> listOfUsers = (List<User>)allUsers;
@@ -65,7 +65,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         }
 
         [TestMethod]
-        public async Task GetAllReturnsCorrectListOfUsers()
+        public async Task GetAllUsersReturnsCorrectListOfUsers()
         {
             var allUsers = await _testUserService.GetAllUsers();
             List<User> listOfUsers = (List<User>)allUsers;
@@ -159,13 +159,29 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         }
 
         [TestMethod]
-        public async Task AddUserWithExistingUsernameThrowsError()
+        public async Task AddUserWithExistingUsernameThrowsUsernameAlreadyExistException()
         {
             string existingUsername = _testUsers[0].Username;
             var newUser = ModelFakes.UserFake.Generate();
             newUser.Username = existingUsername;
 
             await _testUserService.Invoking(s => s.AddUser(newUser)).Should().ThrowAsync<UsernameAlreadyExistException>();
+        }
+
+        [TestMethod]
+        public async Task DeleteUserReturnsCorrectType()
+        {
+            var returnUser = await _testUserService.DeleteUser(_testUsers[0].UserId);
+
+            returnUser.Should().BeOfType<User>();
+        }
+
+        [TestMethod]
+        public async Task DeleteUserReturnsCorrectUser()
+        {
+            var returnUser = await _testUserService.DeleteUser(_testUsers[0].UserId);
+
+            returnUser.Should().Be(_testUsers[0]);
         }
 
         [TestMethod]
@@ -188,16 +204,6 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
             List<User> listOfUsers = (List<User>)allUsers;
 
             listOfUsers.Contains(_testUsers[0]).Should().BeFalse();
-        }
-
-        [TestMethod]
-        public async Task DeleteUserReturnsCorrectUser()
-        {
-            var returnUser = await _testUserService.DeleteUser(_testUsers[0].UserId);
-
-            bool isEqual = returnUser.Equals(_testUsers[0]);
-
-            returnUser.Should().Be(_testUsers[0]);
         }
 
         [TestMethod]

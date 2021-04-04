@@ -236,7 +236,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         }
 
         [TestMethod]
-        public async Task ExistingUsernamePostUserReturnsConflict()
+        public async Task ExistingUsernamePostUserReturnsConflictResponse()
         {
             var newUser = ModelFakes.UserFake.Generate();
             newUser.Username = _testUsers[0].Username;
@@ -303,7 +303,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         }
 
         [TestMethod]
-        public async Task NonExistingDeleteUserReturnsNotFound()
+        public async Task NonExistingUserDeleteUserReturnsNotFoundResponse()
         {
             var response = await _testUserController.DeleteUser(-1);
             var responseResult = response.Result;

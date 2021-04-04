@@ -6,8 +6,9 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
 {
     public static class ModelFakes
     {
-        public static Faker<User>UserFake { get; set; }
-        public static Faker<Therapy>TherapyFake { get; set; }
+        public static Faker<User> UserFake { get; set; }
+        public static Faker<TherapyMain> TherapyMainFake { get; set; }
+        public static Faker<Therapy> TherapyFake { get; set; }
         public static Faker<Location> LocationFake { get; set; }
         public static Faker<TherapistEvent> TherapistEventFake { get; set; }
         public static Faker<Permission> PermissionFake { get; set; }
@@ -17,6 +18,7 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
         static ModelFakes()
         {
             BuildUserFakes();
+            BuildTherapyMainFakes();
             BuildTherapyFakes();
             BuildLocationFakes();
             BuildTherapistEventFakes();
@@ -24,12 +26,20 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
             BuildPatientFakes();
         }
 
+        private static void BuildTherapyMainFakes()
+        {
+            TherapyMainFake = new Faker<TherapyMain>();
+            TherapyMainFake.RuleFor(m => m.Type, r => r.UniqueIndex + r.Random.String2(10));
+            TherapyMainFake.RuleFor(m => m.Abbreviation, r => r.UniqueIndex + r.Random.String2(10));
+            TherapyMainFake.RuleFor(m => m.Active, true);
+        }
+
         private static void BuildTherapyFakes()
         {
             TherapyFake = new Faker<Therapy>();
-            TherapyFake.RuleFor(m => m.Adl, r => r.IndexGlobal + r.Company.CompanyName());
-            TherapyFake.RuleFor(m => m.Type, r => r.Random.String2(10));
-            TherapyFake.RuleFor(m => m.Abbreviation, r => r.IndexGlobal + r.Company.CompanySuffix());
+            TherapyFake.RuleFor(m => m.Adl, r => r.UniqueIndex + r.Company.CompanyName());
+            TherapyFake.RuleFor(m => m.Type, r => r.UniqueIndex + r.Random.String2(10));
+            TherapyFake.RuleFor(m => m.Abbreviation, r => r.UniqueIndex + r.Random.String2(3));
             TherapyFake.RuleFor(m => m.Active, true);
         }
 
