@@ -72,7 +72,13 @@ namespace InpatientTherapySchedulingProgram.Services
                 return null;
             }
 
-            _context.TherapistEvent.Remove(therapistEvent);
+            therapistEvent.Active = false;
+
+            var local = _context.TherapistEvent.Local.FirstOrDefault(t => t.EventId == eventId);
+
+            _context.Entry(local).State = EntityState.Detached;
+
+            _context.Entry(therapistEvent).State = EntityState.Modified;
 
             try
             {
@@ -94,7 +100,7 @@ namespace InpatientTherapySchedulingProgram.Services
         public async Task<IEnumerable<TherapistEvent>> GetAllTherapistEvents(TherapistEvent therapistEvent)
         {
             return await _context.TherapistEvent
-                .Where(d => d.StartTime >= therapistEvent.StartTime && d.EndTime <= therapistEvent.EndTime)
+                .Where(d => d.StartTime >= therapistEvent.StartTime && d.EndTime <= therapistEvent.EndTime && d.Active)
                 .ToListAsync();
         }
 
@@ -113,7 +119,7 @@ namespace InpatientTherapySchedulingProgram.Services
             }
 
             return await _context.TherapistEvent
-                .Where(d => d.StartTime >= therapistEvent.StartTime && d.EndTime <= therapistEvent.EndTime && d.TherapistId == therapistEvent.TherapistId)
+                .Where(d => d.StartTime >= therapistEvent.StartTime && d.EndTime <= therapistEvent.EndTime && d.TherapistId == therapistEvent.TherapistId && d.Active)
                 .ToListAsync();
         }
 
@@ -143,7 +149,8 @@ namespace InpatientTherapySchedulingProgram.Services
                 throw new UserIsNotATherapistException();
             }
 
-            var local = await _context.TherapistEvent.FindAsync(eventId);
+            var local = _context.TherapistEvent.Local.FirstOrDefault(t => t.EventId == eventId && t.Active);
+            //var local = await _context.TherapistEvent.FindAsync(eventId);
 
             if (local == null)
             {
@@ -173,9 +180,7 @@ namespace InpatientTherapySchedulingProgram.Services
         /// <returns>Whether or not a record exists in database that matches the event id</returns>
         private async Task<bool> TherapistEventExistsById(int eventId)
         {
-            var therapistEvent = await _context.TherapistEvent.FindAsync(eventId);
-
-            return await _context.TherapistEvent.FindAsync(eventId) != null;
+            return await _context.TherapistEvent.FirstOrDefaultAsync(t => t.EventId == eventId && t.Active) != null;
         }
 
         /// <summary>
@@ -185,7 +190,14 @@ namespace InpatientTherapySchedulingProgram.Services
         /// <returns>Whether or not a record exists in the database that matches the therapist event id</returns>
         private async Task<bool> UserExists(int? therapistId)
         {
-            return await _context.User.FindAsync(therapistId) != null;
+            var user = await _context.User.FirstOrDefaultAsync(u => u.UserId == therapistId && u.Active == true);
+
+            if (user is null || !user.Active)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>
