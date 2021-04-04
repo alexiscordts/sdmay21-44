@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 namespace InpatientTherapySchedulingProgram.Exceptions.PatientExceptions
 {
     [Serializable]
-    public class PidAlreadyExistsException : Exception
+    public class PatientIdAlreadyExistException : Exception
     {
-        public PidAlreadyExistsException()
+        public PatientIdAlreadyExistException()
         { }
 
-        public PidAlreadyExistsException(string message)
+        public PatientIdAlreadyExistException(string message)
             : base(message)
         { }
 
-        public PidAlreadyExistsException(string message, Exception innerException)
+        public PatientIdAlreadyExistException(string message, Exception innerException)
             : base(message, innerException)
         { }
     }

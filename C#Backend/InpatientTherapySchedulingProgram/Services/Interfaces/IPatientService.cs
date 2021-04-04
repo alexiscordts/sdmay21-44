@@ -9,7 +9,7 @@ namespace InpatientTherapySchedulingProgram.Services.Interfaces
     {
         Task<IEnumerable<Patient>> GetAllPatients();
 
-        Task<Patient> GetPatientByPid(int pid);
+        Task<Patient> GetPatientByPatientId(int pid);
 
         Task<Patient> UpdatePatient(int pid, Patient patient);
 
