@@ -96,7 +96,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
             {
                 return BadRequest(e);
             }
-            catch (TherapyMainDoesNotExistsException)
+            catch (TherapyMainDoesNotExistException)
             {
                 return NotFound();
             }

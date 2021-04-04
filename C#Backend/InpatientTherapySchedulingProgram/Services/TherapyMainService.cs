@@ -94,7 +94,7 @@ namespace InpatientTherapySchedulingProgram.Services
             }
             if (!await TherapyMainExistsByType(type))
             {
-                throw new TherapyMainDoesNotExistsException();
+                throw new TherapyMainDoesNotExistException();
             }
 
             var local = _context.TherapyMain.Local.FirstOrDefault(t => t.Type.Equals(type));

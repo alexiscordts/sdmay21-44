@@ -15,7 +15,9 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
     [TestClass]
     public class TherapyServiceControllerTests
     {
+        private List<TherapyMain> _testTherapyMains;
         private List<Therapy> _testTherapies;
+        private Therapy _nonActiveTherapy;
         private List<string> _testAdls;
         private List<string> _testTypes;
         private CoreDbContext _testContext;
@@ -28,6 +30,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
             var options = new DbContextOptionsBuilder<CoreDbContext>()
                 .UseInMemoryDatabase(databaseName: "TherapyDatabase")
                 .Options;
+            _testTherapyMains = new List<TherapyMain>();
             _testTherapies = new List<Therapy>();
             _testAdls = new List<string>();
             _testTypes = new List<string>();
@@ -36,13 +39,25 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
 
             for(var i = 0; i < 10; i++)
             {
+                var newTherapyMain = ModelFakes.TherapyMainFake.Generate();
+                _testTypes.Add(newTherapyMain.Type);
+                _testContext.Add(newTherapyMain);
+                _testContext.SaveChanges();
+                _testTherapyMains.Add(ObjectExtensions.Copy(newTherapyMain));
+
                 var newTherapy = ModelFakes.TherapyFake.Generate();
-                _testTherapies.Add(ObjectExtensions.Copy(newTherapy));
+                newTherapy.Type = newTherapyMain.Type;
                 _testAdls.Add(newTherapy.Adl);
-                _testTypes.Add(newTherapy.Type);
                 _testContext.Add(newTherapy);
                 _testContext.SaveChanges();
+                _testTherapies.Add(ObjectExtensions.Copy(newTherapy));
             }
+
+            _nonActiveTherapy = ModelFakes.TherapyFake.Generate();
+            _nonActiveTherapy.Type = _testTherapyMains[0].Type;
+            _nonActiveTherapy.Active = false;
+            _testContext.Add(_nonActiveTherapy);
+            _testContext.SaveChanges();
 
             _testService = new TherapyService(_testContext);
             _testController = new TherapyController(_testService);
@@ -126,6 +141,15 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         }
 
         [TestMethod]
+        public async Task NonActiveTherapyGetTherapyByAdlReturnsNotFoundResponse()
+        {
+            var response = await _testController.GetTherapy(_nonActiveTherapy.Adl);
+            var responseResult = response.Result;
+
+            responseResult.Should().BeOfType<NotFoundResult>();
+        }
+
+        [TestMethod]
         public async Task ValidGetTherapyByAbbreviationReturnsOkResponse()
         {
             var response = await _testController.GetTherapyByAbbreviation(_testTherapies[0].Abbreviation);
@@ -156,6 +180,15 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         public async Task NonExistingGetTherapyByAbbreviationReturnsNotFoundResponse()
         {
             var response = await _testController.GetTherapyByAbbreviation("-1");
+            var responseResult = response.Result;
+
+            responseResult.Should().BeOfType<NotFoundResult>();
+        }
+
+        [TestMethod]
+        public async Task NonActiveTherapyGetTherapyByAbbreviationReturnsNotFoundResponse()
+        {
+            var response = await _testController.GetTherapy(_nonActiveTherapy.Abbreviation);
             var responseResult = response.Result;
 
             responseResult.Should().BeOfType<NotFoundResult>();
@@ -288,9 +321,18 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         }
 
         [TestMethod]
+        public async Task NonActiveTherapyTherapyPutTherapyReturnsNotFoundResponse()
+        {
+            var response = await _testController.PutTherapy(_nonActiveTherapy.Adl, _nonActiveTherapy);
+
+            response.Should().BeOfType<NotFoundResult>();
+        }
+
+        [TestMethod]
         public async Task ValidPostTherapyReturnsCreatedAtActionResponse()
         {
             var newTherapy = ModelFakes.TherapyFake.Generate();
+            newTherapy.Type = _testTherapyMains[0].Type;
 
             var response = await _testController.PostTherapy(newTherapy);
             var responseResult = response.Result;
@@ -302,6 +344,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         public async Task ValidPostTherapyReturnsCorrectType()
         {
             var newTherapy = ModelFakes.TherapyFake.Generate();
+            newTherapy.Type = _testTherapyMains[0].Type;
 
             var response = await _testController.PostTherapy(newTherapy);
             var responseResult = response.Result as CreatedAtActionResult;
@@ -313,6 +356,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         public async Task ValidPostTherapyReturnsCorrectTherapy()
         {
             var newTherapy = ModelFakes.TherapyFake.Generate();
+            newTherapy.Type = _testTherapyMains[0].Type;
 
             var response = await _testController.PostTherapy(newTherapy);
             var responseResult = response.Result as CreatedAtActionResult;
@@ -324,6 +368,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         public async Task ValidPostTherapyCorrectlyAddsTherapyToDatabase()
         {
             var newTherapy = ModelFakes.TherapyFake.Generate();
+            newTherapy.Type = _testTherapyMains[0].Type;
 
             await _testController.PostTherapy(newTherapy);
 
@@ -338,6 +383,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         public async Task ExistingAdlPostTherapyReturnsConflictResponse()
         {
             var newTherapy = ModelFakes.TherapyFake.Generate();
+            newTherapy.Type = _testTherapyMains[0].Type;
             newTherapy.Adl = _testTherapies[0].Adl;
 
             var response = await _testController.PostTherapy(newTherapy);
@@ -347,9 +393,10 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         }
 
         [TestMethod]
-        public async Task ExistingAdlPostTherapyDoesNotAddTherapy()
+        public async Task ExistingAdlPostTherapyDoesNotAddTherapyToDatabase()
         {
             var newTherapy = ModelFakes.TherapyFake.Generate();
+            newTherapy.Type = _testTherapyMains[0].Type;
             newTherapy.Adl = _testTherapies[0].Adl;
 
             await _testController.PostTherapy(newTherapy);
@@ -365,6 +412,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         public async Task ExistingAbbreviationPostTherapyReturnsConflictResponse()
         {
             var newTherapy = ModelFakes.TherapyFake.Generate();
+            newTherapy.Type = _testTherapyMains[0].Type;
             newTherapy.Abbreviation = _testTherapies[0].Abbreviation;
 
             var response = await _testController.PostTherapy(newTherapy);
@@ -374,9 +422,10 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         }
 
         [TestMethod]
-        public async Task ExistingAbbreviationPostTherapyDoesNotAddTherapy()
+        public async Task ExistingAbbreviationPostTherapyDoesNotAddTherapyToDatabase()
         {
             var newTherapy = ModelFakes.TherapyFake.Generate();
+            newTherapy.Type = _testTherapyMains[0].Type;
             newTherapy.Abbreviation = _testTherapies[0].Abbreviation;
 
             await _testController.PostTherapy(newTherapy);
@@ -386,6 +435,36 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
             var getTherapy = getResponseResult.Value;
 
             getTherapy.Should().NotBe(newTherapy);
+        }
+
+        [TestMethod]
+        public async Task NonExistingTherapyMainPostTherapyReturnsBadRequestResponse()
+        {
+            var fakeTherapyMainType = ModelFakes.TherapyMainFake.Generate().Type;
+
+            var newTherapy = ModelFakes.TherapyFake.Generate();
+            newTherapy.Type = fakeTherapyMainType;
+
+            var response = await _testController.PostTherapy(newTherapy);
+            var responseResult = response.Result;
+
+            responseResult.Should().BeOfType<BadRequestObjectResult>();
+        }
+
+        [TestMethod]
+        public async Task NonExistingTherapyMainPostTherapyDoesNotAddTherapyToDatabase()
+        {
+            var fakeTherapyMainType = ModelFakes.TherapyMainFake.Generate().Type;
+
+            var newTherapy = ModelFakes.TherapyFake.Generate();
+            newTherapy.Type = fakeTherapyMainType;
+
+            await _testController.PostTherapy(newTherapy);
+
+            var getResponse = await _testController.GetTherapy(newTherapy.Adl);
+            var getResponseResult = getResponse.Result;
+
+            getResponseResult.Should().BeOfType<NotFoundResult>();
         }
 
         [TestMethod]

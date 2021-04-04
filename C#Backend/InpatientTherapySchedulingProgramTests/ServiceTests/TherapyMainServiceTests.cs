@@ -272,7 +272,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         {
             var fakeTherapyMain = ModelFakes.TherapyMainFake.Generate();
 
-            await _testTherapyMainService.Invoking(s => s.UpdateTherapyMain(fakeTherapyMain.Type, fakeTherapyMain)).Should().ThrowAsync<TherapyMainDoesNotExistsException>();
+            await _testTherapyMainService.Invoking(s => s.UpdateTherapyMain(fakeTherapyMain.Type, fakeTherapyMain)).Should().ThrowAsync<TherapyMainDoesNotExistException>();
         }
     }
 }

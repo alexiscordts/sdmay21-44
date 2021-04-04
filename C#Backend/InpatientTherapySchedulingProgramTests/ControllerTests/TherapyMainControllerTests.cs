@@ -139,7 +139,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         [TestMethod]
         public async Task TherapyMainDoesNotExistsExceptionPutTherapyMainReturnsNotFoundResponse()
         {
-            _fakeTherapyMainService.Setup(s => s.UpdateTherapyMain(It.IsAny<string>(), It.IsAny<TherapyMain>())).ThrowsAsync(new TherapyMainDoesNotExistsException());
+            _fakeTherapyMainService.Setup(s => s.UpdateTherapyMain(It.IsAny<string>(), It.IsAny<TherapyMain>())).ThrowsAsync(new TherapyMainDoesNotExistException());
 
             var fakeTherapyMain = ModelFakes.TherapyMainFake.Generate();
 
