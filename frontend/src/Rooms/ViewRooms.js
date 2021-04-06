@@ -48,9 +48,11 @@ class ViewRooms extends React.Component {
               <i class="arrow down"></i>
             </button>
             <div class="dropdown-content">
-              <a href="#">Location 1 </a>
-              <a href="#">Locatino 2</a>
-              <a href="#">Location 3</a>
+              <a>Location 1 </a>
+              <br></br>
+              <a>Location 2</a>
+              <br></br>
+              <a>Location 3</a>
             </div>
           </div>
 
