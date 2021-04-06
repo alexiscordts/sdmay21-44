@@ -97,9 +97,7 @@ namespace InpatientTherapySchedulingProgram.Services
                 throw new LocationDoesNotExistException();
             }
 
-            var local = _context.Set<Location>()
-                .Local
-                .FirstOrDefault(l => l.LocationId == id);
+            var local = await _context.Location.FindAsync(id);
 
             _context.Entry(local).State = EntityState.Detached;
 
@@ -109,7 +107,7 @@ namespace InpatientTherapySchedulingProgram.Services
             {
                 await _context.SaveChangesAsync();
             }
-            catch(DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException)
             {
                 throw;
             }

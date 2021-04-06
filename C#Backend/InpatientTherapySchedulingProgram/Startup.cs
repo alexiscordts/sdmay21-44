@@ -35,13 +35,17 @@ namespace InpatientTherapySchedulingProgram
             //    .AddMicrosoftIdentityWebApi(Configuration, "AzureAd");
 
             services.AddCors();
-            services.AddDbContext<CoreDbContext>(op => op.UseSqlServer(Configuration.GetConnectionString("Mac_Database")));
+            services.AddDbContext<CoreDbContext>(op => op.UseSqlServer(Configuration.GetConnectionString("Database")));
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ILocationService, LocationService>();
             services.AddScoped<ITherapyService, TherapyService>();
             services.AddScoped<ITherapistActivityService, TherapistActivityService>();
-            services.AddScoped<ILocationService, LocationService>();
             services.AddScoped<IPermissionService, PermissionService>();
+            services.AddScoped<ITherapistEventService, TherapistEventService>();
             services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -25,6 +25,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import AddTherapyTypes from "./TherapyTypes/AddTherapyTypes";
 import EditTherapyTypes from "./TherapyTypes/EditTherapyTypes";
 import ViewTherapyTypes from "./TherapyTypes/ViewTherapyTypes";
+import ChangePassword from "./ChangePassword";
 
 class App extends React.Component {
   constructor(props) {
@@ -72,6 +73,7 @@ class App extends React.Component {
           <Route path="/manage_rooms" component={ViewRoom} />
           <Route path="/add_room" component={AddRoom} />
           <Route path="/view_Metrics" component={ViewMetrics} />
+          <Route path="/change_password" component={ChangePassword} />
 
           {/* <<<<<<< HEAD */}
           <Route
