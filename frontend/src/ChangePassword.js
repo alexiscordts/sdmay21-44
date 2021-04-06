@@ -2,18 +2,38 @@ import React, {useState} from "react";
 import "./FormStyles.css";
 import Nav from "./Nav";
 
+
+
 const ChangePassword = () => {
   const [newPassword, setNewPassword] = useState('');
   const [existingPassword, setExistingPassword] = useState('');
   const [newPasswordRetype, setNewPasswordRetype] = useState('');
-    
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const changePassword = () =>  {
+
+    if(!newPassword || !newPasswordRetype || !existingPassword) {
+      setErrorMessage('All fields must be filled out')
+    }
+  
+    if(newPassword !== newPasswordRetype) {
+      setErrorMessage('Passwords do not match');
+    }
+  
+    if(existingPassword){//todo if existing password is not associated with current account
+      setErrorMessage('The existing password is not associated with this account');
+    }
+
+    //todo call api to update password
+  
+  };
   return (
     <div >
       <Nav/>
       <div class="formScreen">
         <div class="form-style">
           <div class="form-style-heading"> Change Your Password </div>
-            <form action="" method="post">
+            <form >
               <label className="labelChangePassword" for="existingPassword">
                     <span>
                       Existing Password
@@ -53,7 +73,8 @@ const ChangePassword = () => {
                       value={newPasswordRetype}
                     />
                   </label>
-                <div class="changePasswordSubmitButtonContainer"><input type="submit" value="Create" /></div>
+                  <span style={{color: 'red'}}>{errorMessage}</span>
+                <div class="changePasswordSubmitButtonContainer"><input onClick={() => changePassword()} type="button" value="Create" /></div>
               </form>
             </div>
         </div>
