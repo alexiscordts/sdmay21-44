@@ -43,14 +43,13 @@ class ViewPatient extends React.Component {
 
   render() {
     var rows = [];
-
     this.state.patientList.forEach(
       function (patient) {
         rows.push(
           <tr>
             <td>{patient.firstName}</td>
             <td>{patient.lastName}</td>
-            <td>{patient.startDate}</td>
+            <td>{patient.startDate.substring(0, 10)}</td>
             <td>
               <button
                 class="iconButton"

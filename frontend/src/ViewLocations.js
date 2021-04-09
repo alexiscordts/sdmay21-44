@@ -27,10 +27,6 @@ class ViewLocations extends React.Component {
   }
 
   render() {
-    // var locationsList = [
-    //   { name: "Des Moines", address: "123 4th Street West Des Moines" },
-    //   { name: "Downtown", address: "123 Court Ave Des Moines" },
-    // ];
     var rows = [];
 
     this.state.locationList.forEach(
@@ -38,7 +34,7 @@ class ViewLocations extends React.Component {
         rows.push(
           <tr>
             <td>{location.name}</td>
-            <td>Spot for address</td>
+            <td>Address</td>
             <td>
               <button
                 class="iconButton"
@@ -64,7 +60,7 @@ class ViewLocations extends React.Component {
       <div>
         <Nav />
         <div class="userHeaderRow">
-          <h2>Addresses</h2>
+          <h2>Locations</h2>
           <button
             class="iconAddUserButton"
             onClick={() => {
@@ -72,11 +68,7 @@ class ViewLocations extends React.Component {
             }}
           >
             <img
-              // <<<<<<< HEAD
               src={require("./Icons/icons8-plus-50.png")}
-              // =======
-              //               src={require("./Icons/icons8-plus-48.png")}
-              // >>>>>>> 81eddc17e459a1530ae41a01d1bf5a15541784f7
               alt="add"
               className="iconAddLocation"
             />
