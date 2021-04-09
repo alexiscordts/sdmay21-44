@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using InpatientTherapySchedulingProgram.Exceptions.UserExceptions;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace InpatientTherapySchedulingProgram.Services
 {
@@ -60,7 +62,7 @@ namespace InpatientTherapySchedulingProgram.Services
 
         public async Task<User> GetUserByUsername(string username)
         {
-            return await _context.User.FirstOrDefaultAsync(u => u.Username == username && u.Active);
+            return await _context.User.FirstOrDefaultAsync(u => u.Username.Equals(username) && u.Active);
         }
 
         public async Task<User> AddUser(User user)
@@ -69,6 +71,8 @@ namespace InpatientTherapySchedulingProgram.Services
             {
                 throw new UsernameAlreadyExistException();
             }
+
+            user.Password = Hash(user.Password);
 
             _context.User.Add(user);
 
@@ -84,6 +88,15 @@ namespace InpatientTherapySchedulingProgram.Services
             return user;
         }
 
+        public async Task<User> LoginUser(User user)
+        {
+            string hashPassword = Hash(user.Password);
+
+            return await _context.User.FirstOrDefaultAsync(u => u.Username.Equals(user.Username)
+             && u.Password.Equals(Hash(user.Password))
+             && u.Active);
+        }
+
         public async Task<User> UpdateUser(int id, User user)
         {
             if(id != user.UserId)
@@ -94,6 +107,8 @@ namespace InpatientTherapySchedulingProgram.Services
             {
                 throw new UserDoesNotExistException();
             }
+
+            user.Password = Hash(user.Password);
 
             var local = _context.Set<User>()
                 .Local
@@ -123,6 +138,12 @@ namespace InpatientTherapySchedulingProgram.Services
         private async Task<bool> UserExists(string username)
         {
             return await _context.User.FirstOrDefaultAsync(u => u.Username == username) != null;
+        }
+
+        private static string Hash(string psw)
+        {
+            var hash = new SHA1Managed().ComputeHash(Encoding.UTF8.GetBytes(psw));
+            return string.Concat(hash.Select(s => s.ToString("x2")));
         }
     }
 }

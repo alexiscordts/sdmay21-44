@@ -17,18 +17,18 @@ namespace InpatientTherapySchedulingProgram.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUserService _service;
+        private readonly IUserService _userService;
 
-        public UserController(IUserService service)
+        public UserController(IUserService userService)
         {
-            _service = service;
+            _userService = userService;
         }
 
         // GET: api/User
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUser()
         {
-            var allUsers = await _service.GetAllUsers();
+            var allUsers = await _userService.GetAllUsers();
 
             return Ok(allUsers);
         }
@@ -37,7 +37,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
         [HttpGet("getUserByUserId/{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
-            var user = await _service.GetUserById(id);
+            var user = await _userService.GetUserById(id);
 
             if (user == null)
             {
@@ -50,7 +50,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
         [HttpGet("getUserByUsername/{username}")]
         public async Task<ActionResult<User>> GetUser(string username)
         {
-            var user = await _service.GetUserByUsername(username);
+            var user = await _userService.GetUserByUsername(username);
 
             if (user == null)
             {
@@ -68,7 +68,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
         {
             try
             {
-                await _service.UpdateUser(id, user);
+                await _userService.UpdateUser(id, user);
             }
             catch (UserIdsDoNotMatchException e)
             {
@@ -94,7 +94,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
         {
             try
             {
-                await _service.AddUser(user);
+                await _userService.AddUser(user);
             }
             catch (UsernameAlreadyExistException e)
             {
@@ -108,6 +108,19 @@ namespace InpatientTherapySchedulingProgram.Controllers
             return CreatedAtAction("GetUser", new { id = user.UserId }, user);
         }
 
+        [HttpPost("login")]
+        public async Task<ActionResult<User>> LoginUser(User user)
+        {
+            var foundUser = await _userService.LoginUser(user);
+
+            if (foundUser is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(foundUser);
+        }
+
         // DELETE: api/User/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<User>> DeleteUser(int id)
@@ -116,7 +129,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
 
             try
             {
-                user = await _service.DeleteUser(id);
+                user = await _userService.DeleteUser(id);
             }
             catch (DbUpdateConcurrencyException)
             {
