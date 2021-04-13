@@ -26,7 +26,16 @@ namespace InpatientTherapySchedulingProgram.Services
                 return null;
             }
 
-            _context.HoursWorked.Remove(hoursWorked);
+            //_context.HoursWorked.Remove(hoursWorked);
+            hoursWorked.Active = false;
+
+            var local = _context.Set<HoursWorked>()
+                .Local
+                .FirstOrDefault(u => u.HoursWorkedId == hoursWorked.HoursWorkedId);
+
+            _context.Entry(local).State = EntityState.Detached;
+
+            _context.Entry(hoursWorked).State = EntityState.Modified;
 
             try
             {
@@ -48,11 +57,12 @@ namespace InpatientTherapySchedulingProgram.Services
         //Help on this method
         public async Task<HoursWorked> GetHoursWorkedByUserId(int? userId)
         {
-            return await _context.HoursWorked.FirstOrDefaultAsync(h => h.UserId == userId);
+            return await _context.HoursWorked.FirstOrDefaultAsync(h => h.UserId == userId && h.Active);
         }
 
         public async Task<HoursWorked> AddHoursWorked(HoursWorked hoursWorked)
         {
+            hoursWorked.Active = true;
 
             _context.HoursWorked.Add(hoursWorked);
 
@@ -98,7 +108,7 @@ namespace InpatientTherapySchedulingProgram.Services
 
         private bool HoursWorkedExists(int hoursWorkedId)
         {
-            return _context.HoursWorked.Any(h => h.HoursWorkedId == hoursWorkedId);
+            return _context.HoursWorked.Any(h => h.HoursWorkedId == hoursWorkedId && h.Active);
         }
     }
 }
