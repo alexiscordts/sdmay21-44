@@ -169,6 +169,54 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         }
 
         [TestMethod]
+        public async Task ValidLoginUserReturnsUser()
+        {
+            var newUser = ModelFakes.UserFake.Generate();
+            string pswBeforeHash = newUser.Password;
+
+            await _testUserService.AddUser(newUser);
+
+            newUser.Password = pswBeforeHash;
+
+            var user = await _testUserService.LoginUser(newUser);
+
+            user.Should().NotBeNull();
+        }
+
+        [TestMethod]
+        public async Task ValidLoginUserReturnsCorrectUser()
+        {
+            var newUser = ModelFakes.UserFake.Generate();
+            string pswBeforeHash = newUser.Password;
+
+            await _testUserService.AddUser(newUser);
+
+            newUser.Password = pswBeforeHash;
+
+            var user = await _testUserService.LoginUser(newUser);
+
+            user.Should().Be(newUser);
+        }
+
+        [TestMethod]
+        public async Task NonActiveLoginUserReturnsNull()
+        {
+            var user = await _testUserService.LoginUser(_nonActiveUser);
+
+            user.Should().BeNull();
+        }
+
+        [TestMethod]
+        public async Task NonExistingLoginUserReturnsNull()
+        {
+            var fakeUser = ModelFakes.UserFake.Generate();
+
+            var user = await _testUserService.LoginUser(fakeUser);
+
+            user.Should().BeNull();
+        }
+
+        [TestMethod]
         public async Task DeleteUserReturnsCorrectType()
         {
             var returnUser = await _testUserService.DeleteUser(_testUsers[0].UserId);

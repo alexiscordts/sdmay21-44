@@ -73,6 +73,7 @@ namespace InpatientTherapySchedulingProgram.Services
             }
 
             user.Password = Hash(user.Password);
+            user.Active = true;
 
             _context.User.Add(user);
 

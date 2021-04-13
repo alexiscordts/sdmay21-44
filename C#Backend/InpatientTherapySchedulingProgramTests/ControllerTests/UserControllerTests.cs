@@ -41,6 +41,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
             _fakeUserService.Setup(s => s.GetAllUsers()).ReturnsAsync(_testUsers);
             _fakeUserService.Setup(s => s.GetUserById(It.IsAny<int>())).ReturnsAsync(_testUsers[0]);
             _fakeUserService.Setup(s => s.GetUserByUsername(It.IsAny<string>())).ReturnsAsync(_testUsers[0]);
+            _fakeUserService.Setup(s => s.LoginUser(It.IsAny<User>())).ReturnsAsync(_testUsers[0]);
             _fakeUserService.Setup(s => s.UpdateUser(It.IsAny<int>(), It.IsAny<User>())).ReturnsAsync(_testUsers[0]);
             _fakeUserService.Setup(s => s.AddUser(It.IsAny<User>())).ReturnsAsync(_testUsers[0]);
             _fakeUserService.Setup(s => s.DeleteUser(It.IsAny<int>())).ReturnsAsync(_testUsers[0]);
@@ -118,6 +119,37 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
             var response = await _testUserController.GetUser("-1");
             var responseResult = response.Result;
             
+            responseResult.Should().BeOfType<NotFoundResult>();
+        }
+
+        [TestMethod]
+        public async Task ValidLoginReturnsOkResponse()
+        {
+            var response = await _testUserController.LoginUser(_testUsers[0]);
+            var responseResult = response.Result;
+
+            responseResult.Should().BeOfType<OkObjectResult>();
+        }
+
+        [TestMethod]
+        public async Task ValidLoginReturnsCorrectType()
+        {
+            var response = await _testUserController.LoginUser(_testUsers[0]);
+            var responseResult = response.Result as OkObjectResult;
+
+            responseResult.Value.Should().BeOfType<User>();
+        }
+
+        [TestMethod]
+        public async Task NullLoginReturnsNotFoundResponse()
+        {
+            _fakeUserService.Setup(s => s.LoginUser(It.IsAny<User>())).ReturnsAsync((User)null);
+
+            var fakeUser = ModelFakes.UserFake.Generate();
+
+            var response = await _testUserController.LoginUser(fakeUser);
+            var responseResult = response.Result;
+
             responseResult.Should().BeOfType<NotFoundResult>();
         }
 

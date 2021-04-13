@@ -176,6 +176,74 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         }
 
         [TestMethod]
+        public async Task ValidLoginUserReturnsOkResponse()
+        {
+            var newUser = ModelFakes.UserFake.Generate();
+            string nonHashedPassword = newUser.Password;
+
+            await _testUserController.PostUser(newUser);
+
+            newUser.Password = nonHashedPassword;
+
+            var response = await _testUserController.LoginUser(newUser);
+            var responseResult = response.Result;
+
+            responseResult.Should().BeOfType<OkObjectResult>();
+        }
+
+        [TestMethod]
+        public async Task ValidLoginUserReturnsCorrectType()
+        {
+            var newUser = ModelFakes.UserFake.Generate();
+            string nonHashedPassword = newUser.Password;
+
+            await _testUserController.PostUser(newUser);
+
+            newUser.Password = nonHashedPassword;
+
+            var response = await _testUserController.LoginUser(newUser);
+            var responseResult = response.Result as OkObjectResult;
+
+            responseResult.Value.Should().BeOfType<User>();
+        }
+
+        [TestMethod]
+        public async Task ValidLoginUserReturnsCorrectUser()
+        {
+            var newUser = ModelFakes.UserFake.Generate();
+            string nonHashedPassword = newUser.Password;
+
+            await _testUserController.PostUser(newUser);
+
+            newUser.Password = nonHashedPassword;
+
+            var response = await _testUserController.LoginUser(newUser);
+            var responseResult = response.Result as OkObjectResult;
+
+            responseResult.Value.Should().Be(newUser);
+        }
+
+        [TestMethod]
+        public async Task NonActiveUserLoginUserReturnsNotFoundResponse()
+        {
+            var response = await _testUserController.LoginUser(_nonActiveUser);
+            var responseResult = response.Result;
+
+            responseResult.Should().BeOfType<NotFoundResult>();
+        }
+
+        [TestMethod]
+        public async Task NonExistingUserLoginUserReturnsNotFoundResponse()
+        {
+            var fakeUser = ModelFakes.UserFake.Generate();
+
+            var response = await _testUserController.LoginUser(fakeUser);
+            var responseResult = response.Result;
+
+            responseResult.Should().BeOfType<NotFoundResult>();
+        }
+
+        [TestMethod]
         public async Task ValidPutUserCorrectlyUpdatesData()
         {
             var oldUsername = _testUsers[0].Username;
