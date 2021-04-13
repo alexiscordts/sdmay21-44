@@ -9,6 +9,7 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
         public static Faker<Therapy>TherapyFake { get; set; }
         public static Faker<TherapistActivity>TherapistActivityFake { get; set; }
         public static Faker<Location> LocationFake { get; set; }
+        public static Faker<HoursWorked> HoursWorkedFake { get; set; }
 
         static ModelFakes()
         {
@@ -16,6 +17,7 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
             BuildTherapyFakes();
             BuildTherapistActivityFakes();
             BuildLocationFakes();
+            BuildHoursWorkedFakes();
         }
 
         private static void BuildTherapistActivityFakes()
@@ -51,6 +53,15 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
             LocationFake = new Faker<Location>();
             LocationFake.RuleFor(m => m.LocationId, r => r.UniqueIndex);
             LocationFake.RuleFor(m => m.Name, r => r.UniqueIndex + r.Random.String2(10));
+        }
+        private static void BuildHoursWorkedFakes()
+        {
+            HoursWorkedFake = new Faker<HoursWorked>();
+            HoursWorkedFake.RuleFor(m => m.HoursWorkedId, r => r.UniqueIndex);
+            HoursWorkedFake.RuleFor(m => m.StartTime, r => r.Date.Past());
+            HoursWorkedFake.RuleFor(m => m.EndTime, r => r.Date.Past());
+            HoursWorkedFake.RuleFor(m => m.UserId, r => r.UniqueIndex);
+            //HoursWorkedFake.RuleFor(m => m.User, BuildUserFakes());
         }
     }
     
