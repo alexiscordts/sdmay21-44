@@ -1,22 +1,33 @@
 body    {
-    overflow-x: hidden;
+    overflow: hidden;
 }
 
 .pageContainer {
-    float: clear;
-    margin-left: 100px;
-    margin-top: 25px;
+    margin-left: 50px;
+    padding: 0;
 }
 
-.scheduleTitle {
+#scheduleTitle {
     color: #00529B;
     margin-left: 50px;
-    font-size: 34px;
+    font-size: 20px;
     font-weight: 700;
+    line-height: 50px;
     display: inline-block;
     position: absolute;
-    padding-top: 10px;
     font-family: Arial, Sans-serif;
+}
+
+@media only screen and (max-width: 700px) {
+    #scheduleTitle  {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    .scheduleTitle {
+        font-size: 15px;
+    }
 }
 
 .dropbtn {
@@ -25,7 +36,7 @@ color: white;
 padding: 16px;
 font-size: 16px;
 border: none;
-cursor: pointer;
+outline: none;
 }
 
 /* The arrow in the droptown button */
@@ -46,6 +57,7 @@ transform: rotate(45deg);
 .dropdown {
 position: relative;
 display: inline-block;
+z-index: 10;
 }
 
 /* Dropdown Content (Hidden by Default) */
@@ -59,15 +71,14 @@ z-index: 1;
 }
 
 /* Links inside the dropdown */
-.dropdown-content a {
+.dropdown-content .link {
 color: black;
 padding: 12px 16px;
 text-decoration: none;
-display: block;
 }
 
 /* Change color of dropdown links on hover */
-.dropdown-content a:hover {background-color: #f1f1f1}
+.dropdown-content .link:hover {background-color: #E6E7E9}
 
 /* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content {
@@ -77,4 +88,103 @@ display: block;
 /* Change the background color of the dropdown button when the dropdown content is shown */
 .dropdown:hover .dropbtn {
 background-color:#8DD5ED;
+}
+
+.topbtn {
+    position: relative;
+    background-color: #00529b;
+    color: white;
+    margin-top: 5px;
+    padding: 5px;
+    border: none;
+    cursor: pointer;
+    float: right;
+    color: rgba(0,0,0,0.7);
+    border-radius: 10px;
+    margin-right: 10px;
+    outline: none;
+}
+
+#addAppointment, #editAppointment {
+    background-color: white;
+    height: auto;
+    width: 520px;
+    position: absolute;
+    left: 50%;
+    top: 20%;
+    -webkit-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.5); 
+    box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.5);
+    z-index: 10;
+    display: none;
+    border-radius: 5px;
+    overflow: hidden;
+    font-weight: bold;
+    color: #3E3E3F;
+}
+
+.AppointmentFormRow {
+    margin-bottom: 10px;
+}
+
+#dragMe {
+    background-color: #00529b;
+    height: 30px;
+    cursor: move;
+}
+
+#close  {
+    height: 100%;
+    width: 30px;
+    line-height: 30px;
+    vertical-align: center;
+    color: white;
+    background-color: #df0000;
+    text-align: center;
+    float: right;
+    cursor: pointer;
+}
+
+.hidden {
+    display: none;
+}
+
+.locations  {
+    display: none;
+    position: absolute;
+    background-color: white;
+    width: 200px;
+    left: 160px;
+    box-shadow: 10px 8px 16px 0px rgba(0,0,0,0.2);
+    top: 84px;
+}
+
+.link.byRoom:hover .locations {
+    display: block;
+}
+
+.link.byPatient:hover .locations {
+    display: block;
+    top: 126px;
+}
+
+.link:hover {
+    cursor: pointer;
+}
+
+.selectWeek {
+    border: none;
+    color: #00529B;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 50px;
+    width: 120px;
+    outline: none;
+}
+
+.selectWeek:hover   {
+    cursor: pointer;
+}
+
+.selectWeek:current  {
+    border: none;
 }
