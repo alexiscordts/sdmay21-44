@@ -22,9 +22,20 @@ namespace InpatientTherapySchedulingProgram.Models
         [Column("name")]
         [StringLength(255)]
         public string Name { get; set; }
+        [Required]
+        [Column("address")]
+        [StringLength(255)]
+        public string Address { get; set; }
+        [Required]
+        [Column("phone_number")]
+        [StringLength(15)]
+        public string PhoneNumber { get; set; }
+        [Column("active")]
+        public bool Active { get; set; }
 
         [InverseProperty("Location")]
         public virtual ICollection<Appointment> Appointment { get; set; }
+        [InverseProperty("Location")]
         public virtual ICollection<Patient> Patient { get; set; }
         [InverseProperty("Location")]
         public virtual ICollection<Room> Room { get; set; }
@@ -41,7 +52,7 @@ namespace InpatientTherapySchedulingProgram.Models
                 return false;
             }
 
-            if(Object.ReferenceEquals(this, location))
+            if (Object.ReferenceEquals(this, location))
             {
                 return true;
             }
@@ -67,6 +78,5 @@ namespace InpatientTherapySchedulingProgram.Models
         {
             return !(lhs == rhs);
         }
-        
     }
 }

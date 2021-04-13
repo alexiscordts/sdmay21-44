@@ -11,12 +11,12 @@ namespace InpatientTherapySchedulingProgram.Models
         public Patient()
         {
             Appointment = new HashSet<Appointment>();
-            PatientEvent = new HashSet<PatientEvent>();
         }
 
         [Key]
         [Column("patient_id")]
         public int PatientId { get; set; }
+        [Required]
         [Column("first_name")]
         [StringLength(255)]
         public string FirstName { get; set; }
@@ -32,21 +32,28 @@ namespace InpatientTherapySchedulingProgram.Models
         [Column("phone_number")]
         [StringLength(255)]
         public string PhoneNumber { get; set; }
-        [Column("location_name")]
-        [StringLength(255)]
-        public string LocationName { get; set; }
+        [Column("room_number")]
+        public int RoomNumber { get; set; }
+        [Column("location_id")]
+        public int LocationId { get; set; }
         [Column("start_date", TypeName = "date")]
         public DateTime? StartDate { get; set; }
-        [Column("pmr_physician")]
-        [StringLength(255)]
-        public string PmrPhysician { get; set; }
+        [Column("pmr_physician_id")]
+        public int PmrPhysicianId { get; set; }
+        [Column("active")]
+        public bool Active { get; set; }
 
-        public virtual Location LocationNameNavigation { get; set; }
+        [ForeignKey(nameof(LocationId))]
+        [InverseProperty("Patient")]
+        public virtual Location Location { get; set; }
+        [ForeignKey(nameof(PmrPhysicianId))]
+        [InverseProperty(nameof(User.Patient))]
+        public virtual User PmrPhysician { get; set; }
+        [ForeignKey("RoomNumber,LocationId")]
+        [InverseProperty("Patient")]
+        public virtual Room Room { get; set; }
         [InverseProperty("Patient")]
         public virtual ICollection<Appointment> Appointment { get; set; }
-        [InverseProperty("Patient")]
-        public virtual ICollection<PatientEvent> PatientEvent { get; set; }
-
 
         public override bool Equals(object obj)
         {
@@ -66,7 +73,7 @@ namespace InpatientTherapySchedulingProgram.Models
             }
 
             return this.PatientId == patient.PatientId && this.FirstName.Equals(patient.FirstName) && this.MiddleName.Equals(patient.MiddleName) &&
-                this.LastName.Equals(patient.LastName);
+                this.LastName.Equals(patient.LastName) && this.PmrPhysicianId == patient.PmrPhysicianId;
         }
 
         public static bool operator ==(Patient lhs, Patient rhs)
@@ -88,6 +95,5 @@ namespace InpatientTherapySchedulingProgram.Models
         {
             return !(lhs == rhs);
         }
-
     }
 }
