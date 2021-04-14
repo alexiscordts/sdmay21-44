@@ -26,7 +26,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
         // Force a JSON object to be passed in
         // Force route to use getByTherapistId
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TherapistEvent>>> GetTherapistEvent(TherapistEvent therapistEvent)
+        public async Task<ActionResult<IEnumerable<TherapistEvent>>> GetTherapistEvents(TherapistEvent therapistEvent)
         {
             if (therapistEvent == null)
             {
@@ -41,7 +41,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
         // GET: api/TherapistEvent/5
         // Probably need to get all therapist event's within a given time frame for therapist id
         [HttpGet("getTherapistEventsByTherapistId")]
-        public async Task<ActionResult<IEnumerable<TherapistEvent>>> GetTherapistEventByTherapistId(TherapistEvent therapistEvent)
+        public async Task<ActionResult<IEnumerable<TherapistEvent>>> GetTherapistEventsByTherapistId(TherapistEvent therapistEvent)
         {
             if (therapistEvent == null)
             {
@@ -118,7 +118,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
                 throw;
             }
 
-            return CreatedAtAction("GetTherapistEvent", new { id = therapistEvent.EventId }, therapistEvent);
+            return CreatedAtAction("GetTherapistEvents", new { id = therapistEvent.EventId }, therapistEvent);
         }
 
         // DELETE: api/TherapistEvent/5

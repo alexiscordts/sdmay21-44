@@ -54,7 +54,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         [TestMethod]
         public async Task ValidGetAllTherapistEventsReturnsOkResponse()
         {
-            var response = await _testTherapistEventController.GetTherapistEvent(_testTherapistEvents[0]);
+            var response = await _testTherapistEventController.GetTherapistEvents(_testTherapistEvents[0]);
 
             response.Result.Should().BeOfType<OkObjectResult>();
         }
@@ -62,7 +62,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         [TestMethod]
         public async Task ValidGetAllTherapistEventsReturnsCorrectType()
         {
-            var response = await _testTherapistEventController.GetTherapistEvent(_testTherapistEvents[0]);
+            var response = await _testTherapistEventController.GetTherapistEvents(_testTherapistEvents[0]);
             var responseResult = response.Result as OkObjectResult;
 
             responseResult.Value.Should().BeOfType<List<TherapistEvent>>();
@@ -71,7 +71,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         [TestMethod]
         public async Task NullParameterGetAllTherapistEventsReturnsBadRequestResponse()
         {
-            var response = await _testTherapistEventController.GetTherapistEvent((TherapistEvent)null);
+            var response = await _testTherapistEventController.GetTherapistEvents((TherapistEvent)null);
 
             response.Result.Should().BeOfType<BadRequestResult>();
         }
@@ -79,7 +79,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         [TestMethod]
         public async Task ValidGetAllTherapistEventsByTherapistIdReturnsOkResponse()
         {
-            var response = await _testTherapistEventController.GetTherapistEventByTherapistId(_testTherapistEvents[0]);
+            var response = await _testTherapistEventController.GetTherapistEventsByTherapistId(_testTherapistEvents[0]);
 
             response.Result.Should().BeOfType<OkObjectResult>();
         }
@@ -87,7 +87,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         [TestMethod]
         public async Task ValidGetAllTherapistEventsByTherapistIdReturnsCorrectType()
         {
-            var response = await _testTherapistEventController.GetTherapistEventByTherapistId(_testTherapistEvents[0]);
+            var response = await _testTherapistEventController.GetTherapistEventsByTherapistId(_testTherapistEvents[0]);
             var responseResult = response.Result as OkObjectResult;
 
             responseResult.Value.Should().BeOfType<List<TherapistEvent>>();
@@ -96,7 +96,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         [TestMethod]
         public async Task NullParameterGetAllTherapistEventsByTherapistIdReturnsBadRequestResponse()
         {
-            var response = await _testTherapistEventController.GetTherapistEventByTherapistId((TherapistEvent)null);
+            var response = await _testTherapistEventController.GetTherapistEventsByTherapistId((TherapistEvent)null);
 
             response.Result.Should().BeOfType<BadRequestResult>();
         }

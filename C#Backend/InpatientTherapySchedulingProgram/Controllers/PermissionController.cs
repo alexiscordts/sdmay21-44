@@ -70,7 +70,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
                 throw;
             }
 
-            return CreatedAtAction("GetPermission", new { id = permission.UserId, permission.Role }, permission);
+            return CreatedAtAction("GetPermission", new { userId = permission.UserId, role = permission.Role }, permission);
         }
 
         // DELETE: api/Permission/5
