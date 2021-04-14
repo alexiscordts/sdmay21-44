@@ -3,22 +3,22 @@ import React from "react";
 import "../FormStyles.css";
 import Nav from "../Nav";
 
-const SubtypeInputs = ({subtypeName}) => (
+const SubtypeInputs = ({subtypeName}) => {
+  console.log('here wiht ', subtypeName)
+  return (
   <input
     type="text"
     className="inputFieldSubtype"
     name={`subtype${subtypeName}`}
     defaultValue={subtypeName}
   />
-);
-
-const getSubtypesByTherapyType = () => {
-  return ['Subtype1', 'Subtype2', 'Subtype3'];
-};
+);};
 
 const EditTherapyTypes = () => {
-  const subtypes = getSubtypesByTherapyType();
+  const subtypes = sessionStorage.getItem("subtypes").split(',');
 
+    console.log('subtypes', subtypes);
+  
   return (
     <div >
       <Nav/>
@@ -32,7 +32,7 @@ const EditTherapyTypes = () => {
                   <span className="required">*</span>
                 </span>
                 <div className="subtypeInputContainer">
-                  {subtypes.map((subtype) => <SubtypeInputs key={subtype} subtypeName={subtype} />)}
+                  {subtypes.map((subtype) => <SubtypeInputs subtypeName={subtype} />)}
                 </div>
               </label>
               <div className="buttonContainer">
