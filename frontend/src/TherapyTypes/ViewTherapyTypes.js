@@ -17,9 +17,7 @@ class ViewTherapyTypes extends React.Component {
 
     const url = "http://10.29.163.20:8081/api/therapy";
     axios.get(url)
-      // .then((json = {}) => json.data)
       .then((response) => {
-         console.log('response', response);
         const therapyList = response.data;
         this.setState({ therapyList });
       });

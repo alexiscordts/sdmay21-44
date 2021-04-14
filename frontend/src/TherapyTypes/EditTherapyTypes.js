@@ -3,21 +3,17 @@ import React from "react";
 import "../FormStyles.css";
 import Nav from "../Nav";
 
-const SubtypeInputs = ({subtypeName}) => {
-  console.log('here wiht ', subtypeName)
-  return (
+const SubtypeInputs = ({subtypeName}) => (
   <input
     type="text"
     className="inputFieldSubtype"
     name={`subtype${subtypeName}`}
     defaultValue={subtypeName}
   />
-);};
+);
 
 const EditTherapyTypes = () => {
   const subtypes = sessionStorage.getItem("subtypes").split(',');
-
-    console.log('subtypes', subtypes);
   
   return (
     <div >
