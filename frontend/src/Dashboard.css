@@ -188,3 +188,99 @@ background-color:#8DD5ED;
 .selectWeek:current  {
     border: none;
 }
+
+.toggle {
+    margin-bottom: 10px;
+    width: fit-content;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.toggle .toggleOption  {
+    border: none;
+    background-color: #E6E7E9;
+    padding: 7px;
+    font-weight: 600;
+    font-size: 14px;
+    float: left;
+}
+
+.toggle .toggleOption:hover    {
+    cursor: pointer;
+}
+
+#appointmentToggle    {
+    background-color: #EA7600;
+}
+
+#addOtherForm    {
+    display: none;
+}
+
+#copyDayForm    {
+    width: 300px;
+    background-color: white;
+    position: absolute;
+    right: 0px;
+    z-index: 9;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    display: none;
+}
+
+.datedropdown {
+    position: relative;
+    display: inline-block;
+    z-index: 10;
+    }
+    
+    /* Dropdown Content (Hidden by Default) */
+.datedropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    font-weight: 500;
+}
+
+/* Links inside the dropdown */
+.datedropdown-content .link {
+    color: #00529B;
+    padding: 5px 5px;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+/* Change color of dropdown links on hover */
+.datedropdown-content .link:hover {background-color: #E6E7E9}
+
+/* Show the dropdown menu on hover */
+.datedropdown:hover .datedropdown-content {
+    display: block;
+}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {
+background-color:#8DD5ED;
+}
+
+.datedropbtn {
+    background-color: white;
+    color: #00529B;
+    font-size: 20px;
+    border: none;
+    outline: none;
+    font-weight: 700;
+    height: 16px;
+    background-color: none;
+    }
+
+.datearrow {
+    border: solid #00529B;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+    margin-left: 12px;
+    margin-bottom: 3px;
+    }
