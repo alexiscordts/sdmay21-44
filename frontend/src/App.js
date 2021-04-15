@@ -26,6 +26,7 @@ import AddTherapyTypes from "./TherapyTypes/AddTherapyTypes";
 import EditTherapyTypes from "./TherapyTypes/EditTherapyTypes";
 import ViewTherapyTypes from "./TherapyTypes/ViewTherapyTypes";
 import ChangePassword from "./ChangePassword";
+import axios from "axios";
 
 const userRole = {
   therapist: 0,
@@ -44,11 +45,35 @@ export default class App extends React.Component {
     this.handleLogin = this.handleLogin.bind(this);
   }
 
-  handleLogin(data) {
+  handleLogin(data, password) {
+    this.user = data;
+    data.password = password;
+    axios //see if password matches
+      .post("http://10.29.163.20:8081/api/user/login/", data)
+      .then((response) => {
+        console.log("log in success!");
+        this.setState({
+          loggedIn: true,
+        });
+      })
+      .catch((error) => {
+        console.log("Error caught");
+        console.log(error);
+        this.setState({
+          errors: "Error: username / password incorrect",
+        });
+      });
     console.log("Parent handled login");
-    this.setState({
-      loggedIn: true,
-    });
+
+    axios //get permission of user
+      .get("http://10.29.163.20:8081/api/permission/" + data.userId)
+      .then((response) => {
+        this.role = response.data.role
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
     console.log(this.state.loggedIn);
     return true;
   }
@@ -56,6 +81,21 @@ export default class App extends React.Component {
   render() {
     if (this.state.loggedIn)
       return (
+        <div>
+        <div id="topNav">
+          <div id="collapseMenuToggle" onClick={closeNav}>
+            ☰
+          </div>
+          <img src="https://www.unitypoint.org/images/unitypoint/UnityPointHealthLogo.svg" />
+          <div id="appName"> - &nbsp;Therapy Scheduler</div>
+          <div id="signout">
+            <img src={require("./Icons/icons8-exit-48.png")} />
+          </div>
+          <div id="userinfo">
+            <div id="username">{this.user.username}</div>
+            <div id="role">{this.role}</div>
+          </div>
+        </div>
         <Router>
           <Switch>
             <Route path="/dashboard" component={() => <Dashboard role={this.role} />} />
@@ -95,6 +135,7 @@ export default class App extends React.Component {
             {/* >>>>>>> 81eddc17e459a1530ae41a01d1bf5a15541784f7 */}
           </Switch>
         </Router>
+        </div>
       );
       else
       return (
@@ -102,6 +143,18 @@ export default class App extends React.Component {
       );
       
   }
+}
+
+var closed = true;
+function closeNav() {
+  if (closed == false) {
+    document.getElementById("sideNav").style.minWidth = "50px";
+    document.getElementById("sideNav").style.width = "50px";
+  } else {
+    document.getElementById("sideNav").style.minWidth = "230px";
+    document.getElementById("sideNav").style.width = "18%";
+  }
+  closed = closed == false ? true : false;
 }
 
 ReactDOM.render(<App />, document.getElementById("root"));

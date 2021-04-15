@@ -33,11 +33,10 @@ class Login extends React.Component {
       .get(url + user.username)
       .then((response) => {
         console.log(response.data);
-
+        
         this.setState({ errors: "" });
         //For now we let anyone login
-        this.props.handleLogin();
-        this.loggedIn = true;
+        this.props.handleLogin(response.data, user.password);
       })
       .catch((error) => {
         console.log("Error caught");
