@@ -3,6 +3,7 @@ import Nav from "../Nav";
 import "./UserStyles.css";
 import "../TableStyles.css";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 class ViewPatient extends React.Component {
   constructor(props) {
@@ -72,18 +73,15 @@ class ViewPatient extends React.Component {
         <Nav />
         <div class="userHeaderRow">
           <h2>Patients</h2>
-          <button
+          <Link to="/add_patient"><button
             class="iconAddUserButton"
-            onClick={() => {
-              window.location.href = "/add_patient";
-            }}
           >
             <img
               src={require("../Icons/icons8-add-user-male-48.png")}
               alt="edit"
               className="iconAddUser"
             />
-          </button>
+          </button></Link>
         </div>
         <table class="user-table">
           <thead>

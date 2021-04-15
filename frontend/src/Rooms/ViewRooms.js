@@ -3,6 +3,7 @@ import Nav from "../Nav";
 import "../TableStyles.css";
 import "../UserPages/UserStyles.css";
 import "../Settings.css";
+import { Link } from "react-router-dom";
 
 class ViewRooms extends React.Component {
   constructor(props) {
@@ -56,18 +57,15 @@ class ViewRooms extends React.Component {
             </div>
           </div>
 
-          <button
+          <Link to="/add_room"><button
             class="iconAddUserButton"
-            onClick={() => {
-              window.location.href = "/add_room";
-            }}
           >
             <img
               src={require("../Icons/icons8-plus-48.png")}
               alt="add"
               className="iconAddLocation"
             />
-          </button>
+          </button></Link>
         </div>
         <table class="user-table">
           <thead>

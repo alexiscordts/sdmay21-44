@@ -27,10 +27,16 @@ import EditTherapyTypes from "./TherapyTypes/EditTherapyTypes";
 import ViewTherapyTypes from "./TherapyTypes/ViewTherapyTypes";
 import ChangePassword from "./ChangePassword";
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
+const userRole = {
+  therapist: 0,
+  nurse: 1,
+  admin: 2
+};
 
+export default class App extends React.Component {
+  constructor() {
+    super();
+    this.role = userRole.therapist;
     this.state = {
       loggedIn: false,
     };
@@ -48,54 +54,54 @@ class App extends React.Component {
   }
 
   render() {
-    return (
-      <Router>
-        <Switch>
-          <Route path="/dashboard" component={Dashboard} />
-          <Route path="/add_admin" component={AddAdmin} />
-          <Route path="/add_nurse" component={AddNurse} />
-          <Route path="/add_patient" component={AddPatient} />
-          <Route path="/add_therapist" component={AddTherapist} />
-          <Route path="/add_therapy_types" component={AddTherapyTypes} />
-          <Route path="/edit_admin" component={EditAdmin} />
-          <Route path="/edit_nurse" component={EditNurse} />
-          <Route path="/edit_therapist" component={EditTherapist} />
-          <Route path="/edit_therapy_types" component={EditTherapyTypes} />
-          <Route path="/view_admin" component={ViewAdmin} />
-          <Route path="/view_nurse" component={ViewNurse} />
-          <Route path="/view_patient" component={ViewPatient} />
-          <Route path="/view_therapist" component={ViewTherapist} />
-          <Route path="/view_therapy_types" component={ViewTherapyTypes} />
-          <Route path="/settings" component={Settings} />
-          <Route path="/manage_locations" component={ViewLocations} />
-          <Route path="/add_location" component={AddLocation} />
-          <Route path="/edit_location" component={EditLocation} />
-          <Route path="/manage_rooms" component={ViewRoom} />
-          <Route path="/add_room" component={AddRoom} />
-          <Route path="/view_Metrics" component={ViewMetrics} />
-          <Route path="/change_password" component={ChangePassword} />
+    if (this.state.loggedIn)
+      return (
+        <Router>
+          <Switch>
+            <Route path="/dashboard" component={() => <Dashboard role={this.role} />} />
+            <Route path="/add_admin" component={AddAdmin} />
+            <Route path="/add_nurse" component={AddNurse} />
+            <Route path="/add_patient" component={AddPatient} />
+            <Route path="/add_therapist" component={AddTherapist} />
+            <Route path="/add_therapy_types" component={AddTherapyTypes} />
+            <Route path="/edit_admin" component={EditAdmin} />
+            <Route path="/edit_nurse" component={EditNurse} />
+            <Route path="/edit_therapist" component={EditTherapist} />
+            <Route path="/edit_therapy_types" component={EditTherapyTypes} />
+            <Route path="/view_admin" component={ViewAdmin} />
+            <Route path="/view_nurse" component={ViewNurse} />
+            <Route path="/view_patient" component={ViewPatient} />
+            <Route path="/view_therapist" component={ViewTherapist} />
+            <Route path="/view_therapy_types" component={ViewTherapyTypes} />
+            <Route path="/settings" component={Settings} />
+            <Route path="/manage_locations" component={ViewLocations} />
+            <Route path="/add_location" component={AddLocation} />
+            <Route path="/edit_location" component={EditLocation} />
+            <Route path="/manage_rooms" component={ViewRoom} />
+            <Route path="/add_room" component={AddRoom} />
+            <Route path="/view_Metrics" component={ViewMetrics} />
+            <Route path="/change_password" component={ChangePassword} />
 
-          {/* <<<<<<< HEAD */}
-          <Route
-            path="/"
-            render={(props) => {
-              if (!this.state.loggedIn) {
-                return <Login handleLogin={this.handleLogin} />;
-              } else {
-                return <Dashboard />;
-              }
-            }}
-          />
-          {/* ======= */}
+            {/* <<<<<<< HEAD */}
+            <Route
+              path="/"
+              render={(props) => {
+                    window.location.href = "/dashboard";
+              }}
+            />
+            {/* ======= */}
 
-          {/* <Route path="/" component={Login} handleLogin={this.handleLogin} /> */}
-          {/* >>>>>>> 81eddc17e459a1530ae41a01d1bf5a15541784f7 */}
-        </Switch>
-      </Router>
-    );
+            {/* <Route path="/" component={Login} handleLogin={this.handleLogin} /> */}
+            {/* >>>>>>> 81eddc17e459a1530ae41a01d1bf5a15541784f7 */}
+          </Switch>
+        </Router>
+      );
+      else
+      return (
+        <Login handleLogin={this.handleLogin} />
+      );
+      
   }
 }
 
 ReactDOM.render(<App />, document.getElementById("root"));
-
-export default App;

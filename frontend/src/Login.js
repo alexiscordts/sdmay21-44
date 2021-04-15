@@ -1,5 +1,6 @@
 import React from "react";
 import axios from "axios";
+import App from "./App.js";
 import "./Login.css";
 
 class Login extends React.Component {
@@ -61,6 +62,7 @@ class Login extends React.Component {
   }
 
   render() {
+    if (!this.state.loggedIn)
     return (
       <div id="parent">
         <img
@@ -97,6 +99,7 @@ class Login extends React.Component {
         </form>
       </div>
     );
+    return (<App />);
   }
 }
 

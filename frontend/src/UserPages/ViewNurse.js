@@ -3,6 +3,7 @@ import Nav from "../Nav";
 import "../TableStyles.css";
 import "./UserStyles.css";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 class ViewNurse extends React.Component {
   constructor(props) {
@@ -37,13 +38,12 @@ class ViewNurse extends React.Component {
                   <td>{nurse.lastName}</td>
                   <td>{nurse.username}</td>
                   <td>
-                    <button
+                    <Link to="/edit_admin"><button
                       class="iconButton"
                       onClick={() => {
                         sessionStorage.setItem("fname", nurse.fname);
                         sessionStorage.setItem("lname", nurse.lname);
                         // sessionStorage.setItem("email", admin.email);
-                        window.location.href = "/edit_admin";
                       }}
                     >
                       <img
@@ -51,7 +51,7 @@ class ViewNurse extends React.Component {
                         alt="edit"
                         className="icon"
                       />
-                    </button>
+                    </button></Link>
                   </td>
                 </tr>
               );
@@ -66,18 +66,15 @@ class ViewNurse extends React.Component {
         <Nav />
         <div class="userHeaderRow">
           <h2>Nurses</h2>
-          <button
+          <Link to="/add_nurse"><button
             class="iconAddUserButton"
-            onClick={() => {
-              window.location.href = "/add_nurse";
-            }}
           >
             <img
               src={require("../Icons/icons8-add-user-male-48.png")}
               alt="edit"
               className="iconAddUser"
             />
-          </button>
+          </button></Link>
         </div>
         <table class="user-table">
           <thead>

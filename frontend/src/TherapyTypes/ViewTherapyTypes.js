@@ -3,6 +3,7 @@ import Nav from "../Nav";
 import "../TableStyles.css";
 import "../UserPages/UserStyles.css";
 import "../Settings.css";
+import { Link } from "react-router-dom";
 
 class ViewTherapyTypes extends React.Component {
   constructor(props) {
@@ -23,12 +24,11 @@ class ViewTherapyTypes extends React.Component {
             <td>{therapyType.name}</td>
             <td>{therapyType.subtypes}</td>
             <td>
-              <button
+              <Link to="/edit_therapy_types"><button
                 class="iconButton"
                 onClick={() => {
                   sessionStorage.setItem("name", therapyType.name);
                   sessionStorage.setItem("subtypes", therapyType.subtypes);
-                  window.location.href = "/edit_therapy_types";
                 }}
               >
                 <img
@@ -36,7 +36,7 @@ class ViewTherapyTypes extends React.Component {
                   alt="edit"
                   className="icon"
                 />
-              </button>
+              </button></Link>
             </td>
           </tr>
         );
@@ -48,18 +48,15 @@ class ViewTherapyTypes extends React.Component {
         <Nav />
         <div class="userHeaderRow">
           <h2>Therapy Types</h2>
-          <button
+          <Link to="/add_therapy_types"><button
             class="iconAddUserButton"
-            onClick={() => {
-              window.location.href = "/add_therapy_types";
-            }}
           >
             <img
               src={require("../Icons/icons8-plus-48.png")}
               alt="add"
               className="iconAddLocation"
             />
-          </button>
+          </button></Link>
         </div>
         <table class="user-table">
           <thead>

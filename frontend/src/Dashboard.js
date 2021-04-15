@@ -10,9 +10,16 @@ import EditAppointment from "./EditAppointment"
 import ReactToPrint from "react-to-print";
 import axios from "axios";
 
+const userRole = {
+    therapist: 0,
+    nurse: 1,
+    admin: 2
+  };
+
 class Dashboard extends React.Component {
     constructor(props) {
         super(props);
+        console.log("role: " + this.props.role);
         this.date = new Date();
         this.schedule = (<TherapistSchedule date={this.date}/>);
         this.scheduleHeader = "My Schedule";
@@ -68,7 +75,7 @@ class Dashboard extends React.Component {
 
     return (
     <div id="screen">
-        <Nav />
+        <Nav role={this.props.role} />
         <div class="pageContainer">
             <div class="dropdown">
                 <button class="dropbtn">

@@ -3,6 +3,7 @@ import "../TableStyles.css";
 import "./UserStyles.css";
 import Nav from "../Nav";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 class ViewAdmin extends React.Component {
   constructor(props) {
@@ -40,13 +41,12 @@ class ViewAdmin extends React.Component {
                   <td>{admin.lastName}</td>
                   <td>{admin.username}</td>
                   <td>
-                    <button
+                    <Link to="/edit_admin"><button
                       class="iconButton"
                       onClick={() => {
                         sessionStorage.setItem("fname", admin.fname);
                         sessionStorage.setItem("lname", admin.lname);
                         // sessionStorage.setItem("email", admin.email);
-                        window.location.href = "/edit_admin";
                       }}
                     >
                       <img
@@ -54,7 +54,7 @@ class ViewAdmin extends React.Component {
                         alt="edit"
                         className="icon"
                       />
-                    </button>
+                    </button></Link>
                   </td>
                 </tr>
               );
@@ -69,18 +69,15 @@ class ViewAdmin extends React.Component {
         <Nav />
         <div class="userHeaderRow">
           <h2>Admins</h2>
-          <button
+          <Link to="/add_patient"><button
             class="iconAddUserButton"
-            onClick={() => {
-              window.location.href = "/add_patient";
-            }}
           >
             <img
               src={require("../Icons/icons8-add-user-male-48.png")}
               alt="edit"
               className="iconAddUser"
             />
-          </button>
+          </button></Link>
         </div>
         <table class="user-table">
           <thead>

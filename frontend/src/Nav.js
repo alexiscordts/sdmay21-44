@@ -1,13 +1,31 @@
 import React from "react";
-import { Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./Nav.css";
 
-class Dashboard extends React.Component {
+const userRole = {
+  therapist: 0,
+  nurse: 1,
+  admin: 2
+};
+
+class Nav extends React.Component {
   constructor(props) {
     super(props);
     this.username = { value: "Username123" };
-    role = "Admin";
-    this.role = { value: role };
+    console.log("role: " + this.props.role);
+    switch(this.props.role) {
+      case 0:
+        this.role = "Therapist";
+        break;
+        case 1:
+          this.role = "Nurse";
+        break;
+        case 2:
+          this.role = "Admin";
+          break;
+          default:
+          this.role = "none";
+    }
     this.menuItems = { values: loadMenuItems() };
   }
 
@@ -30,7 +48,7 @@ class Dashboard extends React.Component {
           </div>
           <div id="userinfo">
             <div id="username">{this.username.value}</div>
-            <div id="role">{this.role.value}</div>
+            <div id="role">{this.role}</div>
           </div>
         </div>
       </div>
@@ -54,97 +72,76 @@ function closeNav() {
 function loadMenuItems() {
   const items = [];
   items.push(
-    <button
+    <Link to="/dashboard"><button
       class="menuButton"
-      onClick={() => {
-        window.location.href = "/dashboard";
-      }}
     >
       <img
         class="menuButtonImg"
         src={require("./Icons/icons8-calendar-48.png")}
       />
       <div class="menuLabel">View Schedule</div>
-    </button>,
+    </button></Link>,
 
-    <button class="menuButton"
-    onClick={() => {
-      window.location.href = "/view_metrics";
-    }}
+<Link to="/view_metrics"><button class="menuButton"
     >
       <img
         class="menuButtonImg"
         src={require("./Icons/icons8-combo-chart-50.png")}
       />
       <div class="menuLabel">View Metrics</div>
-    </button>,
+    </button></Link>,
 
-    <button
+<Link to="/view_patient"><button
       class="menuButton"
-      onClick={() => {
-        window.location.href = "/view_patient";
-      }}
     >
       <img
         class="menuButtonImg"
         src={require("./Icons/icons8-wheelchair-50.png")}
       />
       <div class="menuLabel">Manage Patients</div>
-    </button>,
+    </button></Link>,
 
-    <button
+<Link to="/view_therapist"><button
       class="menuButton"
-      onClick={() => {
-        window.location.href = "/view_therapist";
-      }}
     >
       <img
         class="menuButtonImg"
         src={require("./Icons/icons8-user-male-50.png")}
       />
       <div class="menuLabel">Manage Therapists</div>
-    </button>,
+    </button></Link>,
 
-    <button
+<Link to="/view_nurse"><button
       class="menuButton"
-      onClick={() => {
-        window.location.href = "/view_nurse";
-      }}
     >
       <img
         class="menuButtonImg"
         src={require("./Icons/icons8-stethoscope-50.png")}
       />
       <div class="menuLabel">Manage Nurses</div>
-    </button>,
+    </button></Link>,
 
-    <button
+<Link to="/view_admin"><button
       class="menuButton"
-      onClick={() => {
-        window.location.href = "/view_admin";
-      }}
     >
       <img
         class="menuButtonImg"
         src={require("./Icons/icons8-microsoft-admin-50.png")}
       />
       <div class="menuLabel">Manage Admins</div>
-    </button>,
+    </button></Link>,
 
-    <button
+<Link to="/settings"><button
       class="menuButton"
-      onClick={() => {
-        window.location.href = "/settings";
-      }}
     >
       <img
         class="menuButtonImg"
         src={require("./Icons/icons8-settings-48.png")}
       />
       <div class="menuLabel">Settings</div>
-    </button>
+    </button></Link>
   );
   return items;
 }
 
-export default Dashboard;
+export default Nav;

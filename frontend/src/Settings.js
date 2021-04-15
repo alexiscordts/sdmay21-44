@@ -1,45 +1,33 @@
 import React from "react";
 import Nav from "./Nav";
 import "./Settings.css";
+import { Link } from "react-router-dom";
 
 const Settings = () => {
   return (
     <div>
       <Nav />
       <div class="settingsPageContainer">
-        <button
+      <Link to="/manage_locations"><button
           className="linkButton"
-          onClick={() => {
-            window.location.href = "/manage_locations";
-          }}
         >
           Manage Locations
-        </button>
-        <button
+        </button></Link>
+        <Link to="/manage_rooms"><button
           className="linkButton"
-          onClick={() => {
-            window.location.href = "/manage_rooms";
-          }}
         >
           Manage Rooms
-        </button>
-        <button
+        </button></Link>
+        <Link to="/view_therapy_types"><button
           className="linkButton"
-          onClick={() => {
-            window.location.href = "/view_therapy_types";
-          }}
         >
           Manage Therapy Types
-        </button>
-        <button
+        </button></Link>
+        <Link to="/change_password"><button
           className="linkButton"
-          onClick={() => {
-            console.log('here');
-            window.location.href = "/change_password";
-          }}
         >
           Change Password
-        </button>
+        </button></Link>
       </div>
     </div>
   );

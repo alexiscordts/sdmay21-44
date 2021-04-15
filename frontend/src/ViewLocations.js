@@ -3,6 +3,7 @@ import Nav from "./Nav";
 import "./TableStyles.css";
 import "./UserPages/UserStyles.css";
 import "./Settings.css";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 class ViewLocations extends React.Component {
@@ -36,12 +37,11 @@ class ViewLocations extends React.Component {
             <td>{location.name}</td>
             <td>Address</td>
             <td>
-              <button
+              <Link to="/edit_location"><button
                 class="iconButton"
                 onClick={() => {
                   sessionStorage.setItem("name", location.name);
                   sessionStorage.setItem("address", location.address);
-                  window.location.href = "/edit_location";
                 }}
               >
                 <img
@@ -49,7 +49,7 @@ class ViewLocations extends React.Component {
                   alt="edit"
                   className="icon"
                 />
-              </button>
+              </button></Link>
             </td>
           </tr>
         );
@@ -61,18 +61,15 @@ class ViewLocations extends React.Component {
         <Nav />
         <div class="userHeaderRow">
           <h2>Locations</h2>
-          <button
+          <Link to="/add_location"><button
             class="iconAddUserButton"
-            onClick={() => {
-              window.location.href = "/add_location";
-            }}
           >
             <img
               src={require("./Icons/icons8-plus-48.png")}
               alt="add"
               className="iconAddLocation"
             />
-          </button>
+          </button></Link>
         </div>
         <table class="user-table">
           <thead>
