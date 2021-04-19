@@ -1,6 +1,7 @@
 ﻿using InpatientTherapySchedulingProgram.Models;
 using InpatientTherapySchedulingProgram.Services.Interfaces;
 using InpatientTherapySchedulingProgram.Exceptions.TherapyExceptions;
+using InpatientTherapySchedulingProgram.Exceptions.TherapyMainExceptions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,13 +20,17 @@ namespace InpatientTherapySchedulingProgram.Services
 
         public async Task<Therapy> AddTherapy(Therapy therapy)
         {
-            if(await TherapyExistsByAdl(therapy.Adl))
+            if (await TherapyExistsByAdl(therapy.Adl))
             {
                 throw new TherapyAdlAlreadyExistException();
             }
-            if(await TherapyExistsByAbbreviation(therapy.Abbreviation))
+            if (await TherapyExistsByAbbreviation(therapy.Abbreviation))
             {
                 throw new TherapyAbbreviationAlreadyExistException();
+            }
+            if (!await TherapyMainExists(therapy.Type))
+            {
+                throw new TherapyMainDoesNotExistException();
             }
 
             _context.Therapy.Add(therapy);
@@ -34,7 +39,7 @@ namespace InpatientTherapySchedulingProgram.Services
             {
                 await _context.SaveChangesAsync();
             }
-            catch(DbUpdateException)
+            catch (DbUpdateException)
             {
                 throw;
             }
@@ -46,64 +51,14 @@ namespace InpatientTherapySchedulingProgram.Services
         {
             var therapy = await _context.Therapy.FindAsync(adl);
 
-            if(therapy == null)
+            if (therapy == null)
             {
                 return null;
             }
 
-            _context.Therapy.Remove(therapy);
+            therapy.Active = false;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch(DbUpdateConcurrencyException)
-            {
-                throw;
-            }
-
-            return therapy;
-        }
-
-        public async Task<IEnumerable<string>> GetAllAdls()
-        {
-            return await _context.Therapy.Select(t => t.Adl).Distinct().ToListAsync();
-        }
-
-        public async Task<IEnumerable<Therapy>> GetAllTherapies()
-        {
-            return await _context.Therapy.ToListAsync();
-        }
-
-        public async Task<IEnumerable<string>> GetAllTypes()
-        {
-            return await _context.Therapy.Select(t => t.TherapyType).Distinct().ToListAsync();
-        }
-
-        public async Task<Therapy> GetTherapyByAdl(string adl)
-        {
-            return await _context.Therapy.FindAsync(adl);
-        }
-
-        public async Task<Therapy> GetTherapyByAbbreviation(string abbreviation)
-        {
-            return await _context.Therapy.FirstOrDefaultAsync(t => t.Abbreviation == abbreviation);
-        }
-
-        public async Task<Therapy> UpdateTherapy(string adl, Therapy therapy)
-        {
-            if(therapy.Adl != adl)
-            {
-                throw new TherapyAdlsDoNotMatchException();
-            }
-            if(!await TherapyExistsByAdl(therapy.Adl))
-            {
-                throw new TherapyDoesNotExistException();
-            }
-
-            var local = _context.Set<Therapy>()
-                .Local
-                .FirstOrDefault(t => t.Adl == adl);
+            var local = _context.Therapy.Local.FirstOrDefault(t => t.Adl.Equals(adl));
 
             _context.Entry(local).State = EntityState.Detached;
 
@@ -113,7 +68,65 @@ namespace InpatientTherapySchedulingProgram.Services
             {
                 await _context.SaveChangesAsync();
             }
-            catch(DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return therapy;
+        }
+
+        public async Task<IEnumerable<string>> GetAllAdls()
+        {
+            return await _context.Therapy.Where(t => t.Active).Select(t => t.Adl).Distinct().ToListAsync();
+        }
+
+        public async Task<IEnumerable<Therapy>> GetAllTherapies()
+        {
+            return await _context.Therapy.Where(t => t.Active).ToListAsync();
+        }
+
+        public async Task<IEnumerable<string>> GetAllTypes()
+        {
+            return await _context.Therapy.Where(t => t.Active).Select(t => t.Type).Distinct().ToListAsync();
+        }
+
+        public async Task<Therapy> GetTherapyByAdl(string adl)
+        {
+            return await _context.Therapy.FirstOrDefaultAsync(t => t.Adl.Equals(adl) && t.Active);
+        }
+
+        public async Task<Therapy> GetTherapyByAbbreviation(string abbreviation)
+        {
+            return await _context.Therapy.FirstOrDefaultAsync(t => t.Abbreviation.Equals(abbreviation) && t.Active);
+        }
+
+        public async Task<Therapy> UpdateTherapy(string adl, Therapy therapy)
+        {
+            if (therapy.Adl != adl)
+            {
+                throw new TherapyAdlsDoNotMatchException();
+            }
+            if (!await TherapyExistsByAdl(therapy.Adl))
+            {
+                throw new TherapyDoesNotExistException();
+            }
+            if (!await TherapyMainExists(therapy.Type))
+            {
+                throw new TherapyMainDoesNotExistException();
+            }
+
+            var local = _context.Therapy.Local.FirstOrDefault(t => t.Adl.Equals(adl));
+
+            _context.Entry(local).State = EntityState.Detached;
+
+            _context.Entry(therapy).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
             {
                 throw;
             }
@@ -123,12 +136,17 @@ namespace InpatientTherapySchedulingProgram.Services
 
         private async Task<bool> TherapyExistsByAdl(string adl)
         {
-            return await _context.Therapy.FindAsync(adl) != null;
+            return await _context.Therapy.FirstOrDefaultAsync(t => t.Adl.Equals(adl) && t.Active) != null;
         }
 
         private async Task<bool> TherapyExistsByAbbreviation(string abbreviation)
         {
-            return await _context.Therapy.FirstOrDefaultAsync(t => t.Abbreviation.Equals(abbreviation)) != null;
+            return await _context.Therapy.FirstOrDefaultAsync(t => t.Abbreviation.Equals(abbreviation) && t.Active) != null;
+        }
+
+        private async Task<bool> TherapyMainExists(string therapyMainType)
+        {
+            return await _context.TherapyMain.FirstOrDefaultAsync(t => t.Type.Equals(therapyMainType) && t.Active) != null;
         }
     }
 }

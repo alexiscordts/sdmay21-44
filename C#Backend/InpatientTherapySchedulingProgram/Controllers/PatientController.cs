@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using InpatientTherapySchedulingProgram.Models;
@@ -28,14 +25,15 @@ namespace InpatientTherapySchedulingProgram.Controllers
         public async Task<ActionResult<IEnumerable<Patient>>> GetPatient()
         {
             var allPatients = await _service.GetAllPatients();
+
             return Ok(allPatients);
         }
 
         // GET: api/Patient/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Patient>> GetPatient(int id)
+        [HttpGet("{patientId}")]
+        public async Task<ActionResult<Patient>> GetPatient(int patientId)
         {
-            var patient = await _service.GetPatientByPid(id);
+            var patient = await _service.GetPatientByPatientId(patientId);
 
             if (patient == null)
             {
@@ -48,12 +46,12 @@ namespace InpatientTherapySchedulingProgram.Controllers
         // PUT: api/Patient/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutPatient(int id, Patient patient)
+        [HttpPut("{patientId}")]
+        public async Task<IActionResult> PutPatient(int patientId, Patient patient)
         {
             try
             {
-                await _service.UpdatePatient(id, patient);
+                await _service.UpdatePatient(patientId, patient);
             }
             catch (PatientPidsDoNotMatchException e)
             {
@@ -80,7 +78,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
             {
                 await _service.AddPatient(patient);
             }
-            catch (PidAlreadyExistsException e)
+            catch (PatientIdAlreadyExistException e)
             {
                 return Conflict(e);
             }
@@ -93,23 +91,24 @@ namespace InpatientTherapySchedulingProgram.Controllers
         }
 
         // DELETE: api/Patient/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Patient>> DeletePatient(int id)
+        [HttpDelete("{patientId}")]
+        public async Task<ActionResult<Patient>> DeletePatient(int patientId)
         {
             Patient patient;
 
             try
             {
-                patient = await _service.DeletePatient(id);
-
-                if (patient == null)
-                {
-                    return NotFound();
-                }
+                patient = await _service.DeletePatient(patientId);
             }
             catch (DbUpdateConcurrencyException) {
                 throw;
             }
+
+            if (patient == null)
+            {
+                return NotFound();
+            }
+
             return Ok(patient);
         }
     }

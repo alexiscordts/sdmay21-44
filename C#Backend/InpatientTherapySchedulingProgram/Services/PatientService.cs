@@ -20,7 +20,7 @@ namespace InpatientTherapySchedulingProgram.Services
         public async Task<Patient> AddPatient(Patient patient)
         {
             if (await PatientExists(patient.PatientId)) {
-                throw new PidAlreadyExistsException();
+                throw new PatientIdAlreadyExistException();
             }
 
             _context.Patient.Add(patient);
@@ -37,16 +37,24 @@ namespace InpatientTherapySchedulingProgram.Services
             return patient;
         }
 
-        public async Task<Patient> DeletePatient(int pid)
+        public async Task<Patient> DeletePatient(int patientId)
         {
-            var patient = await _context.Patient.FindAsync(pid);
+            var patient = await _context.Patient.FindAsync(patientId);
 
             if (patient == null)
             {
                 return null;
             }
 
-            _context.Patient.Remove(patient);
+            patient.Active = false;
+
+            var local = _context.Set<Patient>()
+                .Local
+                .FirstOrDefault(p => p.PatientId == patient.PatientId);
+
+            _context.Entry(local).State = EntityState.Detached;
+
+            _context.Entry(patient).State = EntityState.Modified;
 
             try
             {
@@ -62,21 +70,21 @@ namespace InpatientTherapySchedulingProgram.Services
 
         public async Task<IEnumerable<Patient>> GetAllPatients()
         {
-            return await _context.Patient.ToListAsync();
+            return await _context.Patient.Where(p => p.Active).ToListAsync();
         }
 
-        public async Task<Patient> GetPatientByPid(int pid)
+        public async Task<Patient> GetPatientByPatientId(int patientId)
         {
-            return await _context.Patient.FindAsync(pid);
+            return await _context.Patient.FirstOrDefaultAsync(p => p.PatientId == patientId && p.Active);
         }
 
-        public async Task<Patient> UpdatePatient(int pid, Patient patient)
+        public async Task<Patient> UpdatePatient(int patientId, Patient patient)
         {
-            if (pid != patient.PatientId)
+            if (patientId != patient.PatientId)
             {
                 throw new PatientPidsDoNotMatchException();
             }
-            if (!await PatientExists(pid))
+            if (!await PatientExists(patientId))
             {
                 throw new PatientDoesNotExistException();
             }
@@ -103,7 +111,7 @@ namespace InpatientTherapySchedulingProgram.Services
 
         private async Task<bool> PatientExists(int patientId)
         {
-            return await _context.Patient.FindAsync(patientId) != null;
+            return await _context.Patient.FirstOrDefaultAsync(p => p.PatientId == patientId && p.Active) != null;
         }
     }
 }

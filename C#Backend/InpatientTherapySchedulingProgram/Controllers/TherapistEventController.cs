@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using InpatientTherapySchedulingProgram.Models;
 using InpatientTherapySchedulingProgram.Services.Interfaces;
 using InpatientTherapySchedulingProgram.Exceptions.UserExceptions;
-using InpatientTherapySchedulingProgram.Exceptions.TherapistActivityExceptions;
 using InpatientTherapySchedulingProgram.Exceptions.TherapistEventExceptions;
 
 namespace InpatientTherapySchedulingProgram.Controllers
@@ -71,10 +70,6 @@ namespace InpatientTherapySchedulingProgram.Controllers
             {
                 return NotFound(e);
             }
-            catch (TherapistActivityDoesNotExistException e)
-            {
-                return BadRequest(e);
-            }
             catch (UserDoesNotExistException e)
             {
                 return BadRequest(e);
@@ -100,10 +95,6 @@ namespace InpatientTherapySchedulingProgram.Controllers
             catch (TherapistEventEventIdAlreadyExistsException e)
             {
                 return Conflict(e);
-            }
-            catch (TherapistActivityDoesNotExistException e)
-            {
-                return NotFound(e);
             }
             catch (UserDoesNotExistException e)
             {
