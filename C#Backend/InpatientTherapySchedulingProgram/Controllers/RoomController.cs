@@ -6,8 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using InpatientTherapySchedulingProgram.Models;
-using Microsoft.AspNetCore.Authorization;
-using InpatientTherapySchedulingProgram.Services;
+using InpatientTherapySchedulingProgram.Exceptions.RoomException;
 using InpatientTherapySchedulingProgram.Services.Interfaces;
 
 
@@ -17,6 +16,94 @@ namespace InpatientTherapySchedulingProgram.Controllers
     [ApiController]
     public class RoomController : ControllerBase
     {
+        private readonly IRoomService _service;
 
+        public RoomController(IRoomService service)
+        {
+            _service = service;
+        }
+
+
+        // GET: api/room
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Room>>> GetRooms()
+        {
+            var allRooms = await _service.GetAllRooms();
+
+            return Ok(allRooms);
+        }
+
+        // GET: api/room/getRoomsByLocationId/1
+        [HttpGet("getRoomsByLocationId/{locationId}")]
+        public async Task<ActionResult<IEnumerable<Room>>> GetRoomsByLocationId(int locationId)
+        {
+            var allRoomByLocations = await _service.GetAllRoomsByLocationId(locationId);
+            return Ok(allRoomByLocations);
+        }
+
+        // POST: api/room/223+{JSONObject}
+        [HttpPut("{number}")]
+        public async Task<IActionResult> PutLocation(int number, Room room)
+        {
+            try
+            {
+                await _service.UpdateRoom(number, room);
+            }
+            catch (RoomNumbersDoNotMatchException e)
+            {
+                return BadRequest(e);
+            }
+            catch (RoomDoesNotExistException)
+            {
+                return NotFound();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return NoContent();
+        }
+
+
+        // POST: api/room/{JSONObject}
+        [HttpPost]
+        public async Task<ActionResult<Room>> PostRoom(Room room)
+        {
+            try
+            {
+                await _service.AddRoom(room);
+            }
+            catch (RoomAlreadyExistsException e)
+            {
+                return Conflict(e);
+            }
+            catch (DbUpdateException)
+            {
+                throw;
+            }
+
+            return CreatedAtAction("GetRoom", new { number = room.Number }, room);
+        }
+
+        [HttpDelete]
+        public async Task<ActionResult<Room>> DeleteRoom(Room room)
+        {
+            if (room == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                await _service.DeleteRoom(room);
+            }
+            catch (DbUpdateException)
+            {
+                throw;
+            }
+
+            return Ok(room);
+        }
     }
-    }
+}

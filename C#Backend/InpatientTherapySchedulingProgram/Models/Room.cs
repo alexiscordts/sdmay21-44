@@ -6,10 +6,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace InpatientTherapySchedulingProgram.Models
 {
     [Table("room")]
-    public partial class Room
+    public partial class Room : IEquatable<Room>
     {
         public Room() { 
-            // default constructor
+        
         }
 
         [Key]
