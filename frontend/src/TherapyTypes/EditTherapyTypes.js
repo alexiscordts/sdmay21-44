@@ -12,13 +12,9 @@ const SubtypeInputs = ({subtypeName}) => (
   />
 );
 
-const getSubtypesByTherapyType = () => {
-  return ['Subtype1', 'Subtype2', 'Subtype3'];
-};
-
 const EditTherapyTypes = () => {
-  const subtypes = getSubtypesByTherapyType();
-
+  const subtypes = sessionStorage.getItem("subtypes").split(',');
+  
   return (
     <div >
       <Nav/>
@@ -32,7 +28,7 @@ const EditTherapyTypes = () => {
                   <span className="required">*</span>
                 </span>
                 <div className="subtypeInputContainer">
-                  {subtypes.map((subtype) => <SubtypeInputs key={subtype} subtypeName={subtype} />)}
+                  {subtypes.map((subtype) => <SubtypeInputs subtypeName={subtype} />)}
                 </div>
               </label>
               <div className="buttonContainer">
