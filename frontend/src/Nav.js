@@ -48,8 +48,7 @@ var role;
 function loadMenuItems() {
   const items = [];
   items.push(
-    <Link to="/dashboard"><button
-      class="menuButton"
+    <Link to="/dashboard"><button class="menuButton"
     >
       <img
         class="menuButtonImg"

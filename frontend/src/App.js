@@ -28,25 +28,32 @@ import ViewTherapyTypes from "./TherapyTypes/ViewTherapyTypes";
 import ChangePassword from "./ChangePassword";
 import axios from "axios";
 
-const userRole = {
-  therapist: 0,
-  nurse: 1,
-  admin: 2
-};
-
 export default class App extends React.Component {
   constructor() {
     super();
-    this.role = userRole.therapist;
-    this.state = {
-      loggedIn: false,
-    };
+    console.log("local storage: " + sessionStorage.getItem('loggedIn'));
+      if (sessionStorage.getItem('loggedIn') && sessionStorage.getItem('role') != null && sessionStorage.getItem('username') != null)
+      {
+        this.state = {
+          loggedIn: true,
+        }
+        this.role = sessionStorage.getItem('role');
+        this.username = sessionStorage.getItem('username');
+      }
+     else
+     {
+        this.state = {
+          loggedIn: false,
+        }
+      }
+     //sessionStorage.setItem('loggedIn', true);
+     //console.log("local storage: " + sessionStorage.getItem('loggedIn'));
 
     this.handleLogin = this.handleLogin.bind(this);
   }
 
   handleLogin(data, password) {
-    this.user = data;
+    this.username = data.username;
     data.password = password;
     axios //see if password matches
       .post("http://10.29.163.20:8081/api/user/login/", data)
@@ -55,6 +62,8 @@ export default class App extends React.Component {
         this.setState({
           loggedIn: true,
         });
+        sessionStorage.setItem('loggedIn', true);
+        sessionStorage.setItem('username', this.username);
       })
       .catch((error) => {
         console.log("Error caught");
@@ -68,7 +77,8 @@ export default class App extends React.Component {
     axios //get permission of user
       .get("http://10.29.163.20:8081/api/permission/" + data.userId)
       .then((response) => {
-        this.role = response.data.role
+        this.role = response.data.role;
+        sessionStorage.setItem('role', response.data.role);
       })
       .catch((error) => {
         console.log(error);
@@ -88,17 +98,19 @@ export default class App extends React.Component {
           </div>
           <img src="https://www.unitypoint.org/images/unitypoint/UnityPointHealthLogo.svg" />
           <div id="appName"> - &nbsp;Therapy Scheduler</div>
-          <div id="signout">
+          <div id="signout" onClick={() => {this.setState({
+          loggedIn: false,
+           });}}>
             <img src={require("./Icons/icons8-exit-48.png")} />
           </div>
           <div id="userinfo">
-            <div id="username">{this.user.username}</div>
+            <div id="username">{this.username}</div>
             <div id="role">{this.role}</div>
           </div>
         </div>
         <Router>
           <Switch>
-            <Route path="/dashboard" component={() => <Dashboard role={this.role} />} />
+            <Route path="/dashboard" component={Dashboard} />
             <Route path="/add_admin" component={AddAdmin} />
             <Route path="/add_nurse" component={AddNurse} />
             <Route path="/add_patient" component={AddPatient} />
@@ -121,18 +133,7 @@ export default class App extends React.Component {
             <Route path="/add_room" component={AddRoom} />
             <Route path="/view_Metrics" component={ViewMetrics} />
             <Route path="/change_password" component={ChangePassword} />
-
-            {/* <<<<<<< HEAD */}
-            <Route
-              path="/"
-              render={(props) => {
-                    window.location.href = "/dashboard";
-              }}
-            />
-            {/* ======= */}
-
-            {/* <Route path="/" component={Login} handleLogin={this.handleLogin} /> */}
-            {/* >>>>>>> 81eddc17e459a1530ae41a01d1bf5a15541784f7 */}
+            <Route exact path="/" component={Dashboard} />
           </Switch>
         </Router>
         </div>

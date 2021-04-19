@@ -1,6 +1,7 @@
 import { getQueriesForElement } from "@testing-library/react";
 import React from "react";
 import "./RoomSchedule.css";
+import axios from "axios";
 
 class AllTherapistSchedule extends React.Component {
   constructor(props) {
@@ -8,27 +9,30 @@ class AllTherapistSchedule extends React.Component {
     this.lines = {values: this.loadLines()};
     this.hours = {values: loadHours()};
     this.time = {value: loadTimeLine()};
-    this.rooms = {values: getRooms()};
+    this.rooms = {values: this.getRooms()};
     var appointments = getAppointments(d);
     var d = new Date();
     while (d.getDay() != 1) //get Monday
     {
         d.setDate(d.getDate() - 1);
     }
-    this.tuesday = {values: getAppointmentElements(appointments)}
+    this.tuesday = {values: getAppointmentElements(appointments)};
+    this.state = {
+        userList: [],
+        therapistList: [],
+      };
   }
 
-
-    loadRooms()
+    loadRooms(users, therapists)
     {
         var hours = loadHours();
-        const therapists = getRooms();
+        therapists = this.getRooms(users, therapists);
         const roomElements = [];
         var appointments = getAppointments(new Date());
         const tuesday = getAppointmentElements(appointments);
-        for (let i = 0; i < therapists.length; i++)
+        for (let i = 0; i < therapists[0].length; i++)
         {
-            let lines = this.loadLines(i + 1);
+            let lines = this.loadLines(i + 1, therapists[1][i]);
             let percent = Math.floor(Math.random() * 100);
             var color = getColor(percent);
             if (i % 10 == 0)
@@ -36,7 +40,7 @@ class AllTherapistSchedule extends React.Component {
             if (i == 3)
                 roomElements.push(
                     <div class="therapist">
-                        <div class="roomLabel">{therapists[i]}</div>
+                        <div class="roomLabel">{therapists[0][i]}</div>
                         <div class="therapistMetrics" style={color}>{percent} %</div>
                         {lines}
                         {tuesday}
@@ -45,7 +49,7 @@ class AllTherapistSchedule extends React.Component {
                 else
                 roomElements.push(
                     <div class="therapist">
-                        <div class="roomLabel">{therapists[i]}</div>
+                        <div class="roomLabel">{therapists[0][i]}</div>
                         <div class="therapistMetrics" style={color}>{percent} %</div>
                         {lines}
                     </div>
@@ -54,7 +58,7 @@ class AllTherapistSchedule extends React.Component {
         return roomElements;
     }
 
-    loadLines(therapistIndex)
+    loadLines(therapistIndex, therapistId)
     {
         const items = [];
         for (var i = 0; i < 15; i++)
@@ -63,24 +67,35 @@ class AllTherapistSchedule extends React.Component {
             if (i % 2)
             {
                 items.push(
-                    <div onClick={() => {console.log(this.props.date.toString()); showAddAppointment(time, "00", this.props.date, therapistIndex)}} class="halfHour"><div class="hide">+</div></div>
+                    <div onClick={() => {console.log(this.props.date.toString()); showAddAppointment(time, "00", this.props.date, therapistIndex); this.props.therapistEvent.therapistId = therapistId; this.setTimes(this.props.date, time, 0)}} class="halfHour"><div class="hide">+</div></div>
                 );
                 items.push(
-                    <div onClick={() => {console.log(this.props.date.toString()); showAddAppointment(time, "30", this.props.date, therapistIndex)}} class="halfHour"><div class="hide">+</div></div>
+                    <div onClick={() => {console.log(this.props.date.toString()); showAddAppointment(time, "30", this.props.date, therapistIndex); this.props.therapistEvent.therapistId = therapistId; this.setTimes(this.props.date, time, 30)}} class="halfHour"><div class="hide">+</div></div>
                 );
             }
             else
             {
                 items.push(
-                    <div onClick={() => {console.log(this.props.date.toString()); showAddAppointment(time, "00", this.props.date, therapistIndex)}} class="halfHour printGrey"><div class="hide">+</div></div>
+                    <div onClick={() => {console.log(this.props.date.toString()); showAddAppointment(time, "00", this.props.date, therapistIndex); this.props.therapistEvent.therapistId = therapistId; this.setTimes(this.props.date, time, 0)}} class="halfHour printGrey"><div class="hide">+</div></div>
                 );
                 items.push(
-                    <div onClick={() => {console.log(this.props.date.toString()); showAddAppointment(time, "30", this.props.date, therapistIndex)}} class="halfHour printGrey"><div class="hide">+</div></div>
+                    <div onClick={() => {console.log(this.props.date.toString()); showAddAppointment(time, "30", this.props.date, therapistIndex); this.props.therapistEvent.therapistId = therapistId; this.setTimes(this.props.date, time, 30)}} class="halfHour printGrey"><div class="hide">+</div></div>
                 );
 
             }
         }
         return items;
+    }
+
+    setTimes(date, hour, minute)
+    {
+        this.props.therapistEvent.startTime = new Date(date);
+        this.props.therapistEvent.endTime = new Date(date);
+        this.props.therapistEvent.startTime.setHours(hour);
+        this.props.therapistEvent.startTime.setMinutes(minute);
+        this.props.therapistEvent.endTime.setHours(hour + 1);
+        this.props.therapistEvent.endTime.setMinutes(minute);
+    
     }
 
     setDay(day)    
@@ -118,6 +133,18 @@ class AllTherapistSchedule extends React.Component {
     window.addEventListener('load', this.load);
     this.interval = setInterval(() => this.setState({ time: Date.now() }), 60000); //Render every minute
     toggleDay(new Intl.DateTimeFormat('en-US', {weekday: 'long'}).format(this.props.date));
+    const url = "http://10.29.163.20:8081/api/";
+        axios.get(url + "user").then((response) => {
+            console.log(response);
+          const userList = response.data;
+          this.setState({ userList });
+        });
+    
+        axios.get("http://10.29.163.20:8081/api/permission").then((response) => {
+          this.setState({
+            therapistList: this.state.therapistList.concat(response.data),
+          });
+        });
   }
 
   componentWillUnmount() {
@@ -126,11 +153,34 @@ class AllTherapistSchedule extends React.Component {
     clearInterval(this.interval);
   }
 
+  getRooms(users, therapists) {
+        var names = [];
+        var ids = [];
+        try {
+        therapists.forEach(therapist => {
+            users.forEach(user => {
+                if (therapist.role == "therapist" && user.userId == therapist.userId)
+                    names.push(user.firstName + " " + user.lastName);
+                    ids.push(user.userId);
+            });
+            
+        });
+        }
+        catch (error)
+        {
+            console.log(error);
+        }
+        var therapists = [];
+        therapists.push(names);
+        therapists.push(ids);
+        return therapists;
+    }
+
   render() {
     this.time = {value: loadTimeLine()} //Update timeline
-    var therapistSchedules = this.loadRooms();
     toggleDay(new Intl.DateTimeFormat('en-US', {weekday: 'long'}).format(this.props.date));
-    var roomNumbers = loadRoomNumbers();
+    this.therapistSchedules = this.loadRooms(this.state.userList, this.state.therapistList);
+    console.log(this.state.userList, );
     return (
         <div>
         <div id="roomSchedule">
@@ -141,7 +191,7 @@ class AllTherapistSchedule extends React.Component {
                     {this.hours.values}
                 </div>
                 <div id="rooms">     
-                    {therapistSchedules}
+                    {this.therapistSchedules}
                 </div>
             </div>
             <div id="toggle">
@@ -198,10 +248,6 @@ class AllTherapistSchedule extends React.Component {
   }
 }
 
-function getRooms() {
-    return ['Philip Adamson', 'Maegan Daugherty', 'Katelin Lynn', 'Lyndon Macdonald', 'Lacy Silva', 'Lola-Rose Lopez', 'Alexandria Small', 'Omar Needham', 'Delores Daniels'];
-}
-
 function getColor(percent) {
     if (percent <= 10)
         return {backgroundColor: "#ED5314"};
@@ -211,19 +257,6 @@ function getColor(percent) {
         return {backgroundColor: "#FEEB51"};
     else
         return {backgroundColor: "#9BCA3E"};
-}
-
-function loadRoomNumbers()
-{
-    const rooms = getRooms();
-    const roomNumberElements = [];
-    for (let i = 0; i < rooms.length; i++)
-    {
-            roomNumberElements.push(
-                    <div class="roomLabel2">{rooms[i]}</div>
-            );            
-    }
-    return roomNumberElements;
 }
 
 function loadHours()

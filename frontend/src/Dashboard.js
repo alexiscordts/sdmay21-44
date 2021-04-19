@@ -10,30 +10,40 @@ import EditAppointment from "./EditAppointment"
 import ReactToPrint from "react-to-print";
 import axios from "axios";
 
-const userRole = {
-    therapist: 0,
-    nurse: 1,
-    admin: 2
-  };
-
 class Dashboard extends React.Component {
     constructor(props) {
         super(props);
-        console.log("role: " + this.props.role);
-        this.date = new Date();
-        this.schedule = (<TherapistSchedule date={this.date}/>);
+        this.date = new Date();  
         this.scheduleHeader = "My Schedule";
         this.weeks = this.getDropdownDates();
         this.state = {
+            locations: [],
             weekChanged: false,
             schedule: 1
         }
+        this.therapistEvent = {
+            startTime: new Date(),
+            endTime: new Date(),
+            therapistId: null,
+            active: true,
+            activityName: null,
+            notes: null
+          }
     }
+    
     //
-
-    getLocations()  {
-
-        //return <div class="link" onClick={() => {this.schedule = (<RoomSchedule date={this.date} />); this.scheduleHeader = "Room Schedule - Location 3 - "; this.forceUpdate();}}> Location 3</div>;
+    componentDidMount() {
+        const url = "http://10.29.163.20:8081/api/Location";
+        
+    axios
+      .get(url)
+      // .then((json = {}) => json.data)
+      .then((response) => {
+        console.log(response.data);
+        const locations = response.data;
+        this.setState({ locations });
+      });
+      this.schedule = (<TherapistSchedule date={this.date} ref={(el) => (this.schedule = el)}/>);
     }
 
     getDropdownDates()  {
@@ -50,7 +60,7 @@ class Dashboard extends React.Component {
         {
             let newDate = new Date(d.getTime());
             elements.push(
-                <div class="link" onClick={() => {this.date = newDate; this.schedule = this.setSchedule(newDate); this.week=newDate.toLocaleDateString('en-US'); this.setState({weekChanged:true}); console.log(newDate.toString());}}>{newDate.toLocaleDateString('en-US')}</div>
+                <div class="link" onClick={() => {this.date = newDate; this.schedule = this.setSchedule(newDate); this.week=newDate.toLocaleDateString('en-US'); this.setState({weekChanged:true}); }}>{newDate.toLocaleDateString('en-US')}</div>
             );
             d.setDate(d.getDate() + 7);
         }
@@ -61,21 +71,38 @@ class Dashboard extends React.Component {
         this.schedule = <div></div>;
         switch(this.state.schedule) {
             case 1:
-                return (<TherapistSchedule date={newDate} />);
+                return (<TherapistSchedule date={newDate} ref={(el) => (this.schedule = el)} />);
             case 2: 
-                return (<AllTherapistSchedule date={this.date} />);
+                return (<AllTherapistSchedule date={this.date} ref={(el) => (this.schedule = el)} therapistEvent={this.therapistEvent} />);
             case 3: 
-                return (<RoomSchedule date={this.date} />);
+                return (<RoomSchedule date={this.date} ref={(el) => (this.schedule = el)} />);
             case 4:
-                return (<PatientSchedule date={this.date} />);
+                return (<PatientSchedule date={this.date} ref={(el) => (this.schedule = el)} />);
         }
     }
 
-  render() {
+    getByPatientLinks()   {
+        var byRoomLinks = [];
+        this.state.locations.forEach(location => {
+            byRoomLinks.push(<div class="link" onClick={() => {this.schedule = (<RoomSchedule date={this.date} ref={(el) => (this.schedule = el)} />); this.scheduleHeader = "Room Schedule"; this.locationHeader=location.name + ' - '; this.setState({schedule: 3});}}>{location.name}</div>);
+        });
+        return byRoomLinks;
+    }
 
+    getByRoomLinks()   {
+        var byRoomLinks = [];
+        this.state.locations.forEach(location => {
+            byRoomLinks.push(<div class="link" onClick={() => {this.schedule = (<PatientSchedule date={this.date} ref={(el) => (this.schedule = el)} />); this.scheduleHeader = "Patient Schedule"; this.locationHeader=location.name + " - "; this.setState({schedule: 4});}}>{location.name}</div>);
+        });
+        return byRoomLinks;
+    }
+
+
+  render() {
+    
     return (
     <div id="screen">
-        <Nav role={this.props.role} />
+        <Nav />
         <div class="pageContainer">
             <div class="dropdown">
                 <button class="dropbtn">
@@ -83,20 +110,17 @@ class Dashboard extends React.Component {
                     <i class="arrow down"></i>
                 </button>
                 <div class="dropdown-content">
-                    <div class="link" onClick={() => {this.schedule = (<TherapistSchedule date={this.date} />); this.scheduleHeader = "My Schedule"; this.locationHeader=""; this.setState({schedule: 1}); }}>My schedule</div>
-                    <div class="link" onClick={() => {this.schedule = (<AllTherapistSchedule date={this.date} />); this.scheduleHeader = "Therapist Schedule"; this.locationHeader=""; console.log("hi"); this.setState({schedule: 2});}}>By therapist</div>
+                    <div class="link" onClick={() => {this.schedule = (<TherapistSchedule date={this.date} ref={(el) => (this.schedule = el)} />); this.scheduleHeader = "My Schedule"; this.locationHeader=""; this.setState({schedule: 1}); }}>My schedule</div>
+                    <div class="link" onClick={() => {this.schedule = (<AllTherapistSchedule date={this.date} therapistEvent={this.therapistEvent} />); this.scheduleHeader = "Therapist Schedule"; this.locationHeader="";; this.setState({schedule: 2});}}>By therapist</div>
                     <div class="byRoom link">By room
                         <div class="locations">
-                            <div class="link" onClick={() => {this.schedule = (<RoomSchedule date={this.date} />); this.scheduleHeader = "Room Schedule"; this.locationHeader="Location 1 - "; this.setState({schedule: 3});}}> Location 1</div>
-                            <div class="link" onClick={() => {this.schedule = (<RoomSchedule date={this.date} />); this.scheduleHeader = "Room Schedule"; this.locationHeader="Location 2 - "; this.setState({schedule: 3});}}> Location 2</div>
+                            {this.getByRoomLinks()}
                         </div>
                     </div>
                         
                     <div class="byPatient link">By patient
                     <div class="locations">
-                            <div class="link" onClick={() => {this.schedule = (<PatientSchedule date={this.date} />); this.scheduleHeader = "Patient Schedule"; this.locationHeader="Location 1 - "; this.setState({schedule: 4});}}> Location 1</div>
-                            <div class="link" onClick={() => {this.schedule = (<PatientSchedule date={this.date} />); this.scheduleHeader = "Patient Schedule"; this.locationHeader="Location 2 - "; this.setState({schedule: 4});}}> Location 2</div>
-                            {this.getLocations()}
+                            {this.getByPatientLinks()}
                         </div>
                     </div>
                     
@@ -127,6 +151,7 @@ class Dashboard extends React.Component {
             onAfterPrint={() => {hideTimes(); this.schedule = this.setSchedule(this.date); this.forceUpdate();}}
             documentTitle={this.scheduleHeader + " for " + this.date.toLocaleDateString('en-US')}
             content={() => this.schedule} />
+            
 
             <div id="copyDayForm">
                 <div class="form-style">
@@ -141,11 +166,10 @@ class Dashboard extends React.Component {
                 </form>
                 </div>
             </div>
-
-            <div ref={(el) => (this.schedule = el)}>{this.schedule}</div>
+            <div>{this.schedule}</div>
 
         </div>
-        <AddAppointment />
+        <AddAppointment therapistEvent={this.therapistEvent} />
         <EditAppointment />
     </div>
     );

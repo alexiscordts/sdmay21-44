@@ -58,7 +58,8 @@
 	width: 55%;
 }
 .form-style input[type=submit],
-.form-style input[type=button]{
+.form-style input[type=button],
+.form-style button{
 	border: none;
 	padding: 8px 15px 8px 15px;
 	background: #00529b;
@@ -73,7 +74,8 @@
  	 width: 30%
 }
 .form-style input[type=submit]:hover,
-.form-style input[type=button]:hover{
+.form-style input[type=button]:hover,
+.form-style button:hover{
 	background: #C3CBE4;
 	color: #fff;
 	cursor: pointer;

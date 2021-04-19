@@ -1,11 +1,96 @@
 import React from "react";
 import "./FormStyles.css";
+import axios from "axios";
 import Draggable from 'react-draggable';
 
 class AddAppointment extends React.Component {
-
+  constructor(props) {
+    super(props);
+    this.state = {
+      userList: [],
+      therapistList: [],
+    };
     
+    this.postTherapistEvent = this.postTherapistEvent.bind(this);
+  }
+
+  componentDidMount() {
+    const url = "http://10.29.163.20:8081/api/";
+    axios.get(url + "user").then((response) => {
+      const userList = response.data;
+      this.setState({ userList });
+    });
+
+    axios.get("http://10.29.163.20:8081/api/permission").then((response) => {
+      this.setState({
+        therapistList: this.state.therapistList.concat(response.data),
+      });
+    });
+  }
+    
+  getTherapistOptions(users, therapists)
+  {
+    var cols = [];
+        try {
+        therapists.forEach(therapist => {
+            users.forEach(user => {
+                if (therapist.role == "therapist" && user.userId == therapist.userId)
+                    cols.push(<option value={user.userId}>{user.firstName + " " + user.lastName}</option>);
+            });
+            
+        });
+        }
+        catch (error)
+        {
+            console.log(error);
+        }
+        return cols;
+  }
+
+  postTherapistEvent(event)  {
+    event.preventDefault();
+    console.log(this.props.therapistEvent);
+    
+    axios
+      .post("http://10.29.163.20:8081/api/therapistevent", this.props.therapistEvent)
+      .then((response) => {
+        console.log("Success");
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log("Error caught");
+        console.log(error);
+      });
+  }
+
+  setStartTime(event)
+  {
+    console.log(event.substring(0, 2));
+    console.log(event.substring(3, 5));
+    this.props.therapistEvent.startTime.setHours(parseInt(event.substring(0, 2), 10));
+    this.props.therapistEvent.startTime.setMinutes(parseInt(event.substring(3, 5), 10));
+  }
+
+  setEndTime(event)
+  {
+    console.log(event.substring(0, 2));
+    console.log(event.substring(3, 5));
+    this.props.therapistEvent.endTime.setHours(parseInt(event.substring(0, 2), 10));
+    this.props.therapistEvent.endTime.setMinutes(parseInt(event.substring(3, 5), 10));
+  }
+
+  setDate(event)
+  {
+    this.props.therapistEvent.startTime.setFullYear(parseInt(event.substring(0, 4), 10));
+    this.props.therapistEvent.startTime.setMonth(parseInt(event.substring(5, 7), 10) - 1);
+    this.props.therapistEvent.startTime.setDate(parseInt(event.substring(8, 10), 10));
+    this.props.therapistEvent.endTime.setFullYear(parseInt(event.substring(0, 4), 10));
+    this.props.therapistEvent.endTime.setMonth(parseInt(event.substring(5, 7), 10) - 1);
+    this.props.therapistEvent.endTime.setDate(parseInt(event.substring(8, 10), 10));
+  }
+
   render() {
+    console.log(this.props.therapistEvent);
     return (
         <div id="addAppointmentContainer">
         <Draggable
@@ -35,15 +120,7 @@ class AddAppointment extends React.Component {
               <span class="required">&nbsp;&nbsp; * </span>
               <select style={{width: "150px"}} class="select-field selectTherapist" name="therapist">
                   <option value="select" selected disabled hidden>Select Therapist</option>
-                  <option value="sponge">Philip Adamson</option>
-                  <option value="pat">Maegan Daugherty</option>
-                  <option value="squid">Katelin Lynn</option>
-                  <option value="krab">Lyndon Macdonald</option>
-                  <option value="krab">Lacy Silva</option>
-                  <option value="krab">Lola-Rose Lopez</option>
-                  <option value="krab">Alexandria Small</option>
-                  <option value="krab">Omar Needham</option>
-                  <option value="krab">Delores Daniels</option>
+                  {this.getTherapistOptions(this.state.userList, this.state.therapistList)}
               </select>
 
               <span class="required"> * </span>
@@ -125,48 +202,40 @@ class AddAppointment extends React.Component {
             </div>
           </form>
 
-          <form id="addOtherForm" action="" method="post">
+          <form id="addOtherForm" action="" method="post" onsubmit={this.postTherapistEvent}>
             <div class="AppointmentFormRow">
               <span class="required">&nbsp;&nbsp; * </span>
-              <select style={{width: "150px"}} class="select-field selectTherapist" name="therapist">
+              <select style={{width: "150px"}} class="select-field selectTherapist" name="therapist" onChange={e => this.props.therapistEvent.therapistId = e.target.value}>
                   <option value="select" selected disabled hidden>Select Therapist</option>
-                  <option value="sponge">Philip Adamson</option>
-                  <option value="pat">Maegan Daugherty</option>
-                  <option value="squid">Katelin Lynn</option>
-                  <option value="krab">Lyndon Macdonald</option>
-                  <option value="krab">Lacy Silva</option>
-                  <option value="krab">Lola-Rose Lopez</option>
-                  <option value="krab">Alexandria Small</option>
-                  <option value="krab">Omar Needham</option>
-                  <option value="krab">Delores Daniels</option>
+                  {this.getTherapistOptions(this.state.userList, this.state.therapistList)}
               </select>
             </div>
 
             <div class="AppointmentFormRow">
               <span>Start <span class="required">* </span></span>
-              <input style={{width: "110px"}} class="input-field startTime" type="time" name="appt" min="05:00" max="19:00" ></input>
+              <input style={{width: "110px"}} class="input-field startTime" type="time" name="appt" min="05:00" max="19:00" onChange={e => this.setStartTime(e.target.value)}></input>
 
               <span>&nbsp; End <span class="required">* </span></span>
-              <input style={{width: "110px"}} class="input-field endTime" type="time" name="appt" min="05:00" max="19:00" ></input> 
+              <input style={{width: "110px"}} class="input-field endTime" type="time" name="appt" min="05:00" max="19:00" onChange={e => this.setEndTime(e.target.value)}></input> 
 
               <span class="required">&nbsp; * </span>
-              <input style={{width: "140px"}} class="input-field date" type="date" name="date"></input>
+              <input style={{width: "140px"}} class="input-field date" type="date" name="date" onChange={e => this.setDate(e.target.value)}></input>
             </div>
 
             <label for="notes"><span>Title <span class="required">* </span></span>
-            <input type="text" class="input-field"  name="title" rows="4" cols="50">
+            <input type="text" class="input-field"  name="title" rows="4" cols="50" onChange={e => this.props.therapistEvent.activityName = e.target.value}>
             </input>
             </label>
 
             <label for="notes"><span>Notes </span>
-            <textarea class="textarea-field" style={{width: "100%"}} name="notes" rows="4" cols="50">
+            <textarea class="textarea-field" style={{width: "100%"}} name="notes" rows="4" cols="50" onChange={e => this.props.therapistEvent.notes = e.target.value}>
             </textarea>
             </label>
             
 
             <div class="buttonContainer">
               <input type="button" value="Save + Copy"/>
-              <input type="submit" value="Save" />
+              <button type="button" color="primary" onClick={this.postTherapistEvent}>Save</button>
             </div>
           </form>
 
