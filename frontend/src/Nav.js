@@ -1,6 +1,7 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 import "./Nav.css";
+import axios from "axios";
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -67,10 +68,11 @@ function loadMenuItems() {
       <div class="menuLabel">View Schedule</div>
     </button>,
 
-    <button class="menuButton"
-    onClick={() => {
-      window.location.href = "/view_metrics";
-    }}
+    <button
+      class="menuButton"
+      onClick={() => {
+        window.location.href = "/view_metrics";
+      }}
     >
       <img
         class="menuButtonImg"

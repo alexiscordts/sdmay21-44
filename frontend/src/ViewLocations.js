@@ -34,7 +34,7 @@ class ViewLocations extends React.Component {
         rows.push(
           <tr>
             <td>{location.name}</td>
-            <td>Address</td>
+            <td>{location.address}</td>
             <td>
               <button
                 class="iconButton"
