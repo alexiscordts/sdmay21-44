@@ -41,6 +41,8 @@ class ViewLocations extends React.Component {
                 onClick={() => {
                   sessionStorage.setItem("name", location.name);
                   sessionStorage.setItem("address", location.address);
+                  sessionStorage.setItem("locationId", location.locationId);
+                  sessionStorage.setItem("phoneNumber", location.phoneNumber);
                   window.location.href = "/edit_location";
                 }}
               >
