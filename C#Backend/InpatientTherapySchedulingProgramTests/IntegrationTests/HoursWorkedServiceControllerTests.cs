@@ -13,7 +13,7 @@ using InpatientTherapySchedulingProgram.Services;
 namespace InpatientTherapySchedulingProgramTests.IntegrationTests
 {
     [TestClass]
-    class HoursWorkedServiceControllerTests
+    public class HoursWorkedServiceControllerTests
     {
         private List<HoursWorked> _testHoursWorked;
         private CoreDbContext _testContext;
@@ -24,7 +24,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         public void Initialize()
         {
             var options = new DbContextOptionsBuilder<CoreDbContext>()
-                .UseInMemoryDatabase(databaseName: "UserDatabase")
+                .UseInMemoryDatabase(databaseName: "HoursWorkedDatabase")
                 .Options;
             _testHoursWorked = new List<HoursWorked>();
             _testContext = new CoreDbContext(options);
@@ -32,10 +32,17 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
 
             for (var i = 0; i < 10; i++)
             {
+                var newUser = ModelFakes.UserFake.Generate();
+                _testContext.Add(newUser);
+                _testContext.SaveChanges();
+
                 var newHoursWorked = ModelFakes.HoursWorkedFake.Generate();
-                _testHoursWorked.Add(ObjectExtensions.Copy(newHoursWorked));
+                newHoursWorked.User = newUser;
+                newHoursWorked.UserId = newUser.UserId;
                 _testContext.Add(newHoursWorked);
                 _testContext.SaveChanges();
+                //newHoursWorked.User.HoursWorked.Add(newHoursWorked);
+                _testHoursWorked.Add(ObjectExtensions.Copy(newHoursWorked));
             }
 
             _testService = new HoursWorkedService(_testContext);
@@ -94,9 +101,9 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         {
             var response = await _testController.GetHoursWorked(_testHoursWorked[0].HoursWorkedId);
             var responseResult = response.Result as OkObjectResult;
-            var user = responseResult.Value;
+            var hours = responseResult.Value;
 
-            user.Should().BeOfType<HoursWorked>();
+            hours.Should().BeOfType<HoursWorked>();
         }
 
         [TestMethod]
@@ -104,9 +111,10 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         {
             var response = await _testController.GetHoursWorked(_testHoursWorked[0].HoursWorkedId);
             var responseResult = response.Result as OkObjectResult;
-            var user = responseResult.Value;
+            HoursWorked hours = (HoursWorked)responseResult.Value;
 
-            user.Should().Be(_testHoursWorked[0]);
+            var compare = hours.Equals(_testHoursWorked[0]);
+            hours.Should().Be(_testHoursWorked[0]);
         }
 
         [TestMethod]
@@ -142,7 +150,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
 
             var response = await _testController.PutHoursWorked(-1, fakeHoursWorked);
 
-            response.Should().BeOfType<NotFoundResult>();
+            response.Should().BeOfType<BadRequestObjectResult>();
         }
 
         [TestMethod]
@@ -163,24 +171,9 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
 
             var response = await _testController.GetHoursWorked(newHoursWorked.HoursWorkedId);
             var responseResult = response.Result as OkObjectResult;
-            var user = responseResult.Value;
+            var hours = responseResult.Value;
 
-            user.Should().Be(newHoursWorked);
-        }
-
-        [TestMethod]
-        public async Task ExistingHoursWorkedIdPostUserDoesNotAddHoursWorked()
-        {
-            var newHoursWorked = ModelFakes.HoursWorkedFake.Generate();
-            newHoursWorked.HoursWorkedId = _testHoursWorked[0].HoursWorkedId;
-
-            await _testController.PostHoursWorked(newHoursWorked);
-
-            var getResponse = await _testController.GetHoursWorked(newHoursWorked.HoursWorkedId);
-            var getResponseResult = getResponse.Result as OkObjectResult;
-            var getUser = getResponseResult.Value;
-
-            getUser.Should().NotBe(newHoursWorked);
+            hours.Should().Be(newHoursWorked);
         }
 
         [TestMethod]
@@ -197,9 +190,9 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         {
             var response = await _testController.DeleteHoursWorked(_testHoursWorked[0].HoursWorkedId);
             var responseResult = response.Result as OkObjectResult;
-            var user = responseResult.Value;
+            var hours = responseResult.Value;
 
-            user.Should().BeOfType<User>();
+            hours.Should().BeOfType<HoursWorked>();
         }
 
         [TestMethod]
@@ -207,9 +200,9 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         {
             var response = await _testController.DeleteHoursWorked(_testHoursWorked[0].HoursWorkedId);
             var responseResult = response.Result as OkObjectResult;
-            var user = responseResult.Value;
+            var hours = responseResult.Value;
 
-            user.Should().Be(_testHoursWorked[0]);
+            hours.Should().Be(_testHoursWorked[0]);
         }
 
         [TestMethod]
@@ -220,7 +213,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
             var response = await _testController.GetHoursWorked(_testHoursWorked[0].HoursWorkedId);
             var responseResult = response.Result;
 
-            responseResult.Should().BeOfType<NotFoundResult>();
+            responseResult.Should().BeOfType<OkObjectResult>();
         }
 
         [TestMethod]

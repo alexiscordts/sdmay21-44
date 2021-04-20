@@ -8,7 +8,7 @@ namespace InpatientTherapySchedulingProgram.Services.Interfaces
 {
     public interface IHoursWorkedService
     {
-        Task<HoursWorked> GetHoursWorkedByUserId(int? userId);
+        Task<HoursWorked> GetHoursWorkedByUserId(int userId);
         Task<HoursWorked> GetHoursWorkedById(int hoursWorkedId);
         Task<HoursWorked> UpdateHoursWorked(int hoursWorkedId, HoursWorked hoursWorked);
         Task<HoursWorked> AddHoursWorked(HoursWorked hoursWorked);

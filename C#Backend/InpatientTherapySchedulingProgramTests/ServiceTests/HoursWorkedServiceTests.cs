@@ -14,7 +14,7 @@ using InpatientTherapySchedulingProgram.Exceptions.HoursWorkedExceptions;
 namespace InpatientTherapySchedulingProgramTests.ServiceTests
 {
     [TestClass]
-    class HoursWorkedServiceTests
+    public class HoursWorkedServiceTests
     {
         private List<HoursWorked> _testHoursWorked;
         private CoreDbContext _testContext;
@@ -32,10 +32,16 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
 
             for (var i = 0; i < 10; i++)
             {
+                var newUser = ModelFakes.UserFake.Generate();
+                _testContext.Add(newUser);
+                _testContext.SaveChanges();
+
                 var newHoursWorked = ModelFakes.HoursWorkedFake.Generate();
-                _testHoursWorked.Add(ObjectExtensions.Copy(newHoursWorked));
+                newHoursWorked.User = newUser;
+                newHoursWorked.UserId = newUser.UserId;
                 _testContext.Add(newHoursWorked);
                 _testContext.SaveChanges();
+                _testHoursWorked.Add(ObjectExtensions.Copy(newHoursWorked));
             }
 
             _testHoursWorkedService = new HoursWorkedService(_testContext);
@@ -56,7 +62,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         }
         //get user id
         [TestMethod]
-        public async Task GetHoursWorkedByUserIdReturnsCorrectUser()
+        public async Task GetHoursWorkedByUserIdReturnsCorrectHours()
         {
             var returnHoursWorked = await _testHoursWorkedService.GetHoursWorkedByUserId(_testHoursWorked[0].UserId);
 
@@ -74,13 +80,13 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestMethod]
         public async Task GetHoursWorkedByIdReturnsCorrectType()
         {
-            var returnHoursWorked = await _testHoursWorkedService.GetHoursWorkedByUserId(_testHoursWorked[0].HoursWorkedId);
+            var returnHoursWorked = await _testHoursWorkedService.GetHoursWorkedById(_testHoursWorked[0].HoursWorkedId);
 
             returnHoursWorked.Should().BeOfType<HoursWorked>();
         }
 
         [TestMethod]
-        public async Task GetHoursWorkedByIdReturnsCorrectUser()
+        public async Task GetHoursWorkedByIdReturnsCorrectHours()
         {
             var returnHoursWorked = await _testHoursWorkedService.GetHoursWorkedById(_testHoursWorked[0].HoursWorkedId);
 
@@ -95,6 +101,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
             returnHoursWorked.Should().BeNull();
         }
 
+        [TestMethod]
         public async Task AddHoursWorkedReturnsCorrectType()
         {
             var newHoursWorked = ModelFakes.HoursWorkedFake.Generate();
@@ -118,17 +125,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         }
 
         [TestMethod]
-        public async Task AddHoursWorkedWithExistingIdThrowsError()
-        {
-            int existingId = _testHoursWorked[0].HoursWorkedId;
-            var newHoursWorked = ModelFakes.HoursWorkedFake.Generate();
-            newHoursWorked.HoursWorkedId = existingId;
-
-            await _testHoursWorkedService.Invoking(s => s.AddHoursWorked(newHoursWorked)).Should().ThrowAsync<HoursWorkedIdAlreadyExistsException>();
-        }
-
-        [TestMethod]
-        public async Task DeleteHoursWorkedReturnsCorrectUser()
+        public async Task DeleteHoursWorkedReturnsCorrectHours()
         {
             var returnHoursWorked = await _testHoursWorkedService.DeleteHoursWorked(_testHoursWorked[0].HoursWorkedId);
 
@@ -154,7 +151,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         }
 
         [TestMethod]
-        public async Task UpdateHoursWorkedReturnsCorrectUser()
+        public async Task UpdateHoursWorkedReturnsCorrectHours()
         {
             var returnHoursWorked = await _testHoursWorkedService.UpdateHoursWorked(_testHoursWorked[0].HoursWorkedId, _testHoursWorked[0]);
 
@@ -162,15 +159,12 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         }
 
         [TestMethod]
-        public async Task UpdateHoursWorkedWithNonMatchingIdsThrowsError()
-        {
-            await _testHoursWorkedService.Invoking(s => s.UpdateHoursWorked(_testHoursWorked[1].HoursWorkedId, _testHoursWorked[0])).Should().ThrowAsync<HoursWorkedIdsDoNotMatchException>();
-        }
-
-        [TestMethod]
-        public async Task UpdateHoursWorkedWithNonExistingUserThrowsError()
+        public async Task UpdateHoursWorkedWithNonExistingIdThrowsError()
         {
             var fakeHoursWorked = ModelFakes.HoursWorkedFake.Generate();
+            var fakeUser = ModelFakes.UserFake.Generate();
+            fakeHoursWorked.User = fakeUser;
+            fakeHoursWorked.UserId = fakeUser.UserId;
 
             await _testHoursWorkedService.Invoking(s => s.UpdateHoursWorked(fakeHoursWorked.HoursWorkedId, fakeHoursWorked)).Should().ThrowAsync<HoursWorkedDoesNotExistException>();
         }

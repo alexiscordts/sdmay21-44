@@ -1,4 +1,5 @@
-﻿using InpatientTherapySchedulingProgram.Models;
+﻿using InpatientTherapySchedulingProgram.Exceptions.HoursWorkedExceptions;
+using InpatientTherapySchedulingProgram.Models;
 using InpatientTherapySchedulingProgram.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -54,8 +55,8 @@ namespace InpatientTherapySchedulingProgram.Services
             return await _context.HoursWorked.FindAsync(hoursWorkedId);
         }
 
-        //Help on this method
-        public async Task<HoursWorked> GetHoursWorkedByUserId(int? userId)
+        
+        public async Task<HoursWorked> GetHoursWorkedByUserId(int userId)
         {
             return await _context.HoursWorked.FirstOrDefaultAsync(h => h.UserId == userId && h.Active);
         }
@@ -80,10 +81,14 @@ namespace InpatientTherapySchedulingProgram.Services
 
         public async Task<HoursWorked> UpdateHoursWorked(int hoursWorkedId, HoursWorked hoursWorked)
         {
-
-            if (!HoursWorkedExists(hoursWorkedId))
+            if (hoursWorkedId != hoursWorked.HoursWorkedId)
             {
-                //throw new UserDoesNotExistException();
+                throw new HoursWorkedIdsDoNotMatchException();
+            }
+            
+            if (!await HoursWorkedExists(hoursWorkedId))
+            {
+                throw new HoursWorkedDoesNotExistException();
             }
 
             var local = _context.Set<HoursWorked>()
@@ -106,7 +111,7 @@ namespace InpatientTherapySchedulingProgram.Services
             return hoursWorked;
         }
 
-        private bool HoursWorkedExists(int hoursWorkedId)
+        private async Task<bool> HoursWorkedExists(int hoursWorkedId)
         {
             return _context.HoursWorked.Any(h => h.HoursWorkedId == hoursWorkedId && h.Active);
         }

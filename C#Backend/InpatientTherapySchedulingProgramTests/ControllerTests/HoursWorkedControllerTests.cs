@@ -14,7 +14,7 @@ using InpatientTherapySchedulingProgram.Exceptions.HoursWorkedExceptions;
 namespace InpatientTherapySchedulingProgramTests.ControllerTests
 {
     [TestClass]
-    class HoursWorkedControllerTests
+    public class HoursWorkedControllerTests
     {
         private static List<HoursWorked> _testHoursWorked;
         private Mock<IHoursWorkedService> _fakeService;
@@ -28,6 +28,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
             for (var i = 0; i < 10; i++)
             {
                 var hours = ModelFakes.HoursWorkedFake.Generate();
+                hours.User = ModelFakes.UserFake.Generate();
                 _testHoursWorked.Add(hours);
             }
         }
@@ -38,7 +39,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
             _fakeService = new Mock<IHoursWorkedService>();
             _fakeService.SetupAllProperties();
             _fakeService.Setup(s => s.GetHoursWorkedById(It.IsAny<int>())).ReturnsAsync(_testHoursWorked[0]);
-            _fakeService.Setup(s => s.GetHoursWorkedByUserId(It.IsAny<int?>())).ReturnsAsync(_testHoursWorked[0]);
+            _fakeService.Setup(s => s.GetHoursWorkedByUserId(It.IsAny<int>())).ReturnsAsync(_testHoursWorked[0]);
             _fakeService.Setup(s => s.UpdateHoursWorked(It.IsAny<int>(), It.IsAny<HoursWorked>())).ReturnsAsync(_testHoursWorked[0]);
             _fakeService.Setup(s => s.AddHoursWorked(It.IsAny<HoursWorked>())).ReturnsAsync(_testHoursWorked[0]);
             _fakeService.Setup(s => s.DeleteHoursWorked(It.IsAny<int>())).ReturnsAsync(_testHoursWorked[0]);
@@ -67,7 +68,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         [TestMethod]
         public async Task GetNonExistingHoursWorkedByUserIdReturnsNotFoundResponse()
         {
-            _fakeService.Setup(s => s.GetHoursWorkedByUserId(It.IsAny<int?>())).ReturnsAsync((HoursWorked)null);
+            _fakeService.Setup(s => s.GetHoursWorkedByUserId(It.IsAny<int>())).ReturnsAsync((HoursWorked)null);
 
             var response = await _testController.GetHoursWorkedByUserId(-1);
             var responseResult = response.Result;
@@ -155,17 +156,6 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
             var responseResult = response.Result as CreatedAtActionResult;
 
             responseResult.Value.Should().BeOfType<HoursWorked>();
-        }
-
-        [TestMethod]
-        public async Task ExistingHoursWorkedIdPostHoursWorkedReturnsConflictResponse()
-        {
-            _fakeService.Setup(s => s.AddHoursWorked(It.IsAny<HoursWorked>())).ThrowsAsync(new HoursWorkedIdAlreadyExistsException());
-
-            var response = await _testController.PostHoursWorked(new HoursWorked());
-            var responseResult = response.Result;
-
-            responseResult.Should().BeOfType<ConflictObjectResult>();
         }
 
         [TestMethod]

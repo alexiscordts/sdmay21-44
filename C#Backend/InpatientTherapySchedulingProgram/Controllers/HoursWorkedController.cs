@@ -34,12 +34,12 @@ namespace InpatientTherapySchedulingProgram.Controllers
                 return NotFound();
             }
 
-            return hoursWorked;
+            return Ok(hoursWorked);
         }
 
         // GET: api/HoursWorkeds/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<HoursWorked>> GetHoursWorkedByUserId(int? hoursWorkedId)
+        public async Task<ActionResult<HoursWorked>> GetHoursWorkedByUserId(int hoursWorkedId)
         {
             var hoursWorked = await _service.GetHoursWorkedByUserId(hoursWorkedId);
 
@@ -48,7 +48,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
                 return NotFound();
             }
 
-            return hoursWorked;
+            return Ok(hoursWorked);
         }
 
         // PUT: api/HoursWorkeds/5
@@ -61,7 +61,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
             {
                 await _service.UpdateHoursWorked(id, hoursWorked);
             }
-            catch (UserIdsDoNotMatchException e)
+            catch (HoursWorkedIdsDoNotMatchException e)
             {
                 return BadRequest(e);
             }

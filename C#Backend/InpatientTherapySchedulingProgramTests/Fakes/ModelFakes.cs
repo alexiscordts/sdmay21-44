@@ -82,6 +82,7 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
             HoursWorkedFake.RuleFor(m => m.StartTime, r => r.Date.Past());
             HoursWorkedFake.RuleFor(m => m.EndTime, r => r.Date.Past());
             HoursWorkedFake.RuleFor(m => m.UserId, r => r.UniqueIndex);
+            HoursWorkedFake.RuleFor(m => m.Active, r => true);
             //HoursWorkedFake.RuleFor(m => m.User, BuildUserFakes());
         }
 
