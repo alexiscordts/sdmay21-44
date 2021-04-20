@@ -38,12 +38,17 @@ namespace InpatientTherapySchedulingProgram.Controllers
         public async Task<ActionResult<IEnumerable<Room>>> GetRoomsByLocationId(int locationId)
         {
             var allRoomByLocations = await _service.GetAllRoomsByLocationId(locationId);
+
+            if (allRoomByLocations.Count() == 0) {
+                return NotFound();
+            }
+           
             return Ok(allRoomByLocations);
         }
 
         // POST: api/room/223+{JSONObject}
         [HttpPut("{number}")]
-        public async Task<IActionResult> PutLocation(int number, Room room)
+        public async Task<IActionResult> PutRoom(int number, Room room)
         {
             try
             {

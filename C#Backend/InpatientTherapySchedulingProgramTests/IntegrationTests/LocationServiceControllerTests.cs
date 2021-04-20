@@ -16,6 +16,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
     public class LocationServiceControllerTests
     {
         private List<Location> _testLocations;
+        private Location _nonActiveLocation;
         private List<string> _testLocationNames;
         private CoreDbContext _testContext;
         private LocationService _testLocationService;
@@ -35,11 +36,17 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
             for(var i = 0; i < 10; i++)
             {
                 var newLocation = ModelFakes.LocationFake.Generate();
-                _testLocations.Add(ObjectExtensions.Copy(newLocation));
                 _testLocationNames.Add(newLocation.Name);
                 _testContext.Add(newLocation);
                 _testContext.SaveChanges();
+                _testLocations.Add(ObjectExtensions.Copy(newLocation));
             }
+
+            _nonActiveLocation = ModelFakes.LocationFake.Generate();
+            _nonActiveLocation.Active = false;
+            _testContext.Add(_nonActiveLocation);
+            _testContext.SaveChanges();
+            _testLocations.Add(ObjectExtensions.Copy(_nonActiveLocation));
 
             _testLocationService = new LocationService(_testContext);
             _testLocationController = new LocationController(_testLocationService);
@@ -119,7 +126,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
             var responseResult = response.Result as OkObjectResult;
             List<string> listOfLocationNames = (List<string>)responseResult.Value;
 
-            for(var i = 0; i < 10; i++)
+            for(var i = 0; i < listOfLocationNames.Count; i++)
             {
                 _testLocationNames.Contains(listOfLocationNames[i]).Should().BeTrue();
             }
@@ -160,6 +167,14 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         }
 
         [TestMethod]
+        public async Task NonActiveLocationGetLocationByLocationidReturnsNotFoundResponse()
+        {
+            var response = await _testLocationController.GetLocation(_nonActiveLocation.LocationId);
+
+            response.Result.Should().BeOfType<NotFoundResult>();
+        }
+
+        [TestMethod]
         public async Task ValidGetLocationByNameReturnsOkResponse()
         {
             var response = await _testLocationController.GetLocation(_testLocations[0].Name);
@@ -189,6 +204,14 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         public async Task NonExistingLocationGetLocationByNameReturnsNotFoundResponse()
         {
             var response = await _testLocationController.GetLocation("-1");
+
+            response.Result.Should().BeOfType<NotFoundResult>();
+        }
+
+        [TestMethod]
+        public async Task NonActiveLocationGetLocationByNameReturnsNotFoundResponse()
+        {
+            var response = await _testLocationController.GetLocation(_nonActiveLocation.Name);
 
             response.Result.Should().BeOfType<NotFoundResult>();
         }
@@ -233,6 +256,14 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
             var fakeLocation = ModelFakes.LocationFake.Generate();
 
             var response = await _testLocationController.PutLocation(fakeLocation.LocationId, fakeLocation);
+
+            response.Should().BeOfType<NotFoundResult>();
+        }
+
+        [TestMethod]
+        public async Task NonActiveLocationPutLocationShouldReturnNotFoundResponse()
+        {
+            var response = await _testLocationController.PutLocation(_nonActiveLocation.LocationId, _nonActiveLocation);
 
             response.Should().BeOfType<NotFoundResult>();
         }

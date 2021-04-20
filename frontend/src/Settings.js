@@ -8,7 +8,7 @@ const Settings = () => {
       <Nav />
       <div class="settingsPageContainer">
         <button
-          class="linkButton"
+          className="linkButton"
           onClick={() => {
             window.location.href = "/manage_locations";
           }}
@@ -16,7 +16,7 @@ const Settings = () => {
           Manage Locations
         </button>
         <button
-          class="linkButton"
+          className="linkButton"
           onClick={() => {
             window.location.href = "/manage_rooms";
           }}
@@ -24,12 +24,21 @@ const Settings = () => {
           Manage Rooms
         </button>
         <button
-          class="linkButton"
+          className="linkButton"
           onClick={() => {
             window.location.href = "/view_therapy_types";
           }}
         >
           Manage Therapy Types
+        </button>
+        <button
+          className="linkButton"
+          onClick={() => {
+            console.log('here');
+            window.location.href = "/change_password";
+          }}
+        >
+          Change Password
         </button>
       </div>
     </div>

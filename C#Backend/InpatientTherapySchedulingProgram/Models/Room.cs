@@ -8,9 +8,16 @@ namespace InpatientTherapySchedulingProgram.Models
     [Table("room")]
     public partial class Room : IEquatable<Room>
     {
-        public Room() { 
-        
+        public Room()
+        {
+            Appointment = new HashSet<Appointment>();
+            Patient = new HashSet<Patient>();
         }
+
+        [InverseProperty("Room")]
+        public virtual ICollection<Appointment> Appointment { get; set; }
+        [InverseProperty("Room")]
+        public virtual ICollection<Patient> Patient { get; set; }
 
         [Key]
         [Column("number")]
@@ -18,6 +25,8 @@ namespace InpatientTherapySchedulingProgram.Models
         [Key]
         [Column("location_id")]
         public int LocationId { get; set; }
+        [Column("active")]
+        public bool Active { get; set; }
 
         [ForeignKey(nameof(LocationId))]
         [InverseProperty("Room")]

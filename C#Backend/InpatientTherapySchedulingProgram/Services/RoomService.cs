@@ -40,7 +40,7 @@ namespace InpatientTherapySchedulingProgram.Services
         //Delete Room
         public async Task<Room> DeleteRoom(Room room)
         {
-            var curRoom = await _context.Room.FindAsync(room);
+            var curRoom = await _context.Room.FindAsync(room.Number, room.LocationId);
 
             if (curRoom == null) {
                 return null;
@@ -88,18 +88,18 @@ namespace InpatientTherapySchedulingProgram.Services
         //Get All Rooms
         public async Task<IEnumerable<Room>> GetAllRooms()
         {
-            return await _context.Room.ToListAsync();
+            return await _context.Room.Where(r => r.Active).ToListAsync();
         }
 
         //Get All Rooms by Location
         public async Task<IEnumerable<Room>> GetAllRoomsByLocationId(int location_id)
         {
-            return await _context.Room.Where(r => r.LocationId == location_id).ToListAsync();
+            return await _context.Room.Where(r => r.LocationId == location_id && r.Active).ToListAsync();
         }
 
         private async Task<bool> RoomExists(Room room)
         {
-            return await _context.Room.FindAsync(room) != null;
+            return await _context.Room.FirstOrDefaultAsync(r => r.Number == room.Number && r.LocationId == room.LocationId && r.Active) != null;
         }
 
     }

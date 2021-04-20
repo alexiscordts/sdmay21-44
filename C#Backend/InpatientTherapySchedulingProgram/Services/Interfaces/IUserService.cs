@@ -11,6 +11,7 @@ namespace InpatientTherapySchedulingProgram.Services.Interfaces
         Task<User> GetUserByUsername(string username);
         Task<User> UpdateUser(int id, User user);
         Task<User> AddUser(User user);
+        Task<User> LoginUser(User user);
         Task<User> DeleteUser(int id);
     }
 }

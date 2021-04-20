@@ -105,6 +105,14 @@
 
 }
 
+.changePasswordSubmitButtonContainer {
+	padding-top: 10px;
+}
+
+.labelChangePassword {
+	padding-bottom: 15px;
+}
+
 @font-face {
   font-family: "AdelleSemiBold";
   font-style: normal;

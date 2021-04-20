@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using InpatientTherapySchedulingProgram.Controllers;
-using InpatientTherapySchedulingProgram.Exceptions.TherapistActivityExceptions;
 using InpatientTherapySchedulingProgram.Exceptions.TherapistEventExceptions;
 using InpatientTherapySchedulingProgram.Exceptions.UserExceptions;
 using InpatientTherapySchedulingProgram.Models;
@@ -132,18 +131,6 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         }
 
         [TestMethod]
-        public async Task TherapistActivityDoesNotExistExceptionPutTherapistEventReturnsBadRequestResponse()
-        {
-            _fakeTherapistEventService.Setup(s => s.UpdateTherapistEvent(It.IsAny<int>(), It.IsAny<TherapistEvent>())).ThrowsAsync(new TherapistActivityDoesNotExistException());
-
-            _testTherapistEvents[0].ActivityName = "-1";
-
-            var response = await _testTherapistEventController.PutTherapistEvent(_testTherapistEvents[0].EventId, _testTherapistEvents[0]);
-
-            response.Should().BeOfType<BadRequestObjectResult>();
-        }
-
-        [TestMethod]
         public async Task UserDoesNotExistExceptionPutTherapistEventReturnsBadRequestResponse()
         {
             _fakeTherapistEventService.Setup(s => s.UpdateTherapistEvent(It.IsAny<int>(), It.IsAny<TherapistEvent>())).ThrowsAsync(new UserDoesNotExistException());
@@ -188,19 +175,6 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
             var response = await _testTherapistEventController.PostTherapistEvent(newTherapistEvent);
 
             response.Result.Should().BeOfType<ConflictObjectResult>();
-        }
-
-        [TestMethod]
-        public async Task TherapistActivityDoesNotExistExceptionPostTherapistEventReturnsNotFoundResponse()
-        {
-            _fakeTherapistEventService.Setup(s => s.AddTherapistEvent(It.IsAny<TherapistEvent>())).ThrowsAsync(new TherapistActivityDoesNotExistException());
-
-            var newTherapistEvent = ModelFakes.TherapistEventFake.Generate();
-            newTherapistEvent.ActivityName = "-1";
-
-            var response = await _testTherapistEventController.PostTherapistEvent(newTherapistEvent);
-
-            response.Result.Should().BeOfType<NotFoundObjectResult>();
         }
 
         [TestMethod]

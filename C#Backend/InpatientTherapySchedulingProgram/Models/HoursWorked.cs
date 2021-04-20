@@ -12,11 +12,13 @@ namespace InpatientTherapySchedulingProgram.Models
         [Column("hours_worked_id")]
         public int HoursWorkedId { get; set; }
         [Column("start_time", TypeName = "datetime")]
-        public DateTime? StartTime { get; set; }
+        public DateTime StartTime { get; set; }
         [Column("end_time", TypeName = "datetime")]
-        public DateTime? EndTime { get; set; }
+        public DateTime EndTime { get; set; }
         [Column("user_id")]
-        public int? UserId { get; set; }
+        public int UserId { get; set; }
+        [Column("active")]
+        public bool Active { get; set; }
 
         [ForeignKey(nameof(UserId))]
         [InverseProperty("HoursWorked")]
