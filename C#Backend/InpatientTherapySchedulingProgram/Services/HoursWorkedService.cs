@@ -52,7 +52,7 @@ namespace InpatientTherapySchedulingProgram.Services
 
         public async Task<HoursWorked> GetHoursWorkedById(int hoursWorkedId)
         {
-            return await _context.HoursWorked.FindAsync(hoursWorkedId);
+            return await _context.HoursWorked.FirstOrDefaultAsync(h => h.UserId == hoursWorkedId && h.Active);
         }
 
         
