@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace InpatientTherapySchedulingProgram.Services
 {
-    public class TherapistActivityService : ITherapistActivityService
+    /*public class TherapistActivityService : ITherapistActivityService
     {
         private readonly CoreDbContext _context;
 
@@ -107,5 +107,5 @@ namespace InpatientTherapySchedulingProgram.Services
         {
             return await _context.TherapistActivity.FindAsync(name) != null;
         }
-    }
+    }*/
 }

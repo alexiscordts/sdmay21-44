@@ -66,6 +66,8 @@ namespace InpatientTherapySchedulingProgram.Services
                 throw new UsernameAlreadyExistException();
             }
 
+            user.Active = true;
+
             _context.User.Add(user);
 
             try
@@ -118,7 +120,7 @@ namespace InpatientTherapySchedulingProgram.Services
 
         private async Task<bool> UserExists(string username)
         {
-            return await _context.User.FirstOrDefaultAsync(u => u.Username == username) != null;
+            return await _context.User.FirstOrDefaultAsync(u => u.Username.Equals(username)) != null;
         }
     }
 }

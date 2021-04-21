@@ -29,6 +29,8 @@ namespace InpatientTherapySchedulingProgram.Services
                 throw new LocationNameAlreadyExistsException();
             }
 
+            location.Active = true;
+
             _context.Location.Add(location);
 
             try

@@ -28,6 +28,8 @@ namespace InpatientTherapySchedulingProgram.Services
                 throw new TherapyAbbreviationAlreadyExistException();
             }
 
+            therapy.Active = true;
+
             _context.Therapy.Add(therapy);
 
             try
@@ -77,7 +79,7 @@ namespace InpatientTherapySchedulingProgram.Services
 
         public async Task<IEnumerable<string>> GetAllTypes()
         {
-            return await _context.Therapy.Select(t => t.TherapyType).Distinct().ToListAsync();
+            return await _context.Therapy.Select(t => t.Type).Distinct().ToListAsync();
         }
 
         public async Task<Therapy> GetTherapyByAdl(string adl)
