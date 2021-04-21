@@ -1,17 +1,16 @@
 ﻿using FluentAssertions;
 using InpatientTherapySchedulingProgram.Controllers;
 using InpatientTherapySchedulingProgram.Exceptions.TherapyExceptions;
+using InpatientTherapySchedulingProgram.Exceptions.TherapyMainExceptions;
 using InpatientTherapySchedulingProgram.Models;
 using InpatientTherapySchedulingProgram.Services.Interfaces;
 using InpatientTherapySchedulingProgramTests.Fakes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace InpatientTherapySchedulingProgramTests.ControllerTests
@@ -19,6 +18,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
     [TestClass]
     public class TherapyControllerTests
     {
+        private static List<TherapyMain> _testTherapyMains;
         private static List<Therapy> _testTherapies;
         private static List<string> _testAdls;
         private static List<string> _testTypes;
@@ -28,16 +28,21 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         [ClassInitialize()]
         public static void Setup(TestContext context)
         {
+            _testTherapyMains = new List<TherapyMain>();
             _testTherapies = new List<Therapy>();
             _testAdls = new List<string>();
             _testTypes = new List<string>();
 
             for(var i = 0; i < 10; i++)
             {
+                var newTherapyMain = ModelFakes.TherapyMainFake.Generate();
+                _testTherapyMains.Add(newTherapyMain);
+                _testTypes.Add(newTherapyMain.Type);
+
                 var therapy = ModelFakes.TherapyFake.Generate();
+                therapy.Type = newTherapyMain.Type;
                 _testTherapies.Add(therapy);
                 _testAdls.Add(therapy.Adl);
-                _testTypes.Add(therapy.TherapyType);
             }
 
             _testTypes = _testTypes.Distinct().ToList();
@@ -184,11 +189,26 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         }
 
         [TestMethod]
+        public async Task TherapyMainDoesNotExistExceptionPutTherapyReturnsBadRequestResponse()
+        {
+            _fakeService.Setup(s => s.UpdateTherapy(It.IsAny<string>(), It.IsAny<Therapy>())).ThrowsAsync(new TherapyMainDoesNotExistException());
+
+            var fakeTherapyMainType = ModelFakes.TherapyMainFake.Generate().Type;
+            _testTherapies[0].Type = fakeTherapyMainType;
+
+            var response = await _testController.PutTherapy(_testTherapies[0].Adl, _testTherapies[0]);
+
+            response.Should().BeOfType<BadRequestObjectResult>();
+        }
+
+        [TestMethod]
         public async Task TherapyDoesNotExistExceptionPutTherapyReturnsNotFoundResponse()
         {
             _fakeService.Setup(s => s.UpdateTherapy(It.IsAny<string>(), It.IsAny<Therapy>())).ThrowsAsync(new TherapyDoesNotExistException());
 
-            var response = await _testController.PutTherapy("-1", new Therapy());
+            var fakeTherapy = ModelFakes.TherapyFake.Generate();
+
+            var response = await _testController.PutTherapy(fakeTherapy.Adl, fakeTherapy);
 
             response.Should().BeOfType<NotFoundResult>();
         }
@@ -246,6 +266,21 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
             var response = await _testController.PostTherapy(newTherapy);
 
             response.Result.Should().BeOfType<ConflictObjectResult>();
+        }
+
+        [TestMethod]
+        public async Task TherapyMainDoesNotExistExceptionPostTherapyReturnsBadRequestResponse()
+        {
+            _fakeService.Setup(s => s.AddTherapy(It.IsAny<Therapy>())).ThrowsAsync(new TherapyMainDoesNotExistException());
+
+            var fakeTherapyMainType = ModelFakes.TherapyMainFake.Generate().Type;
+
+            var newTherapy = ModelFakes.TherapyFake.Generate();
+            newTherapy.Type = fakeTherapyMainType;
+
+            var response = await _testController.PostTherapy(newTherapy);
+
+            response.Result.Should().BeOfType<BadRequestObjectResult>();
         }
 
         [TestMethod]

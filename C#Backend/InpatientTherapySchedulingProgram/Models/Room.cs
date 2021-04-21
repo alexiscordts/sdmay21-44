@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace InpatientTherapySchedulingProgram.Models
 {
     [Table("room")]
-    public partial class Room
+    public partial class Room : IEquatable<Room>
     {
         public Room()
         {
@@ -30,7 +30,6 @@ namespace InpatientTherapySchedulingProgram.Models
         public virtual ICollection<Appointment> Appointment { get; set; }
         [InverseProperty("Room")]
         public virtual ICollection<Patient> Patient { get; set; }
-
         public override bool Equals(object obj)
         {
             return this.Equals(obj as Room);

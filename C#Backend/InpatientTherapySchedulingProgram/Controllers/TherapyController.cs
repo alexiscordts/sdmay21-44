@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using InpatientTherapySchedulingProgram.Models;
 using InpatientTherapySchedulingProgram.Services.Interfaces;
 using InpatientTherapySchedulingProgram.Exceptions.TherapyExceptions;
+using InpatientTherapySchedulingProgram.Exceptions.TherapyMainExceptions;
 
 namespace InpatientTherapySchedulingProgram.Controllers
 {
@@ -87,15 +85,19 @@ namespace InpatientTherapySchedulingProgram.Controllers
             {
                 await _service.UpdateTherapy(adl, therapy);
             }
-            catch(TherapyAdlsDoNotMatchException e)
+            catch (TherapyAdlsDoNotMatchException e)
             {
                 return BadRequest(e);
             }
-            catch(TherapyDoesNotExistException)
+            catch (TherapyMainDoesNotExistException e)
+            {
+                return BadRequest(e);
+            }
+            catch (TherapyDoesNotExistException)
             {
                 return NotFound();
             }
-            catch(DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException)
             {
                 throw;
             }
@@ -113,15 +115,19 @@ namespace InpatientTherapySchedulingProgram.Controllers
             {
                 await _service.AddTherapy(therapy);
             }
-            catch(TherapyAdlAlreadyExistException e)
+            catch (TherapyAdlAlreadyExistException e)
             {
                 return Conflict(e);
             }
-            catch(TherapyAbbreviationAlreadyExistException e)
+            catch (TherapyAbbreviationAlreadyExistException e)
             {
                 return Conflict(e);
             }
-            catch(DbUpdateException)
+            catch (TherapyMainDoesNotExistException e)
+            {
+                return BadRequest(e);
+            }
+            catch (DbUpdateException)
             {
                 throw;
             }
@@ -139,7 +145,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
             {
                 therapy = await _service.DeleteTherapy(adl);
             }
-            catch(DbUpdateException)
+            catch (DbUpdateException)
             {
                 throw;
             }

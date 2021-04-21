@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using InpatientTherapySchedulingProgram.Exceptions.PatientExceptions;
 
 
-namespace InpatientTherapySchedulingProgramTests
+namespace InpatientTherapySchedulingProgramTests.ControllerTests
 {
     [TestClass]
     public class PatientControllerTests
@@ -39,7 +39,7 @@ namespace InpatientTherapySchedulingProgramTests
             _fakeService = new Mock<IPatientService>();
             _fakeService.SetupAllProperties();
             _fakeService.Setup(s => s.GetAllPatients()).ReturnsAsync(_testPatients);
-            _fakeService.Setup(s => s.GetPatientByPid(It.IsAny<int>())).ReturnsAsync(_testPatients[0]);
+            _fakeService.Setup(s => s.GetPatientByPatientId(It.IsAny<int>())).ReturnsAsync(_testPatients[0]);
             _fakeService.Setup(s => s.UpdatePatient(It.IsAny<int>(), It.IsAny<Patient>())).ReturnsAsync(_testPatients[0]);
             _fakeService.Setup(s => s.AddPatient(It.IsAny<Patient>())).ReturnsAsync(_testPatients[0]);
             _fakeService.Setup(s => s.DeletePatient(It.IsAny<int>())).ReturnsAsync(_testPatients[0]);
@@ -84,7 +84,7 @@ namespace InpatientTherapySchedulingProgramTests
         [TestMethod]
         public async Task GetNonExistingPatientByPatientIdReturnsNotFoundResponse()
         {
-            _fakeService.Setup(s => s.GetPatientByPid(It.IsAny<int>())).ReturnsAsync((Patient)null);
+            _fakeService.Setup(s => s.GetPatientByPatientId(It.IsAny<int>())).ReturnsAsync((Patient)null);
 
             var response = await _testController.GetPatient(-1);
             var responseResult = response.Result;
@@ -150,7 +150,7 @@ namespace InpatientTherapySchedulingProgramTests
         [TestMethod]
         public async Task ExistingPatientIdPostPatientReturnsConflictResponse()
         {
-            _fakeService.Setup(s => s.AddPatient(It.IsAny<Patient>())).ThrowsAsync(new PidAlreadyExistsException());
+            _fakeService.Setup(s => s.AddPatient(It.IsAny<Patient>())).ThrowsAsync(new PatientIdAlreadyExistException());
 
             var response = await _testController.PostPatient(new Patient());
             var responseResult = response.Result;

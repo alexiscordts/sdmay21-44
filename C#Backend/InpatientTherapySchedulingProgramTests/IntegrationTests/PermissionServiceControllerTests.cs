@@ -18,6 +18,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         private List<Permission> _testPermissions;
         private List<User> _testUsers;
         private User _userWithNoPermissions;
+        private User _nonActiveUser;
         private CoreDbContext _testContext;
         private PermissionService _testPermissionService;
         private PermissionController _testPermissionController;
@@ -41,15 +42,21 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
             for (var i = 0; i < 10; i++)
             {
                 var newUser = ModelFakes.UserFake.Generate();
-                _testUsers.Add(ObjectExtensions.Copy(newUser));
                 _testContext.Add(newUser);
                 _testContext.SaveChanges();
+                _testUsers.Add(ObjectExtensions.Copy(newUser));
 
                 var newPermission = ModelFakes.PermissionFake.Generate();
-                _testPermissions.Add(ObjectExtensions.Copy(newPermission));
                 _testContext.Add(newPermission);
                 _testContext.SaveChanges();
+                _testPermissions.Add(ObjectExtensions.Copy(newPermission));
             }
+
+            _nonActiveUser = ModelFakes.UserFake.Generate();
+            _nonActiveUser.Active = false;
+            _testContext.Add(_nonActiveUser);
+            _testContext.SaveChanges();
+            _testUsers.Add(ObjectExtensions.Copy(_nonActiveUser));
 
             _testPermissionService = new PermissionService(_testContext);
             _testPermissionController = new PermissionController(_testPermissionService);
@@ -220,6 +227,30 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         {
             var newPermission = ModelFakes.PermissionFake.Generate();
             newPermission.UserId = - 1;
+
+            await _testPermissionController.PostPermission(newPermission);
+
+            var response = await _testPermissionController.GetPermission(newPermission.UserId);
+
+            response.Result.Should().BeOfType<NotFoundResult>();
+        }
+
+        [TestMethod]
+        public async Task NonActiveUserPostPermissionReturnsBadRequestResponse()
+        {
+            var newPermission = ModelFakes.PermissionFake.Generate();
+            newPermission.UserId = _nonActiveUser.UserId;
+
+            var response = await _testPermissionController.PostPermission(newPermission);
+
+            response.Result.Should().BeOfType<BadRequestObjectResult>();
+        }
+
+        [TestMethod]
+        public async Task NonActiveUserPostPermissionDoesNotAddPermissionToDatabase()
+        {
+            var newPermission = ModelFakes.PermissionFake.Generate();
+            newPermission.UserId = _nonActiveUser.UserId;
 
             await _testPermissionController.PostPermission(newPermission);
 

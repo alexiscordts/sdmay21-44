@@ -15,6 +15,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
     public class LocationServiceTests
     {
         private List<Location> _testLocations;
+        private Location _nonActiveLocation;
         private CoreDbContext _testContext;
         private LocationService _testLocationService;
 
@@ -31,10 +32,16 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
             for(var i = 0; i < 10; i++)
             {
                 var newLocation = ModelFakes.LocationFake.Generate();
-                _testLocations.Add(ObjectExtensions.Copy(newLocation));
                 _testContext.Add(newLocation);
                 _testContext.SaveChanges();
+                _testLocations.Add(ObjectExtensions.Copy(newLocation));
             }
+
+            _nonActiveLocation = ModelFakes.LocationFake.Generate();
+            _nonActiveLocation.Active = false;
+            _testContext.Add(_nonActiveLocation);
+            _testContext.SaveChanges();
+            _testLocations.Add(ObjectExtensions.Copy(_nonActiveLocation));
 
             _testLocationService = new LocationService(_testContext);
         }
@@ -89,7 +96,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
             var allLocationNames = await _testLocationService.GetAllLocationNames();
             List<string> listOfLocationNames = (List<string>)allLocationNames;
 
-            for(var i = 0; i < _testListOfLocationNames.Count; i++)
+            for(var i = 0; i < listOfLocationNames.Count; i++)
             {
                 _testListOfLocationNames.Contains(listOfLocationNames[i]).Should().BeTrue();
             }
@@ -120,6 +127,14 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         }
 
         [TestMethod]
+        public async Task GetLocationByLocationIdReturnsNullIfLocationIsNotActive()
+        {
+            var location = await _testLocationService.GetLocationByLocationId(_nonActiveLocation.LocationId);
+
+            location.Should().BeNull();
+        }
+
+        [TestMethod]
         public async Task GetLocationByNameReturnsCorrectType()
         {
             var location = await _testLocationService.GetLocationByName(_testLocations[0].Name);
@@ -136,9 +151,17 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         }
 
         [TestMethod]
-        public async Task GetLocationByNameReturnsNullIfLocationDoesExist()
+        public async Task GetLocationByNameReturnsNullIfLocationDoesNotExist()
         {
             var location = await _testLocationService.GetLocationByName("-1");
+
+            location.Should().BeNull();
+        }
+
+        [TestMethod]
+        public async Task GetLocationByNameReturnsNullIfLocationIsNotActive()
+        {
+            var location = await _testLocationService.GetLocationByName(_nonActiveLocation.Name);
 
             location.Should().BeNull();
         }
@@ -271,11 +294,17 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         }
 
         [TestMethod]
-        public async Task UpdateLocationWithNonExistingLocationLocationLocationIdsThrowsLocationDoesNotExistException()
+        public async Task UpdateLocationWithNonExistingLocationThrowsLocationDoesNotExistException()
         {
             var fakeLocation = ModelFakes.LocationFake.Generate();
 
             await _testLocationService.Invoking(s => s.UpdateLocation(fakeLocation.LocationId, fakeLocation)).Should().ThrowAsync<LocationDoesNotExistException>();
+        }
+
+        [TestMethod]
+        public async Task UpdateLocationWithNonActiveLocationThrowsLocationDoesNotExistException()
+        {
+            await _testLocationService.Invoking(s => s.UpdateLocation(_nonActiveLocation.LocationId, _nonActiveLocation)).Should().ThrowAsync<LocationDoesNotExistException>();
         }
     }
 }

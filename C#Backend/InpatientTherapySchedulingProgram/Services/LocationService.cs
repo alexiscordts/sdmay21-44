@@ -1,6 +1,5 @@
 ﻿using InpatientTherapySchedulingProgram.Models;
 using InpatientTherapySchedulingProgram.Services.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using InpatientTherapySchedulingProgram.Exceptions.LocationExceptions;
@@ -70,22 +69,22 @@ namespace InpatientTherapySchedulingProgram.Services
 
         public async Task<IEnumerable<string>> GetAllLocationNames()
         {
-            return await _context.Location.Select(l => l.Name).Distinct().ToListAsync();
+            return await _context.Location.Where(l => l.Active).Select(l => l.Name).Distinct().ToListAsync();
         }
 
         public async Task<IEnumerable<Location>> GetAllLocations()
         {
-            return await _context.Location.ToListAsync();
+            return await _context.Location.Where(l => l.Active).ToListAsync();
         }
 
         public async Task<Location> GetLocationByLocationId(int id)
         {
-            return await _context.Location.FindAsync(id);
+            return await _context.Location.FirstOrDefaultAsync(l => l.LocationId == id && l.Active);
         }
 
         public async Task<Location> GetLocationByName(string name)
         {
-            return await _context.Location.FirstOrDefaultAsync(l => l.Name.Equals(name));
+            return await _context.Location.FirstOrDefaultAsync(l => l.Name.Equals(name) && l.Active);
         }
 
         public async Task<Location> UpdateLocation(int id, Location location)
@@ -119,12 +118,12 @@ namespace InpatientTherapySchedulingProgram.Services
 
         private async Task<bool> LocationExists(int id)
         {
-            return await _context.Location.FindAsync(id) != null;
+            return await _context.Location.FirstOrDefaultAsync(l => l.LocationId == id && l.Active) != null;
         }
 
         private async Task<bool> LocationExists(string name)
         {
-            return await _context.Location.FirstOrDefaultAsync(l => l.Name.Equals(name)) != null;
+            return await _context.Location.FirstOrDefaultAsync(l => l.Name.Equals(name) && l.Active) != null;
         }
     }
 }

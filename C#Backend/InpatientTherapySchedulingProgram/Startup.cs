@@ -39,9 +39,9 @@ namespace InpatientTherapySchedulingProgram
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ILocationService, LocationService>();
             services.AddScoped<ITherapyService, TherapyService>();
-            services.AddScoped<ITherapistActivityService, TherapistActivityService>();
             services.AddScoped<IPermissionService, PermissionService>();
             services.AddScoped<ITherapistEventService, TherapistEventService>();
+            services.AddScoped<ITherapyMainService, TherapyMainService>();
             services.AddControllers();
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
