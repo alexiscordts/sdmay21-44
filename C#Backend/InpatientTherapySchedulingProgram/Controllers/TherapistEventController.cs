@@ -13,18 +13,18 @@ namespace InpatientTherapySchedulingProgram.Controllers
     [ApiController]
     public class TherapistEventController : ControllerBase
     {
-        private readonly ITherapistEventService _service;
+        private readonly ITherapistEventService _therapistEventService;
 
-        public TherapistEventController(ITherapistEventService service)
+        public TherapistEventController(ITherapistEventService therapistEventService)
         {
-            _service = service;
+            _therapistEventService = therapistEventService;
         }
 
         // GET: api/TherapistEvent
         // Maybe get all therapist event in a given week?
         // Force a JSON object to be passed in
         // Force route to use getByTherapistId
-        [HttpGet]
+        [HttpPost("getTherapistEvent")]
         public async Task<ActionResult<IEnumerable<TherapistEvent>>> GetTherapistEvents(TherapistEvent therapistEvent)
         {
             if (therapistEvent == null)
@@ -32,14 +32,14 @@ namespace InpatientTherapySchedulingProgram.Controllers
                 return BadRequest();
             }
 
-            var allTherapistEvents = await _service.GetAllTherapistEvents(therapistEvent);
+            var allTherapistEvents = await _therapistEventService.GetAllTherapistEvents(therapistEvent);
 
             return Ok(allTherapistEvents);
         }
 
         // GET: api/TherapistEvent/5
         // Probably need to get all therapist event's within a given time frame for therapist id
-        [HttpGet("getTherapistEventsByTherapistId")]
+        [HttpPost("getTherapistEventsByTherapistId")]
         public async Task<ActionResult<IEnumerable<TherapistEvent>>> GetTherapistEventsByTherapistId(TherapistEvent therapistEvent)
         {
             if (therapistEvent == null)
@@ -47,7 +47,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
                 return BadRequest();
             }
 
-            var allTherapistEvents = await _service.GetAllTherapistEventsByTherapistId(therapistEvent);
+            var allTherapistEvents = await _therapistEventService.GetAllTherapistEventsByTherapistId(therapistEvent);
 
             return Ok(allTherapistEvents);
         }
@@ -60,7 +60,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
         {
             try
             {
-                await _service.UpdateTherapistEvent(eventId, therapistEvent);
+                await _therapistEventService.UpdateTherapistEvent(eventId, therapistEvent);
             }
             catch (TherapistEventEventIdsDoNotMatchException e)
             {
@@ -78,6 +78,10 @@ namespace InpatientTherapySchedulingProgram.Controllers
             {
                 return BadRequest(e);
             }
+            catch (TherapistEventCannotEndBeforeStartTimeException e)
+            {
+                return BadRequest(e);
+            }
 
             return NoContent();
         }
@@ -90,7 +94,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
         {
             try
             {
-                await _service.AddTherapistEvent(therapistEvent);
+                await _therapistEventService.AddTherapistEvent(therapistEvent);
             }
             catch (TherapistEventEventIdAlreadyExistsException e)
             {
@@ -101,6 +105,10 @@ namespace InpatientTherapySchedulingProgram.Controllers
                 return NotFound(e);
             }
             catch (UserIsNotATherapistException e)
+            {
+                return BadRequest(e);
+            }
+            catch (TherapistEventCannotEndBeforeStartTimeException e)
             {
                 return BadRequest(e);
             }
@@ -120,14 +128,14 @@ namespace InpatientTherapySchedulingProgram.Controllers
 
             try
             {
-                therapistEvent = await _service.DeleteTherapistEvent(eventId);
+                therapistEvent = await _therapistEventService.DeleteTherapistEvent(eventId);
             }
             catch (DbUpdateConcurrencyException)
             {
                 throw;
             }
 
-            if (therapistEvent == null)
+            if (therapistEvent is null)
             {
                 return NotFound();
             }

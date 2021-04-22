@@ -42,6 +42,10 @@ namespace InpatientTherapySchedulingProgram.Services
             {
                 throw new UserIsNotATherapistException();
             }
+            if (therapistEvent.EndTime < therapistEvent.StartTime)
+            {
+                throw new TherapistEventCannotEndBeforeStartTimeException();
+            }
 
             therapistEvent.Active = true;
 
@@ -149,6 +153,10 @@ namespace InpatientTherapySchedulingProgram.Services
             if (!await IsTherapist(therapistEvent.TherapistId))
             {
                 throw new UserIsNotATherapistException();
+            }
+            if (therapistEvent.EndTime < therapistEvent.StartTime)
+            {
+                throw new TherapistEventCannotEndBeforeStartTimeException();
             }
 
             var local = _context.TherapistEvent.Local.FirstOrDefault(t => t.EventId == eventId && t.Active);
