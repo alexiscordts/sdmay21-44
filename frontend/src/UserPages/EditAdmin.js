@@ -4,8 +4,9 @@ import Nav from "../Nav";
 
 class EditAdmin extends React.Component {
 
-    
   render() {
+
+    //form for editing an admin user's information
     return (
       <div >
         <Nav/>

@@ -16,7 +16,7 @@ class Dashboard extends React.Component {
         this.date = new Date();
         this.scheduleHeader = "My Schedule - Week of ";
     }
-    //
+    
 
   render() {
 

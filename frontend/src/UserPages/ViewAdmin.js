@@ -13,6 +13,7 @@ class ViewAdmin extends React.Component {
     var adminList = [{"fname":"Sarah", "lname":"Geller", "email":"sarah@up.org"},{"fname":"Zach", "lname":"Johnson","email":"zach@up.org"}];
     var rows = [];
     
+    //Iterate throught the list of admins and render each one on it's own row in the table
     adminList.forEach(function(admin) {
       rows.push(
         <tr>

@@ -13,6 +13,7 @@ class ViewNurse extends React.Component {
     var nurseList = [{"fname":"Elaine", "lname":"Green", "email":"elaine@up.org"},{"fname":"Richard", "lname":"Markson","email":"rich@up.org"}];
     var rows = [];
     
+    //Iterate throught the list of nurses and render each one on it's own row in the table
     nurseList.forEach(function(nurse) {
       rows.push(
         <tr>

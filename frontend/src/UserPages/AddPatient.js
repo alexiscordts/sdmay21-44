@@ -6,6 +6,8 @@ const AddPatient = () => {
   const [fName, setFName] = useState('');
   const [lName, setLName] = useState('');
   const [date, setDate] = useState(undefined);
+
+  //Form for adding a patient to the system
   return (
     <div >
       <Nav/>

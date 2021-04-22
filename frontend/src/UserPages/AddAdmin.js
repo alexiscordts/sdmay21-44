@@ -7,6 +7,7 @@ const AddAdmin = () => {
   const [lName, setLName] = useState('');
   const [email, setEmail] = useState('');
     
+  //Form for adding an admin user
   return (
     <div >
       <Nav/>

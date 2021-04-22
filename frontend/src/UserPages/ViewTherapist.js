@@ -13,6 +13,7 @@ class ViewTherapist extends React.Component {
     var therapistList = [{"fname":"Amy", "lname":"Adams", "email":"amy@up.org"},{"fname":"John", "lname":"Smith","email":"john@up.org"}];
     var rows = [];
     
+    //Iterate throught the list of therapists and render each one on it's own row in the table
     therapistList.forEach(function(therapist) {
       rows.push(
         <tr>

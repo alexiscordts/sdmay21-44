@@ -6,6 +6,7 @@ class EditNurse extends React.Component {
 
     
   render() {
+    //form for editing a nurse's information
     return (
       <div >
         <Nav/>

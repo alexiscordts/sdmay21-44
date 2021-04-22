@@ -10,6 +10,7 @@ const ChangePassword = () => {
   const [newPasswordRetype, setNewPasswordRetype] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
+  //Set the validation errors if they exist, otherwise change the password
   const changePassword = () =>  {
 
     if(!newPassword || !newPasswordRetype || !existingPassword) {

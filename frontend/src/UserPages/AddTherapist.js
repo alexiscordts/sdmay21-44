@@ -7,6 +7,7 @@ const AddTherapist = () => {
     const [lName, setLName] = useState('');
     const [email, setEmail] = useState('');
   
+    //form for adding a therpaist
     return (
       <div >
         <Nav/>

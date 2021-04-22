@@ -7,6 +7,7 @@ const AddNurse = () => {
   const [lName, setLName] = useState('');
   const [email, setEmail] = useState('');
 
+  //Form for adding a nurse
   return (
     <div >
       <Nav/>

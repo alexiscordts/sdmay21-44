@@ -13,6 +13,7 @@ class ViewPatient extends React.Component {
     var patientList = [{"fname":"Paul", "lname":"Henderson", "admissionDate":"1/5/20"},{"fname":"Larry", "lname":"Mason", "admissionDate":"2/15/20"}];
     var rows = [];
     
+    //Iterate throught the list of patients and render each one on it's own row in the table
     patientList.forEach(function(patient) {
       rows.push(
         <tr>
