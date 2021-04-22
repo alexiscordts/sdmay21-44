@@ -17,7 +17,6 @@ namespace InpatientTherapySchedulingProgram.Services
             _context = context;
         }
 
-        //Add Room
         public async Task<Room> AddRoom(Room room)
         {
             if (await RoomExists(room)) {
@@ -37,7 +36,6 @@ namespace InpatientTherapySchedulingProgram.Services
             return room;
         }
 
-        //Delete Room
         public async Task<Room> DeleteRoom(Room room)
         {
             var curRoom = await _context.Room.FindAsync(room.Number, room.LocationId);
@@ -59,7 +57,6 @@ namespace InpatientTherapySchedulingProgram.Services
             return curRoom;
         }
 
-        //Update Room
         public async Task<Room> UpdateRoom(int number, Room room)
         {
             if (number != room.Number) {
@@ -85,13 +82,11 @@ namespace InpatientTherapySchedulingProgram.Services
             return room;
         }
 
-        //Get All Rooms
         public async Task<IEnumerable<Room>> GetAllRooms()
         {
             return await _context.Room.Where(r => r.Active).ToListAsync();
         }
 
-        //Get All Rooms by Location
         public async Task<IEnumerable<Room>> GetAllRoomsByLocationId(int location_id)
         {
             return await _context.Room.Where(r => r.LocationId == location_id && r.Active).ToListAsync();
