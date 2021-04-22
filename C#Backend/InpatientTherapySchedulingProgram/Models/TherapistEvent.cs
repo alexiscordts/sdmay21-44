@@ -47,9 +47,7 @@ namespace InpatientTherapySchedulingProgram.Models
                 return true;
             }
 
-            return this.EventId == therapistEvent.EventId && this.TherapistId == therapistEvent.TherapistId
-                && this.ActivityName.Equals(therapistEvent.ActivityName) && this.StartTime.Equals(therapistEvent.StartTime)
-                && this.EndTime.Equals(therapistEvent.EndTime);
+            return this.EventId == therapistEvent.EventId && this.TherapistId == therapistEvent.TherapistId;
         }
 
         public static bool operator ==(TherapistEvent lhs, TherapistEvent rhs)

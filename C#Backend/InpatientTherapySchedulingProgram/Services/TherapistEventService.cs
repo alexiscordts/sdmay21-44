@@ -159,8 +159,8 @@ namespace InpatientTherapySchedulingProgram.Services
                 throw new TherapistEventCannotEndBeforeStartTimeException();
             }
 
-            var local = _context.TherapistEvent.Local.FirstOrDefault(t => t.EventId == eventId && t.Active);
-            //var local = await _context.TherapistEvent.FindAsync(eventId);
+            //var local = _context.TherapistEvent.Local.FirstOrDefault(t => t.EventId == eventId && t.Active);
+            var local = await _context.TherapistEvent.FindAsync(eventId);
 
             if (local == null)
             {

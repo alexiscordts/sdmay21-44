@@ -47,7 +47,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
         }
 
         // GET api/TherapyMain/getTherapyMainByAbbreviation/"X Therapy"
-        [HttpGet("getTherapyMainByAbbreviation/{type}")]
+        [HttpGet("getTherapyMainByAbbreviation/{abbreviation}")]
         public async Task<ActionResult<TherapyMain>> GetTherapyMainByAbbreviation(string abbreviation)
         {
             var therapyMain = await _therapyMainService.GetTherapyMainByAbbreviation(abbreviation);
