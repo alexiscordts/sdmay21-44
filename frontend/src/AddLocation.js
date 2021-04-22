@@ -7,11 +7,10 @@ class AddLocation extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      locationId: "8",
+      address: "",
       name: "",
-      appointment: [],
-      patient: [],
-      room: [],
+      phoneNumber: "",
+      active: 1,
     };
     this.handleChange = this.handleChange.bind(this);
     this.handlePost = this.handlePost.bind(this);
@@ -19,7 +18,6 @@ class AddLocation extends React.Component {
 
   handlePost(event) {
     event.preventDefault();
-    console.log("submitted");
     const url = "http://10.29.163.20:8081/api/location/";
     axios
       .post(url, this.state)
@@ -29,6 +27,9 @@ class AddLocation extends React.Component {
       .catch(function (error) {
         console.log(error);
       });
+    setTimeout(function () {
+      window.location.href = "/manage_locations";
+    }, 2000);
   }
 
   handleChange(event) {
@@ -37,10 +38,6 @@ class AddLocation extends React.Component {
     });
   }
   render() {
-    // const AddLocation = () => {
-    //   const [name, setName] = useState("");
-    //   const [address, setAddress] = useState("");
-
     return (
       <div>
         <div class="formScreen">
@@ -61,13 +58,24 @@ class AddLocation extends React.Component {
               </label>
               <label for="name">
                 <span>
-                  Location ID
+                  Address
                   <span class="required">*</span>
                 </span>
                 <input
                   type="text"
                   class="input-field"
                   name="address"
+                  onChange={this.handleChange}
+                />
+              </label>
+              <label for="phoneNumber">
+                <span>
+                  Phone Number <span class="required">*</span>
+                </span>
+                <input
+                  type="text"
+                  class="input-field"
+                  name="phoneNumber"
                   onChange={this.handleChange}
                 />
               </label>

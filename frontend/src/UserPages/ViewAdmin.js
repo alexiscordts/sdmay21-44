@@ -44,8 +44,9 @@ class ViewAdmin extends React.Component {
                     <Link to="/edit_admin"><button
                       class="iconButton"
                       onClick={() => {
-                        sessionStorage.setItem("fname", admin.fname);
-                        sessionStorage.setItem("lname", admin.lname);
+                        sessionStorage.setItem("firstName", admin.firstName);
+                        sessionStorage.setItem("lastName", admin.lastName);
+                        sessionStorage.setItem("userId", admin.userId);
                         // sessionStorage.setItem("email", admin.email);
                       }}
                     >
@@ -68,15 +69,18 @@ class ViewAdmin extends React.Component {
       <div>
         <div class="userHeaderRow">
           <h2>Admins</h2>
-          <Link to="/add_patient"><button
+          <button
             class="iconAddUserButton"
+            onClick={() => {
+              window.location.href = "/add_admin";
+            }}
           >
             <img
               src={require("../Icons/icons8-add-user-male-48.png")}
               alt="edit"
               className="iconAddUser"
             />
-          </button></Link>
+          </button>
         </div>
         <table class="user-table">
           <thead>

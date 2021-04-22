@@ -35,13 +35,16 @@ class ViewLocations extends React.Component {
         rows.push(
           <tr>
             <td>{location.name}</td>
-            <td>Address</td>
+            <td>{location.address}</td>
             <td>
-              <Link to="/edit_location"><button
+              <button
                 class="iconButton"
                 onClick={() => {
                   sessionStorage.setItem("name", location.name);
                   sessionStorage.setItem("address", location.address);
+                  sessionStorage.setItem("locationId", location.locationId);
+                  sessionStorage.setItem("phoneNumber", location.phoneNumber);
+                  window.location.href = "/edit_location";
                 }}
               >
                 <img
@@ -49,7 +52,7 @@ class ViewLocations extends React.Component {
                   alt="edit"
                   className="icon"
                 />
-              </button></Link>
+              </button>
             </td>
           </tr>
         );

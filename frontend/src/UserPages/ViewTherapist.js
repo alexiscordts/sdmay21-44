@@ -40,12 +40,17 @@ class ViewTherapist extends React.Component {
                   <td>{therapist.lastName}</td>
                   <td>{therapist.username}</td>
                   <td>
-                    <Link to="/edit_admin"><button
+                    <button
                       class="iconButton"
                       onClick={() => {
-                        sessionStorage.setItem("fname", therapist.firstName);
-                        sessionStorage.setItem("lname", therapist.lastName);
+                        sessionStorage.setItem(
+                          "firstName",
+                          therapist.firstName
+                        );
+                        sessionStorage.setItem("lastName", therapist.lastName);
+                        sessionStorage.setItem("userId", therapist.userId);
                         // sessionStorage.setItem("email", admin.email);
+                        window.location.href = "/edit_therapist";
                       }}
                     >
                       <img
@@ -53,7 +58,7 @@ class ViewTherapist extends React.Component {
                         alt="edit"
                         className="icon"
                       />
-                    </button></Link>
+                    </button>
                   </td>
                 </tr>
               );

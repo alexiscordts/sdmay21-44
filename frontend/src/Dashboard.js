@@ -6,7 +6,7 @@ import RoomSchedule from "./ScheduleViews/RoomSchedule";
 import AllTherapistSchedule from "./ScheduleViews/AllTherapistSchedule";
 import PatientSchedule from "./ScheduleViews/PatientSchedule";
 import AddAppointment from "./AddAppointment";
-import EditAppointment from "./EditAppointment"
+import EditAppointment from "./EditAppointment";
 import ReactToPrint from "react-to-print";
 import axios from "axios";
 
@@ -76,7 +76,6 @@ class Dashboard extends React.Component {
         }
         return elements;
     }
-
     setSchedule(newDate)   {
         this.schedule = <div></div>;
         switch(this.state.schedule) {
@@ -121,7 +120,7 @@ class Dashboard extends React.Component {
             <button class="topbtn" onClick={() => showAddAppointment()}>
                 <img src={require("./Icons/icons8-add-property-48.png")} alt="edit" height="30" />
             </button>
-        )
+        );
         return items;
     }
 
@@ -129,138 +128,130 @@ class Dashboard extends React.Component {
         console.log(this.props.role);
         if (this.props.role == "therapist")
             return (<div class="link" onClick={() => {this.schedule = (<TherapistSchedule date={this.state.date} ref={(el) => (this.schedule = el)} role={this.props.role} />); this.scheduleHeader = "My Schedule"; this.locationHeader=""; this.setState({schedule: 1}); console.log(this.schedule)}}>My schedule</div>);
-        else return (<div class="link">&nbsp;</div>)
+        else return (<div class="link">&nbsp;</div>);
     }
 
-  render() {
-    return (
-    <div id="screen">
-        <div class="pageContainer">
-            <div class="dropdown">
-                <button class="dropbtn">
-                    {this.scheduleHeader}
-                    <i class="arrow down"></i>
-                </button>
-                <div class="dropdown-content">
-                    {this.getSchedule()}
-                    <div class="link" onClick={() => {this.schedule = (<AllTherapistSchedule date={this.state.date} ref={(el) => (this.schedule = el)} therapistEvent={this.therapistEvent} role={this.props.role} />); this.scheduleHeader = "Therapist Schedule"; this.locationHeader="";; this.setState({schedule: 2}); console.log(this.schedule)}}>By therapist</div>
-                    <div class="byRoom link">By room
+    render() {
+        return (
+        <div id="screen">
+            <div class="pageContainer">
+                <div class="dropdown">
+                    <button class="dropbtn">
+                        {this.scheduleHeader}
+                        <i class="arrow down"></i>
+                    </button>
+                    <div class="dropdown-content">
+                        {this.getSchedule()}
+                        <div class="link" onClick={() => {this.schedule = (<AllTherapistSchedule date={this.state.date} ref={(el) => (this.schedule = el)} therapistEvent={this.therapistEvent} role={this.props.role} />); this.scheduleHeader = "Therapist Schedule"; this.locationHeader="";; this.setState({schedule: 2}); console.log(this.schedule)}}>By therapist</div>
+                        <div class="byRoom link">By room
+                            <div class="locations">
+                                {this.getByRoomLinks()}
+                            </div>
+                        </div>
+                            
+                        <div class="byPatient link">By patient
                         <div class="locations">
-                            {this.getByRoomLinks()}
+                                {this.getByPatientLinks()}
+                            </div>
                         </div>
-                    </div>
                         
-                    <div class="byPatient link">By patient
-                    <div class="locations">
-                            {this.getByPatientLinks()}
+                    </div>
+                </div>
+                <div id="scheduleTitle">
+                    {this.locationHeader} Week of  
+                    <div class="datedropdown">
+                    <button class="datedropbtn">{this.week}<i class="datearrow down"></i></button>
+                        <div class="datedropdown-content">
+                            {this.weeks}
                         </div>
                     </div>
-                    
                 </div>
-            </div>
-            <div id="scheduleTitle">
-                {this.locationHeader} Week of  
-                <div class="datedropdown">
-                <button class="datedropbtn">{this.week}<i class="datearrow down"></i></button>
-                    <div class="datedropdown-content">
-                        {this.weeks}
+    
+                
+                {this.getButtons()}
+    
+                <ReactToPrint trigger={() => <button class="topbtn"><img src={require("./Icons/icons8-print-48.png")} alt="edit" height="30" /></button>} 
+                onBeforeGetContent={() => showTimes()}
+                onAfterPrint={() => {hideTimes(); this.schedule = this.setSchedule(this.state.date); this.forceUpdate();}}
+                documentTitle={this.scheduleHeader}
+                content={() => this.schedule} />
+                
+    
+                <div id="copyDayForm">
+                    <div class="form-style">
+                    <form>
+                        <span>Copy from: <span class="required">* </span></span>
+                        <input style={{width: "160px", marginBottom: "10px"}} class="input-field" type="date" name="date"></input>
+    
+                        <span>Copy to: <span class="required">* </span></span>
+                        <input style={{width: "160px", marginBottom: "10px"}} class="input-field" type="date" name="date"></input>
+    
+                        <input style={{width: "100%"}} type="submit" value="Copy Day" />
+                    </form>
                     </div>
                 </div>
+                <div>{this.schedule}</div>
+    
             </div>
-
-            
-            {this.getButtons()}
-
-            <ReactToPrint trigger={() => <button class="topbtn"><img src={require("./Icons/icons8-print-48.png")} alt="edit" height="30" /></button>} 
-            onBeforeGetContent={() => showTimes()}
-            onAfterPrint={() => {hideTimes(); this.schedule = this.setSchedule(this.state.date); this.forceUpdate();}}
-            documentTitle={this.scheduleHeader}
-            content={() => this.schedule} />
-            
-
-            <div id="copyDayForm">
-                <div class="form-style">
-                <form>
-                    <span>Copy from: <span class="required">* </span></span>
-                    <input style={{width: "160px", marginBottom: "10px"}} class="input-field" type="date" name="date"></input>
-
-                    <span>Copy to: <span class="required">* </span></span>
-                    <input style={{width: "160px", marginBottom: "10px"}} class="input-field" type="date" name="date"></input>
-
-                    <input style={{width: "100%"}} type="submit" value="Copy Day" />
-                </form>
-                </div>
-            </div>
-            <div>{this.schedule}</div>
-
+            <AddAppointment therapistEvent={this.therapistEvent} />
+            <EditAppointment />
         </div>
-        <AddAppointment therapistEvent={this.therapistEvent} />
-        <EditAppointment />
-    </div>
-    );
+        );
+      }
+    }
+
+function showAddAppointment() {
+  document.getElementById("addAppointment").style.display = "block";
+  document.getElementById("editAppointment").style.display = "none";
+}
+
+function showTimes() {
+  setSizes();
+  hideMetrics();
+  var x = document.getElementsByClassName("printHours");
+  for (var i = 0; i < x.length; i++) {
+    x[i].style.width = "75px";
   }
 }
 
-function showAddAppointment()   {
-    document.getElementById("addAppointment").style.display = "block";
-    document.getElementById("editAppointment").style.display = "none";
-}
-
-function showTimes()   {
-    setSizes();
-    hideMetrics();
-    var x = document.getElementsByClassName("printHours");
-    for(var i=0; i< x.length;i++){
-        x[i].style.width = "75px";
-     }
-}
-
-function hideMetrics()  {
-    if (document.getElementById("metricCheck") != null)
-        document.getElementById("metricCheck").checked = false;
-    var cols = document.getElementsByClassName("therapistMetrics");
-    for (var i = 0; i < cols.length; i++)
-    {
-        cols[i].style.display = "none";
-    }
+function hideMetrics() {
+  if (document.getElementById("metricCheck") != null)
+    document.getElementById("metricCheck").checked = false;
+  var cols = document.getElementsByClassName("therapistMetrics");
+  for (var i = 0; i < cols.length; i++) {
+    cols[i].style.display = "none";
+  }
 }
 
 function setSizes() {
-    var cols = document.getElementsByClassName("room");
-    for (var i = 0; i < cols.length; i++)
-    {
-            cols[i].style.minWidth = "100px";
-            cols[i].style.width = "100px";
-    }
-    var cols = document.getElementsByClassName("therapist");
-    for (var i = 0; i < cols.length; i++)
-    {
-            cols[i].style.minWidth = "100px";
-            cols[i].style.width = "100px";
-    }
+  var cols = document.getElementsByClassName("room");
+  for (var i = 0; i < cols.length; i++) {
+    cols[i].style.minWidth = "100px";
+    cols[i].style.width = "100px";
+  }
+  var cols = document.getElementsByClassName("therapist");
+  for (var i = 0; i < cols.length; i++) {
+    cols[i].style.minWidth = "100px";
+    cols[i].style.width = "100px";
+  }
 }
 
-function hideTimes()   {
-    var x = document.getElementsByClassName("printHours");
-    for(var i=0; i< x.length;i++){
-        x[i].style.width = "0px";
-     }
+function hideTimes() {
+  var x = document.getElementsByClassName("printHours");
+  for (var i = 0; i < x.length; i++) {
+    x[i].style.width = "0px";
+  }
 }
 
 var copyDayFormIsHidden = true;
-function hideCopyDayForm()  {
-    if (copyDayFormIsHidden)
-    {
-        copyDayFormIsHidden = false;
-        document.getElementById("copyDayForm").style.display = "block";
-    }
-    else
-    {
-        copyDayFormIsHidden = true;
-        document.getElementById("copyDayForm").style.display = "none";
-
-    }
-
+function hideCopyDayForm() {
+  if (copyDayFormIsHidden) {
+    copyDayFormIsHidden = false;
+    document.getElementById("copyDayForm").style.display = "block";
+  } else {
+    copyDayFormIsHidden = true;
+    document.getElementById("copyDayForm").style.display = "none";
+  }
 }
 
 export default Dashboard;

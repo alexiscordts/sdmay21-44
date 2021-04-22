@@ -4,31 +4,56 @@ import "../TableStyles.css";
 import "../UserPages/UserStyles.css";
 import "../Settings.css";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 class ViewTherapyTypes extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      therapyList: [],
+    };
+  }
+
+  componentDidMount() {
+    const url = "http://10.29.163.20:8081/api/therapy";
+    axios.get(url).then((response) => {
+      const therapyList = response.data;
+      this.setState({ therapyList });
+    });
   }
 
   render() {
-    var therapyList = [
-      { name: "Speech", subtypes: ["type1", "type2"] },
-      { name: "Physical", subtypes: ["type1", "type2", "type3"] },
-    ];
     var rows = [];
 
-    therapyList.forEach(
-      function (therapyType) {
+    var typesWithSubtypes = new Map();
+
+    this.state.therapyList.forEach((object) => {
+      if (typesWithSubtypes.has(object.type)) {
+        var subs = typesWithSubtypes.get(object.type);
+        subs.push(object.adl);
+        typesWithSubtypes.set(object.type, subs);
+      } else {
+        typesWithSubtypes.set(object.type, [object.adl]);
+      }
+    });
+
+    typesWithSubtypes.forEach(
+      function (value, key) {
+        const valuesToDisplay = [];
+        value.forEach((val) => {
+          valuesToDisplay.push(val + ", ");
+        });
         rows.push(
           <tr>
-            <td>{therapyType.name}</td>
-            <td>{therapyType.subtypes}</td>
+            <td>{key}</td>
+            <td>{valuesToDisplay}</td>
             <td>
-              <Link to="/edit_therapy_types"><button
+              <button
                 class="iconButton"
                 onClick={() => {
-                  sessionStorage.setItem("name", therapyType.name);
-                  sessionStorage.setItem("subtypes", therapyType.subtypes);
+                  sessionStorage.setItem("name", key);
+                  sessionStorage.setItem("subtypes", value.toString());
+                  window.location.href = "/edit_therapy_types";
                 }}
               >
                 <img
@@ -36,7 +61,7 @@ class ViewTherapyTypes extends React.Component {
                   alt="edit"
                   className="icon"
                 />
-              </button></Link>
+              </button>
             </td>
           </tr>
         );
@@ -61,7 +86,7 @@ class ViewTherapyTypes extends React.Component {
           <thead>
             <tr>
               <th>Name</th>
-              <th>Subtypes</th>
+              <th>Subtype</th>
               <th>Edit</th>
             </tr>
           </thead>

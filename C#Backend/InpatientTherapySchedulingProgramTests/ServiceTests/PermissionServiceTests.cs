@@ -17,6 +17,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
     {
         private List<User> _testUsers;
         private User _userWithNoPermissions;
+        private User _nonActiveUser;
         private List<Permission> _testPermissions;
         private CoreDbContext _testContext;
         private PermissionService _testPermissionService;
@@ -25,7 +26,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         public void Initialize()
         {
             var options = new DbContextOptionsBuilder<CoreDbContext>()
-                .UseInMemoryDatabase(databaseName: "LocationDatabase")
+                .UseInMemoryDatabase(databaseName: "PermissionDatabase")
                 .Options;
             _testUsers = new List<User>();
             _testPermissions = new List<Permission>();
@@ -40,16 +41,22 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
             for (var i = 0; i < 10; i++)
             {
                 var newUser = ModelFakes.UserFake.Generate();
-                _testUsers.Add(ObjectExtensions.Copy(newUser));
                 _testContext.Add(newUser);
                 _testContext.SaveChanges();
+                _testUsers.Add(ObjectExtensions.Copy(newUser));
 
                 var newPermission = ModelFakes.PermissionFake.Generate();
                 newPermission.UserId = newUser.UserId;
-                _testPermissions.Add(ObjectExtensions.Copy(newPermission));
                 _testContext.Add(newPermission);
                 _testContext.SaveChanges();
+                _testPermissions.Add(ObjectExtensions.Copy(newPermission));
             }
+
+            _nonActiveUser = ModelFakes.UserFake.Generate();
+            _nonActiveUser.Active = false;
+            _testContext.Add(_nonActiveUser);
+            _testContext.SaveChanges();
+            _testUsers.Add(ObjectExtensions.Copy(_nonActiveUser));
 
             _testPermissionService = new PermissionService(_testContext);
         }
@@ -72,7 +79,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         }
 
         [TestMethod]
-        public async Task GetAllLocationsReturnsCorrectListOfPermissions()
+        public async Task GetAllPermissionsReturnsCorrectListOfPermissions()
         {
             var allPermissions = await _testPermissionService.GetAllPermissions();
             List<Permission> listOfPermissions = (List<Permission>)allPermissions;
@@ -171,6 +178,15 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         {
             var newPermission = ModelFakes.PermissionFake.Generate();
             newPermission.UserId = -1;
+
+            await _testPermissionService.Invoking(s => s.AddPermission(newPermission)).Should().ThrowAsync<UserDoesNotExistException>();
+        }
+
+        [TestMethod]
+        public async Task AddPermissionWithNonActiveUserThrowsUserDoesNotExistException()
+        {
+            var newPermission = ModelFakes.PermissionFake.Generate();
+            newPermission.UserId = _nonActiveUser.UserId;
 
             await _testPermissionService.Invoking(s => s.AddPermission(newPermission)).Should().ThrowAsync<UserDoesNotExistException>();
         }

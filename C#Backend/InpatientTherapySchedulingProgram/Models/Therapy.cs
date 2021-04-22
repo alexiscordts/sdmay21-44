@@ -17,12 +17,22 @@ namespace InpatientTherapySchedulingProgram.Models
         [Column("adl")]
         [StringLength(255)]
         public string Adl { get; set; }
-        [Column("therapy_type")]
+        [Required]
+        [Column("type")]
         [StringLength(255)]
-        public string TherapyType { get; set; }
+        public string Type { get; set; }
+        [Required]
         [Column("abbreviation")]
         [StringLength(255)]
         public string Abbreviation { get; set; }
+        [Column("active")]
+        public bool Active { get; set; }
+
+        [ForeignKey(nameof(Type))]
+        [InverseProperty(nameof(TherapyMain.Therapy))]
+        public virtual TherapyMain TypeNavigation { get; set; }
+        [InverseProperty("AdlNavigation")]
+        public virtual ICollection<Appointment> Appointment { get; set; }
 
         public override bool Equals(object obj)
         {
@@ -31,29 +41,29 @@ namespace InpatientTherapySchedulingProgram.Models
 
         public bool Equals(Therapy therapy)
         {
-            if(Object.ReferenceEquals(therapy, null))
+            if (Object.ReferenceEquals(therapy, null))
             {
                 return false;
             }
 
-            if(Object.ReferenceEquals(this, therapy))
+            if (Object.ReferenceEquals(this, therapy))
             {
                 return true;
             }
 
-            if(this.GetType() != therapy.GetType())
+            if (this.GetType() != therapy.GetType())
             {
                 return false;
             }
 
-            return (this.Adl == therapy.Adl) && (this.Abbreviation == therapy.Abbreviation) && (this.TherapyType == therapy.TherapyType);
+            return (this.Adl == therapy.Adl) && (this.Abbreviation == therapy.Abbreviation) && (this.Type == therapy.Type);
         }
 
         public static bool operator ==(Therapy lhs, Therapy rhs)
         {
-            if(Object.ReferenceEquals(lhs, null))
+            if (Object.ReferenceEquals(lhs, null))
             {
-                if(Object.ReferenceEquals(rhs, null))
+                if (Object.ReferenceEquals(rhs, null))
                 {
                     return true;
                 }
@@ -68,8 +78,5 @@ namespace InpatientTherapySchedulingProgram.Models
         {
             return !(lhs == rhs);
         }
-
-        [InverseProperty("AdlNavigation")]
-        public virtual ICollection<Appointment> Appointment { get; set; }
     }
 }

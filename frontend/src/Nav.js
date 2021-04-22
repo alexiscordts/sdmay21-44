@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./Nav.css";
+import axios from "axios";
 
 class Nav extends React.Component {
   constructor(props) {
