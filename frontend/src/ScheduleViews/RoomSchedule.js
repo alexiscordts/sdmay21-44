@@ -6,7 +6,6 @@ class RoomSchedule extends React.Component {
   constructor(props) {
     super(props);
     this.lines = {values: this.loadLines()};
-    this.hours = {values: loadHours()};
     var d = new Date();
     this.time = {value: loadTimeLine()};
     this.rooms = {values: getRooms()};
@@ -29,15 +28,9 @@ class RoomSchedule extends React.Component {
              });
         }
   };
-  
-  load = () => {
-    document.getElementById("scheduleContainer").scrollTop = getPositionForTimeLine() - 200;
-    console.log("loaded");
-  };
 
   componentDidMount() {
     window.addEventListener('resize', this.updateDimensions);
-    window.addEventListener('load', this.load);
     this.interval = setInterval(() => this.setState({ time: Date.now() }), 60000); //Render every minute
     toggleDay(new Intl.DateTimeFormat('en-US', {weekday: 'long'}).format(this.props.date));
   }
@@ -50,7 +43,7 @@ class RoomSchedule extends React.Component {
 
     loadRooms()
     {
-        var hours = loadHours();
+        var hours = this.loadHours(this.props.date);
         const rooms = getRooms();
         const roomElements = [];
         var appointments = getAppointments(new Date());
@@ -85,24 +78,40 @@ class RoomSchedule extends React.Component {
         for (var i = 0; i < 15; i++)
         {
             let time = (i + 5);
-            if (i % 2)
+            if (this.props.role == "admin")
             {
-                items.push(
-                    <div onClick={() => showAddAppointment(time, "00", this.props.date, roomIndex)} class="halfHour"><div class="hide">+</div></div>
-                );
-                items.push(
-                    <div onClick={() => showAddAppointment(time, "30", this.props.date, roomIndex)} class="halfHour"><div class="hide">+</div></div>
-                );
+                if (i % 2)
+                {
+                    items.push(
+                        <div onClick={() => showAddAppointment(time, "00", this.props.date, roomIndex)} class="halfHour"><div class="hide">+</div></div>
+                    );
+                    items.push(
+                        <div onClick={() => showAddAppointment(time, "30", this.props.date, roomIndex)} class="halfHour"><div class="hide">+</div></div>
+                    );
+                }
+                else
+                {
+                    items.push(
+                        <div onClick={() => showAddAppointment(time, "00", this.props.date, roomIndex)} class="halfHour printGrey"><div class="hide">+</div></div>
+                    );
+                    items.push(
+                        <div onClick={() => showAddAppointment(time, "30", this.props.date, roomIndex)} class="halfHour printGrey"><div class="hide">+</div></div>
+                    );
+
+                }
             }
             else
             {
+                if (i % 2)
                 items.push(
-                    <div onClick={() => showAddAppointment(time, "00", this.props.date, roomIndex)} class="halfHour printGrey"><div class="hide">+</div></div>
+                    <div class="halfHour"></div>,
+                    <div class="halfHour"></div>
                 );
+                else
                 items.push(
-                    <div onClick={() => showAddAppointment(time, "30", this.props.date, roomIndex)} class="halfHour printGrey"><div class="hide">+</div></div>
+                    <div class="halfHour printGrey"></div>,
+                    <div class="halfHour printGrey"></div>
                 );
-
             }
         }
         return items;
@@ -110,8 +119,7 @@ class RoomSchedule extends React.Component {
 
   setDay(day)    
     {
-        console.log(this.props.date.getDay());
-        console.log(day);
+        console.log(this.props.date);
         while(this.props.date.getDay() != day)
         {
             if (this.props.date.getDay() > day)
@@ -119,12 +127,37 @@ class RoomSchedule extends React.Component {
             else
                 this.props.date.setDate(this.props.date.getDate() + 1);
         }
+        this.forceUpdate();
+    }
+
+    loadHours(date)
+    {
+        const hours = [];
+        hours.push(<div id="topSpace">{date.toLocaleDateString('en-US')}</div>);
+        var AMPM = "AM"
+        for (var i = 5; i < 20; i++)
+        {
+            var time = i;
+            if (i == 12)
+                AMPM = "PM"
+            else if (i > 12)
+                time = i - 12;
+            
+            if(i % 2 == 0)
+                hours.push(
+                    <div class="hour">{time} {AMPM}</div>
+                );
+            else 
+                hours.push(
+                    <div class="hour printGrey">{time} {AMPM}</div>
+                );
+        }
+        return hours;
     }
 
   render() {
     this.time = {value: loadTimeLine()} //Update timeline
     var roomSchedules = this.loadRooms();
-    toggleDay(new Intl.DateTimeFormat('en-US', {weekday: 'long'}).format(this.props.date));
     var roomNumbers = loadRoomNumbers();
     return (
         <div>
@@ -133,7 +166,7 @@ class RoomSchedule extends React.Component {
                 
                 {this.time.value}
                 <div id="hourColumn">
-                    {this.hours.values}
+                    {this.loadHours(this.props.date)}
                 </div>
                     <div id="rooms">      
                         {roomSchedules}
@@ -212,31 +245,6 @@ function loadRoomNumbers()
             );            
     }
     return roomNumberElements;
-}
-
-function loadHours()
-{
-    const hours = [];
-    hours.push(<div id="topSpace"></div>);
-    var AMPM = "AM"
-    for (var i = 5; i < 20; i++)
-    {
-        var time = i;
-        if (i == 12)
-            AMPM = "PM"
-        else if (i > 12)
-            time = i - 12;
-        
-        if(i % 2 == 0)
-            hours.push(
-                <div class="hour">{time} {AMPM}</div>
-            );
-        else 
-            hours.push(
-                <div class="hour printGrey">{time} {AMPM}</div>
-            );
-    }
-    return hours;
 }
 
 function loadTimeLine()  

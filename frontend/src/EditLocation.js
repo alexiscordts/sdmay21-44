@@ -5,7 +5,6 @@ import Nav from "./Nav";
 const EditLocation = () => {
   return (
     <div>
-      <Nav />
       <div class="formScreen">
         <div class="form-style">
           <div class="form-style-heading"> Edit Location</div>

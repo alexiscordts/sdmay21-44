@@ -70,7 +70,6 @@ class ViewPatient extends React.Component {
 
     return (
       <div>
-        <Nav />
         <div class="userHeaderRow">
           <h2>Patients</h2>
           <Link to="/add_patient"><button

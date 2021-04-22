@@ -40,7 +40,6 @@ class ViewRooms extends React.Component {
 
     return (
       <div>
-        <Nav />
         <div class="userHeaderRow">
           <h2>Rooms</h2>
           <div class="dropdown">

@@ -7,7 +7,6 @@ const AddRoom = () => {
 
   return (
     <div>
-      <Nav />
       <div class="formScreen">
         <div class="form-style">
           <div class="form-style-heading"> Add a Room </div>

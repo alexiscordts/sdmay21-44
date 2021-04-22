@@ -63,7 +63,6 @@ class ViewNurse extends React.Component {
 
     return (
       <div>
-        <Nav />
         <div class="userHeaderRow">
           <h2>Nurses</h2>
           <Link to="/add_nurse"><button

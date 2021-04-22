@@ -26,6 +26,7 @@ import AddTherapyTypes from "./TherapyTypes/AddTherapyTypes";
 import EditTherapyTypes from "./TherapyTypes/EditTherapyTypes";
 import ViewTherapyTypes from "./TherapyTypes/ViewTherapyTypes";
 import ChangePassword from "./ChangePassword";
+import Nav from './Nav.js'
 import axios from "axios";
 
 export default class App extends React.Component {
@@ -64,6 +65,9 @@ export default class App extends React.Component {
         });
         sessionStorage.setItem('loggedIn', true);
         sessionStorage.setItem('username', this.username);
+        sessionStorage.setItem('id', data.userId);
+        sessionStorage.setItem('firstname', data.firstName);
+        sessionStorage.setItem('lastname', data.lastName);
       })
       .catch((error) => {
         console.log("Error caught");
@@ -109,8 +113,9 @@ export default class App extends React.Component {
           </div>
         </div>
         <Router>
+          <Nav role={this.role}/>
           <Switch>
-            <Route path="/dashboard" component={Dashboard} />
+            <Route path="/dashboard" component={() => <Dashboard role={this.role} />} />
             <Route path="/add_admin" component={AddAdmin} />
             <Route path="/add_nurse" component={AddNurse} />
             <Route path="/add_patient" component={AddPatient} />
@@ -125,7 +130,7 @@ export default class App extends React.Component {
             <Route path="/view_patient" component={ViewPatient} />
             <Route path="/view_therapist" component={ViewTherapist} />
             <Route path="/view_therapy_types" component={ViewTherapyTypes} />
-            <Route path="/settings" component={Settings} />
+            <Route path="/settings" component={() => <Settings role={this.role} />} />
             <Route path="/manage_locations" component={ViewLocations} />
             <Route path="/add_location" component={AddLocation} />
             <Route path="/edit_location" component={EditLocation} />
@@ -133,7 +138,7 @@ export default class App extends React.Component {
             <Route path="/add_room" component={AddRoom} />
             <Route path="/view_Metrics" component={ViewMetrics} />
             <Route path="/change_password" component={ChangePassword} />
-            <Route exact path="/" component={Dashboard} />
+            <Route exact path="/" component={() => <Dashboard role={this.role} />} />
           </Switch>
         </Router>
         </div>

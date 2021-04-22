@@ -30,15 +30,9 @@ class Schedule extends React.Component {
              });
         }
   };
-  
-  load = () => {
-    document.getElementById("scheduleContainer").scrollTop = getPositionForTimeLine() - 200;
-    console.log("loaded");
-  };
 
   componentDidMount() {
     window.addEventListener('resize', this.updateDimensions);
-    window.addEventListener('load', this.load);
     this.interval = setInterval(() => this.setState({ time: Date.now() }), 60000); //Render every minute
   }
 

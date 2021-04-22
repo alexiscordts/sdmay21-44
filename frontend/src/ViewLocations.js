@@ -58,7 +58,6 @@ class ViewLocations extends React.Component {
 
     return (
       <div>
-        <Nav />
         <div class="userHeaderRow">
           <h2>Locations</h2>
           <Link to="/add_location"><button

@@ -36,7 +36,6 @@ class TherapistSchedule extends React.Component {
     window.addEventListener('resize', this.updateDimensions);
     window.addEventListener('load', this.load);
     this.interval = setInterval(() => this.setState({ time: Date.now() }), 60000); //Render every minute
-    document.getElementById("scheduleContainer").scrollTop = getPositionForTimeLine() - 200;
   }
 
   componentWillUnmount() {
@@ -76,8 +75,7 @@ class TherapistSchedule extends React.Component {
 
   setDay(day)    
     {
-        console.log(this.props.date.getDay());
-        console.log(day);
+        console.log(this.props.date);
         while(this.props.date.getDay() != day)
         {
             if (this.props.date.getDay() > day)
@@ -334,7 +332,7 @@ function toggleDay(toggleDay)
     });
 }
 
-function showAddAppointment(hour, minute, date)   {
+function showAddAppointment(hour, minute, date, role)   {
     document.getElementById("addAppointment").style.display = "block";
     document.getElementById("editAppointment").style.display = "none";
     let time = "";
@@ -374,6 +372,11 @@ function showAddAppointment(hour, minute, date)   {
         if (day < 10)
             day = '0' + day;
         dateElements[i].value = year + "-" + month + "-" + day;
+    }
+    var therapistElements = document.getElementsByClassName("selectTherapist");
+    for (let i = 0; i < therapistElements.length; i++)
+    {
+        therapistElements[i].selectedIndex = 1;
     }
 }
 

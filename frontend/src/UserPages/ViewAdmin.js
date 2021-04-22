@@ -66,7 +66,6 @@ class ViewAdmin extends React.Component {
 
     return (
       <div>
-        <Nav />
         <div class="userHeaderRow">
           <h2>Admins</h2>
           <Link to="/add_patient"><button

@@ -56,7 +56,6 @@ class ViewMetrics extends React.Component {
     return (
 
     <div id="screen">
-        <Nav />
         <div class="pageContainer">
             <div class="dropdown">
                 <button class="dropbtn">
@@ -65,14 +64,7 @@ class ViewMetrics extends React.Component {
                 </button>
                 <div class="dropdown-content">
                 <div class="link" onClick={() => { this.metrics = (<MyMetrics />); this.metricHeader = "My Metrics - Week of " + this.date.toLocaleDateString(); this.forceUpdate(); }}>My metrics</div>
-                <div class="link" onClick={() => { this.metrics = (<TherapistMetrics />); this.metricHeader = "Therapist Metrics - Week of " + this.date.toLocaleDateString(); this.forceUpdate(); }}>By therapist</div>
-                <div class="byRoom link">By room
-                    <div class="locations">
-                        <div class="link" onClick={() => { this.metrics = (<RoomMetrics />); this.metricHeader = "Room Metrics - Location 1 - Week of " + this.date.toLocaleDateString(); this.forceUpdate(); }}> Location 1</div>
-                        <div class="link" onClick={() => { this.metrics = (<RoomMetrics />); this.metricHeader = "Room Metrics - Location 2 - Week of " + this.date.toLocaleDateString(); this.forceUpdate(); }}> Location 2</div>
-                    </div>
-                </div>
-                    
+                <div class="link" onClick={() => { this.metrics = (<TherapistMetrics />); this.metricHeader = "Therapist Metrics - Week of " + this.date.toLocaleDateString(); this.forceUpdate(); }}>By therapist</div>                    
                 <div class="byPatient link">By patient
                 <div class="locations">
                         <div class="link" onClick={() => { this.metrics = (<PatientMetrics />); this.metricHeader = "Patient Metrics - Location 1 - Week of " + this.date.toLocaleDateString(); this.forceUpdate(); }}> Location 1</div>

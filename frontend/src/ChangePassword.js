@@ -9,7 +9,6 @@ const ChangePassword = () => {
 
   return (
     <div>
-      <Nav />
       <div class="formScreen">
         <div class="form-style">
           <div class="form-style-heading"> Change Your Password </div>

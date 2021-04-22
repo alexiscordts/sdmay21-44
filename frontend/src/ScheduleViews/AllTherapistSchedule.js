@@ -7,9 +7,8 @@ class AllTherapistSchedule extends React.Component {
   constructor(props) {
     super(props);
     this.lines = {values: this.loadLines()};
-    this.hours = {values: loadHours()};
+    this.hours = {values: this.loadHours(this.props.date)};
     this.time = {value: loadTimeLine()};
-    this.rooms = {values: this.getRooms()};
     var appointments = getAppointments(d);
     var d = new Date();
     while (d.getDay() != 1) //get Monday
@@ -21,11 +20,11 @@ class AllTherapistSchedule extends React.Component {
         userList: [],
         therapistList: [],
       };
+      console.log(this.props.role);
   }
 
-    loadRooms(users, therapists)
+    loadRooms(date, users, therapists)
     {
-        var hours = loadHours();
         therapists = this.getRooms(users, therapists);
         const roomElements = [];
         var appointments = getAppointments(new Date());
@@ -35,9 +34,10 @@ class AllTherapistSchedule extends React.Component {
             let lines = this.loadLines(i + 1, therapists[1][i]);
             let percent = Math.floor(Math.random() * 100);
             var color = getColor(percent);
+            this.getTherapistEvents(date, therapists[1][i]);
             if (i % 10 == 0)
-                roomElements.push(<div class="printHours">{hours}</div>);
-            if (i == 3)
+                roomElements.push(<div class="printHours">{this.loadHours(date)}</div>);
+            if (i == 2)
                 roomElements.push(
                     <div class="therapist">
                         <div class="roomLabel">{therapists[0][i]}</div>
@@ -64,25 +64,42 @@ class AllTherapistSchedule extends React.Component {
         for (var i = 0; i < 15; i++)
         {
             let time = (i + 5);
-            if (i % 2)
+            if (this.props.role == "admin")
             {
-                items.push(
-                    <div onClick={() => {console.log(this.props.date.toString()); showAddAppointment(time, "00", this.props.date, therapistIndex); this.props.therapistEvent.therapistId = therapistId; this.setTimes(this.props.date, time, 0)}} class="halfHour"><div class="hide">+</div></div>
-                );
-                items.push(
-                    <div onClick={() => {console.log(this.props.date.toString()); showAddAppointment(time, "30", this.props.date, therapistIndex); this.props.therapistEvent.therapistId = therapistId; this.setTimes(this.props.date, time, 30)}} class="halfHour"><div class="hide">+</div></div>
-                );
+                if (i % 2)
+                {
+                    items.push(
+                        <div onClick={() => { showAddAppointment(time, "00", this.props.date, therapistIndex); this.props.therapistEvent.therapistId = therapistId; this.setTimes(this.props.date, time, 0)}} class="halfHour"><div class="hide">+</div></div>
+                    );
+                    items.push(
+                        <div onClick={() => {showAddAppointment(time, "30", this.props.date, therapistIndex); this.props.therapistEvent.therapistId = therapistId; this.setTimes(this.props.date, time, 30)}} class="halfHour"><div class="hide">+</div></div>
+                    );
+                }
+                else
+                {
+                    items.push(
+                        <div onClick={() => { showAddAppointment(time, "00", this.props.date, therapistIndex); this.props.therapistEvent.therapistId = therapistId; this.setTimes(this.props.date, time, 0)}} class="halfHour printGrey"><div class="hide">+</div></div>
+                    );
+                    items.push(
+                        <div onClick={() => { showAddAppointment(time, "30", this.props.date, therapistIndex); this.props.therapistEvent.therapistId = therapistId; this.setTimes(this.props.date, time, 30)}} class="halfHour printGrey"><div class="hide">+</div></div>
+                    );
+
+                }
             }
             else
             {
+                if (i % 2)
                 items.push(
-                    <div onClick={() => {console.log(this.props.date.toString()); showAddAppointment(time, "00", this.props.date, therapistIndex); this.props.therapistEvent.therapistId = therapistId; this.setTimes(this.props.date, time, 0)}} class="halfHour printGrey"><div class="hide">+</div></div>
+                    <div class="halfHour"></div>,
+                    <div class="halfHour"></div>
                 );
+                else
                 items.push(
-                    <div onClick={() => {console.log(this.props.date.toString()); showAddAppointment(time, "30", this.props.date, therapistIndex); this.props.therapistEvent.therapistId = therapistId; this.setTimes(this.props.date, time, 30)}} class="halfHour printGrey"><div class="hide">+</div></div>
+                    <div class="halfHour printGrey"></div>,
+                    <div class="halfHour printGrey"></div>
                 );
-
             }
+            
         }
         return items;
     }
@@ -95,13 +112,10 @@ class AllTherapistSchedule extends React.Component {
         this.props.therapistEvent.startTime.setMinutes(minute);
         this.props.therapistEvent.endTime.setHours(hour + 1);
         this.props.therapistEvent.endTime.setMinutes(minute);
-    
     }
 
     setDay(day)    
     {
-        console.log(this.props.date.getDay());
-        console.log(day);
         while(this.props.date.getDay() != day)
         {
             if (this.props.date.getDay() > day)
@@ -109,9 +123,7 @@ class AllTherapistSchedule extends React.Component {
             else
                 this.props.date.setDate(this.props.date.getDate() + 1);
         }
-        console.log(this.props.date.getDay());
-        console.log(day);
-        console.log(this.props.date.toString());
+        this.forceUpdate();
     }
 
   updateDimensions = () => {
@@ -123,14 +135,9 @@ class AllTherapistSchedule extends React.Component {
              });
         }
   };
-  
-  load = () => {
-    document.getElementById("scheduleContainer").scrollTop = getPositionForTimeLine() - 200;
-  };
 
   componentDidMount() {
     window.addEventListener('resize', this.updateDimensions);
-    window.addEventListener('load', this.load);
     this.interval = setInterval(() => this.setState({ time: Date.now() }), 60000); //Render every minute
     toggleDay(new Intl.DateTimeFormat('en-US', {weekday: 'long'}).format(this.props.date));
     const url = "http://10.29.163.20:8081/api/";
@@ -176,10 +183,68 @@ class AllTherapistSchedule extends React.Component {
         return therapists;
     }
 
+    getTherapistEvents(date, id) {
+        
+        const url = "http://10.29.163.20:8081/api/";
+        var start = new Date(date);
+        var end = new Date(date);
+        start.setHours(8);
+        start.setMinutes(0);
+        start.setMinutes(0);
+        end.setHours(12);
+        end.setMinutes(0);
+        end.setMinutes(0);
+        console.log(start.toISOString().substring(0,19));
+        console.log(end.toISOString().substring(0,19));
+        console.log(id);
+        
+        const event = ({
+            startTime: start,
+            endTime: end
+        })
+        //var uri = WebUtility.UrlEncode(s);
+        /*
+        axios
+        .get("http://10.29.163.20:8081/api/therapistevent", { data: { therapistEvent: event }})
+        .then((response) => {
+            console.log("Success");
+            console.log(response);
+        })
+        .catch((error) => {
+            console.log("Error caught");
+            console.log(error);
+        });
+        */
+    }
+
+    loadHours(date)
+    {
+        const hours = [];
+        hours.push(<div id="topSpace">{date.toLocaleDateString('en-US')}</div>);
+        var AMPM = "AM"
+        for (var i = 5; i < 20; i++)
+        {
+            var time = i;
+            if (i == 12)
+                AMPM = "PM"
+            else if (i > 12)
+                time = i - 12;
+            
+            if(i % 2 == 0)
+                hours.push(
+                    <div class="hour">{time} {AMPM}</div>
+                );
+            else 
+                hours.push(
+                    <div class="hour printGrey">{time} {AMPM}</div>
+                );
+        }
+        return hours;
+    }
+
   render() {
     this.time = {value: loadTimeLine()} //Update timeline
-    toggleDay(new Intl.DateTimeFormat('en-US', {weekday: 'long'}).format(this.props.date));
-    this.therapistSchedules = this.loadRooms(this.state.userList, this.state.therapistList);
+    this.therapistSchedules = this.loadRooms(this.props.date, this.state.userList, this.state.therapistList);
     console.log(this.state.userList, );
     return (
         <div>
@@ -188,7 +253,7 @@ class AllTherapistSchedule extends React.Component {
                 
                 {this.time.value}
                 <div id="hourColumn">
-                    {this.hours.values}
+                    {this.loadHours(this.props.date)}
                 </div>
                 <div id="rooms">     
                     {this.therapistSchedules}
@@ -257,31 +322,6 @@ function getColor(percent) {
         return {backgroundColor: "#FEEB51"};
     else
         return {backgroundColor: "#9BCA3E"};
-}
-
-function loadHours()
-{
-    const hours = [];
-    hours.push(<div id="topSpace"></div>);
-    var AMPM = "AM"
-    for (var i = 5; i < 20; i++)
-    {
-        var time = i;
-        if (i == 12)
-            AMPM = "PM"
-        else if (i > 12)
-            time = i - 12;
-        
-        if(i % 2 == 0)
-            hours.push(
-                <div class="hour">{time} {AMPM}</div>
-            );
-        else 
-            hours.push(
-                <div class="hour printGrey">{time} {AMPM}</div>
-            );
-    }
-    return hours;
 }
 
 function loadTimeLine()  

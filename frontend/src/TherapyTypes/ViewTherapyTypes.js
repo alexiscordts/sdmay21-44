@@ -45,7 +45,6 @@ class ViewTherapyTypes extends React.Component {
 
     return (
       <div>
-        <Nav />
         <div class="userHeaderRow">
           <h2>Therapy Types</h2>
           <Link to="/add_therapy_types"><button
