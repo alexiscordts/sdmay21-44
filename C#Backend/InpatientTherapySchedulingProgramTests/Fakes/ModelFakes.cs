@@ -14,6 +14,8 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
         public static Faker<Permission> PermissionFake { get; set; }
         public static Faker<Patient> PatientFake { get; set; }
 
+        public static Faker<Room> RoomFake { get; set; }
+
 
         static ModelFakes()
         {
@@ -24,6 +26,7 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
             BuildTherapistEventFakes();
             BuildPermissionFakes();
             BuildPatientFakes();
+            BuildRoomFakes();
         }
 
         private static void BuildTherapyMainFakes()
@@ -102,6 +105,14 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
             PermissionFake = new Faker<Permission>();
             PermissionFake.RuleFor(m => m.UserId, r => r.UniqueIndex);
             PermissionFake.RuleFor(m => m.Role, r => roles[r.Random.Int(0, 2)]);
+        }
+
+        private static void BuildRoomFakes() {
+            RoomFake = new Faker<Room>();
+            RoomFake.RuleFor(m => m.Number, r => r.Random.Int());
+            RoomFake.RuleFor(m => m.LocationId, r => r.Random.Int(0,1000));
+            RoomFake.RuleFor(m => m.Active, true);
+
         }
     }
     
