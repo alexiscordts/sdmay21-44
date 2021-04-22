@@ -24,7 +24,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
         }
 
         // GET: api/HoursWorkeds/5
-        [HttpGet("{id}")]
+        [HttpGet("{hoursWorkedId}")]
         public async Task<ActionResult<HoursWorked>> GetHoursWorked(int hoursWorkedId)
         {
             var hoursWorked = await _service.GetHoursWorkedById(hoursWorkedId);
@@ -96,14 +96,14 @@ namespace InpatientTherapySchedulingProgram.Controllers
         }
 
         // DELETE: api/HoursWorkeds/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<HoursWorked>> DeleteHoursWorked(int id)
+        [HttpDelete("{hoursWorkedId}")]
+        public async Task<ActionResult<HoursWorked>> DeleteHoursWorked(int hoursWorkedId)
         {
             HoursWorked hoursWorked;
 
             try
             {
-                hoursWorked = await _service.DeleteHoursWorked(id);
+                hoursWorked = await _service.DeleteHoursWorked(hoursWorkedId);
 
                 if (hoursWorked == null)
                 {

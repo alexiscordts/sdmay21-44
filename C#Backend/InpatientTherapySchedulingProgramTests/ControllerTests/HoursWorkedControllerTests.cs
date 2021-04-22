@@ -17,7 +17,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
     public class HoursWorkedControllerTests
     {
         private static List<HoursWorked> _testHoursWorked;
-        private Mock<IHoursWorkedService> _fakeService;
+        private Mock<IHoursWorkedService> _fakeHoursWorkedService;
         private HoursWorkedController _testController;
 
         [ClassInitialize()]
@@ -36,15 +36,15 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         [TestInitialize]
         public void Initialize()
         {
-            _fakeService = new Mock<IHoursWorkedService>();
-            _fakeService.SetupAllProperties();
-            _fakeService.Setup(s => s.GetHoursWorkedById(It.IsAny<int>())).ReturnsAsync(_testHoursWorked[0]);
-            _fakeService.Setup(s => s.GetHoursWorkedByUserId(It.IsAny<int>())).ReturnsAsync(_testHoursWorked[0]);
-            _fakeService.Setup(s => s.UpdateHoursWorked(It.IsAny<int>(), It.IsAny<HoursWorked>())).ReturnsAsync(_testHoursWorked[0]);
-            _fakeService.Setup(s => s.AddHoursWorked(It.IsAny<HoursWorked>())).ReturnsAsync(_testHoursWorked[0]);
-            _fakeService.Setup(s => s.DeleteHoursWorked(It.IsAny<int>())).ReturnsAsync(_testHoursWorked[0]);
+            _fakeHoursWorkedService = new Mock<IHoursWorkedService>();
+            _fakeHoursWorkedService.SetupAllProperties();
+            _fakeHoursWorkedService.Setup(s => s.GetHoursWorkedById(It.IsAny<int>())).ReturnsAsync(_testHoursWorked[0]);
+            _fakeHoursWorkedService.Setup(s => s.GetHoursWorkedByUserId(It.IsAny<int>())).ReturnsAsync(_testHoursWorked[0]);
+            _fakeHoursWorkedService.Setup(s => s.UpdateHoursWorked(It.IsAny<int>(), It.IsAny<HoursWorked>())).ReturnsAsync(_testHoursWorked[0]);
+            _fakeHoursWorkedService.Setup(s => s.AddHoursWorked(It.IsAny<HoursWorked>())).ReturnsAsync(_testHoursWorked[0]);
+            _fakeHoursWorkedService.Setup(s => s.DeleteHoursWorked(It.IsAny<int>())).ReturnsAsync(_testHoursWorked[0]);
 
-            _testController = new HoursWorkedController(_fakeService.Object);
+            _testController = new HoursWorkedController(_fakeHoursWorkedService.Object);
         }
 
       
@@ -68,7 +68,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         [TestMethod]
         public async Task GetNonExistingHoursWorkedByUserIdReturnsNotFoundResponse()
         {
-            _fakeService.Setup(s => s.GetHoursWorkedByUserId(It.IsAny<int>())).ReturnsAsync((HoursWorked)null);
+            _fakeHoursWorkedService.Setup(s => s.GetHoursWorkedByUserId(It.IsAny<int>())).ReturnsAsync((HoursWorked)null);
 
             var response = await _testController.GetHoursWorkedByUserId(-1);
             var responseResult = response.Result;
@@ -96,7 +96,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         [TestMethod]
         public async Task GetNonExistingHoursWorkedByIdReturnsNotFoundResponse()
         {
-            _fakeService.Setup(s => s.GetHoursWorkedById(It.IsAny<int>())).ReturnsAsync((HoursWorked)null);
+            _fakeHoursWorkedService.Setup(s => s.GetHoursWorkedById(It.IsAny<int>())).ReturnsAsync((HoursWorked)null);
 
             var response = await _testController.GetHoursWorked(-1);
             var responseResult = response.Result;
@@ -115,7 +115,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         [TestMethod]
         public async Task NonMatchingHoursWorkedIdPutHoursWorkedReturnsBadRequest()
         {
-            _fakeService.Setup(s => s.UpdateHoursWorked(It.IsAny<int>(), It.IsAny<HoursWorked>())).ThrowsAsync(new HoursWorkedIdsDoNotMatchException());
+            _fakeHoursWorkedService.Setup(s => s.UpdateHoursWorked(It.IsAny<int>(), It.IsAny<HoursWorked>())).ThrowsAsync(new HoursWorkedIdsDoNotMatchException());
 
             var response = await _testController.PutHoursWorked(-1, _testHoursWorked[0]);
 
@@ -125,7 +125,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         [TestMethod]
         public async Task NonExistingHoursWorkedPostHoursWorkedReturnsNotFound()
         {
-            _fakeService.Setup(s => s.UpdateHoursWorked(It.IsAny<int>(), It.IsAny<HoursWorked>())).ThrowsAsync(new HoursWorkedDoesNotExistException());
+            _fakeHoursWorkedService.Setup(s => s.UpdateHoursWorked(It.IsAny<int>(), It.IsAny<HoursWorked>())).ThrowsAsync(new HoursWorkedDoesNotExistException());
 
             var response = await _testController.PutHoursWorked(_testHoursWorked[0].HoursWorkedId, new HoursWorked());
 
@@ -135,7 +135,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         [TestMethod]
         public async Task DbUpdateConcurrencyExceptionPutHoursWorkedShouldThrowDbUpdateConcurrencyException()
         {
-            _fakeService.Setup(s => s.UpdateHoursWorked(It.IsAny<int>(), It.IsAny<HoursWorked>())).ThrowsAsync(new DbUpdateConcurrencyException());
+            _fakeHoursWorkedService.Setup(s => s.UpdateHoursWorked(It.IsAny<int>(), It.IsAny<HoursWorked>())).ThrowsAsync(new DbUpdateConcurrencyException());
 
             await _testController.Invoking(c => c.PutHoursWorked(_testHoursWorked[0].HoursWorkedId, _testHoursWorked[0])).Should().ThrowAsync<DbUpdateConcurrencyException>();
         }
@@ -161,7 +161,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         [TestMethod]
         public async Task DbUpdateExceptionPostHoursWorkedThrowsDbUpdateException()
         {
-            _fakeService.Setup(s => s.AddHoursWorked(It.IsAny<HoursWorked>())).ThrowsAsync(new DbUpdateException());
+            _fakeHoursWorkedService.Setup(s => s.AddHoursWorked(It.IsAny<HoursWorked>())).ThrowsAsync(new DbUpdateException());
 
             await _testController.Invoking(c => c.PostHoursWorked(new HoursWorked())).Should().ThrowAsync<DbUpdateException>();
         }
@@ -187,7 +187,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         [TestMethod]
         public async Task NonExistingHoursWorkedDeleteHoursWorkedReturnsNotFoundResponse()
         {
-            _fakeService.Setup(s => s.DeleteHoursWorked(It.IsAny<int>())).ReturnsAsync((HoursWorked)null);
+            _fakeHoursWorkedService.Setup(s => s.DeleteHoursWorked(It.IsAny<int>())).ReturnsAsync((HoursWorked)null);
 
             var response = await _testController.DeleteHoursWorked(-1);
             var responseResult = response.Result;
@@ -198,7 +198,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
         [TestMethod]
         public async Task DbUpdateConcurrencyExceptionDeleteHoursWorkedThrowsDbUpdateConcurrencyException()
         {
-            _fakeService.Setup(s => s.DeleteHoursWorked(It.IsAny<int>())).ThrowsAsync(new DbUpdateConcurrencyException());
+            _fakeHoursWorkedService.Setup(s => s.DeleteHoursWorked(It.IsAny<int>())).ThrowsAsync(new DbUpdateConcurrencyException());
 
             await _testController.Invoking(c => c.DeleteHoursWorked(-1)).Should().ThrowAsync<DbUpdateConcurrencyException>();
         }
