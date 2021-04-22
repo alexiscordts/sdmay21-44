@@ -47,12 +47,6 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
             _testHoursWorkedService = new HoursWorkedService(_testContext);
         }
 
-        //get hours id
-        //update
-        //delete
-        //add
-
-        //get user id
         [TestMethod]
         public async Task GetHoursWorkedByUserIdReturnsCorrectType()
         {

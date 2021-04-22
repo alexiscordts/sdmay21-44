@@ -24,14 +24,14 @@ namespace InpatientTherapySchedulingProgram.Controllers
         }
 
         // GET: api/HoursWorkeds/5
-        [HttpGet("{hoursWorkedId}")]
+        [HttpGet("single/{hoursWorkedId}")]
         public async Task<ActionResult<HoursWorked>> GetHoursWorked(int hoursWorkedId)
         {
             var hoursWorked = await _service.GetHoursWorkedById(hoursWorkedId);
 
             if (hoursWorked == null)
             {
-                return NotFound();
+               return NotFound();
             }
 
             return Ok(hoursWorked);
