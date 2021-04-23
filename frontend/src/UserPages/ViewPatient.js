@@ -16,7 +16,7 @@ class ViewPatient extends React.Component {
   }
 
   onDelete(userID) {
-    const url = "http://10.29.163.20:8081/api/Patient/";
+    const url = "http://10.29.163.20:8081/api/patient/";
     // axios
     //   .delete(url + userID)
     //   .then((res) => {
@@ -29,10 +29,9 @@ class ViewPatient extends React.Component {
   }
 
   componentDidMount() {
-    const url = "http://10.29.163.20:8081/api/Patient";
+    const url = "http://10.29.163.20:8081/api/patient";
 
     axios.get(url).then((response) => {
-      console.log(response.data);
       const patientList = response.data;
       this.setState({ patientList });
     });
