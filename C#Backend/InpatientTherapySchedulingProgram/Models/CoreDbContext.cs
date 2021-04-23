@@ -16,6 +16,7 @@ namespace InpatientTherapySchedulingProgram.Models
         }
 
         public virtual DbSet<Appointment> Appointment { get; set; }
+        public virtual DbSet<Authentication> Authentication { get; set; }
         public virtual DbSet<HoursWorked> HoursWorked { get; set; }
         public virtual DbSet<Location> Location { get; set; }
         public virtual DbSet<Patient> Patient { get; set; }
@@ -45,31 +46,40 @@ namespace InpatientTherapySchedulingProgram.Models
                     .WithMany(p => p.Appointment)
                     .HasForeignKey(d => d.Adl)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__appointment__adl__72910220");
+                    .HasConstraintName("FK__appointment__adl__2610A626");
 
                 entity.HasOne(d => d.Location)
                     .WithMany(p => p.Appointment)
                     .HasForeignKey(d => d.LocationId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__appointme__locat__719CDDE7");
+                    .HasConstraintName("FK__appointme__locat__251C81ED");
 
                 entity.HasOne(d => d.Patient)
                     .WithMany(p => p.Appointment)
                     .HasForeignKey(d => d.PatientId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__appointme__patie__70A8B9AE");
+                    .HasConstraintName("FK__appointme__patie__24285DB4");
 
                 entity.HasOne(d => d.Therapist)
                     .WithMany(p => p.Appointment)
                     .HasForeignKey(d => d.TherapistId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__appointme__thera__6FB49575");
+                    .HasConstraintName("FK__appointme__thera__2334397B");
 
                 entity.HasOne(d => d.Room)
                     .WithMany(p => p.Appointment)
                     .HasForeignKey(d => new { d.RoomNumber, d.LocationId })
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__appointment__73852659");
+                    .HasConstraintName("FK__appointment__2704CA5F");
+            });
+
+            modelBuilder.Entity<Authentication>(entity =>
+            {
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Authentication)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__authentic__user___29E1370A");
             });
 
             modelBuilder.Entity<HoursWorked>(entity =>
@@ -78,7 +88,7 @@ namespace InpatientTherapySchedulingProgram.Models
                     .WithMany(p => p.HoursWorked)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__hours_wor__user___756D6ECB");
+                    .HasConstraintName("FK__hours_wor__user___28ED12D1");
             });
 
             modelBuilder.Entity<Patient>(entity =>
@@ -87,73 +97,79 @@ namespace InpatientTherapySchedulingProgram.Models
                     .WithMany(p => p.Patient)
                     .HasForeignKey(d => d.LocationId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__patient__locatio__69FBBC1F");
+                    .HasConstraintName("FK__patient__locatio__1C873BEC");
 
                 entity.HasOne(d => d.PmrPhysician)
-                    .WithMany(p => p.Patient)
+                    .WithMany(p => p.PatientPmrPhysician)
                     .HasForeignKey(d => d.PmrPhysicianId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__patient__pmr_phy__6BE40491");
+                    .HasConstraintName("FK__patient__pmr_phy__1E6F845E");
+
+                entity.HasOne(d => d.Therapist)
+                    .WithMany(p => p.PatientTherapist)
+                    .HasForeignKey(d => d.TherapistId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__patient__therapi__1F63A897");
 
                 entity.HasOne(d => d.Room)
                     .WithMany(p => p.Patient)
                     .HasForeignKey(d => new { d.RoomNumber, d.LocationId })
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__patient__6AEFE058");
+                    .HasConstraintName("FK__patient__1D7B6025");
             });
 
             modelBuilder.Entity<Permission>(entity =>
             {
                 entity.HasKey(e => new { e.UserId, e.Role })
-                    .HasName("PK__permissi__31DDE51B4CCCF9B9");
+                    .HasName("PK__permissi__31DDE51B643F8246");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Permission)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__permissio__user___6CD828CA");
+                    .HasConstraintName("FK__permissio__user___2057CCD0");
             });
 
             modelBuilder.Entity<Room>(entity =>
             {
                 entity.HasKey(e => new { e.Number, e.LocationId })
-                    .HasName("PK__room__4A589D5E02FBB2E1");
+                    .HasName("PK__room__4A589D5EB62E4012");
 
                 entity.HasOne(d => d.Location)
                     .WithMany(p => p.Room)
                     .HasForeignKey(d => d.LocationId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__room__location_i__6EC0713C");
+                    .HasConstraintName("FK__room__location_i__22401542");
             });
 
             modelBuilder.Entity<TherapistEvent>(entity =>
             {
                 entity.HasKey(e => e.EventId)
-                    .HasName("PK__therapis__2370F727EA8F991A");
+                    .HasName("PK__therapis__2370F7279CB83471");
 
                 entity.HasOne(d => d.Therapist)
                     .WithMany(p => p.TherapistEvent)
                     .HasForeignKey(d => d.TherapistId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__therapist__thera__74794A92");
+                    .HasConstraintName("FK__therapist__thera__27F8EE98");
             });
 
             modelBuilder.Entity<Therapy>(entity =>
             {
                 entity.HasKey(e => e.Adl)
-                    .HasName("PK__therapy__DE50E69F96FEA1F1");
+                    .HasName("PK__therapy__DE50E69F439B277E");
 
                 entity.HasOne(d => d.TypeNavigation)
                     .WithMany(p => p.Therapy)
                     .HasForeignKey(d => d.Type)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__therapy__type__6DCC4D03");
+                    .HasConstraintName("FK__therapy__type__214BF109");
             });
 
             modelBuilder.Entity<TherapyMain>(entity =>
             {
                 entity.HasKey(e => e.Type)
-                    .HasName("PK__therapy___E3F85249303EB6B3");
+                    .HasName("PK__therapy___E3F8524988AAB03D");
             });
 
             OnModelCreatingPartial(modelBuilder);

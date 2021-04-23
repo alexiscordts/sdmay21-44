@@ -28,6 +28,8 @@ namespace InpatientTherapySchedulingProgram.Services
                 throw new TherapyMainTypeAbbreviationAlreadyExistsException();
             }
 
+            therapyMain.Active = true;
+
             _context.TherapyMain.Add(therapyMain);
 
             try
