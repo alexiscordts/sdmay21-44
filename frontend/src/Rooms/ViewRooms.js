@@ -12,7 +12,6 @@ class ViewRooms extends React.Component {
   render() {
     var roomsList = [{ number: 401 }, { number: 402 }];
     var rows = [];
-
     roomsList.forEach(
       function (room) {
         rows.push(
@@ -43,6 +42,20 @@ class ViewRooms extends React.Component {
         <Nav />
         <div class="userHeaderRow">
           <h2>Rooms</h2>
+          <div class="dropdown">
+            <button class="dropbtn">
+              Location
+              <i class="arrow down"></i>
+            </button>
+            <div class="dropdown-content">
+              <a>Location 1 </a>
+              <br></br>
+              <a>Location 2</a>
+              <br></br>
+              <a>Location 3</a>
+            </div>
+          </div>
+
           <button
             class="iconAddUserButton"
             onClick={() => {

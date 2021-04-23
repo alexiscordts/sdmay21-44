@@ -33,6 +33,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
             return Ok(allUsers);
         }
 
+
         // GET: api/User/5
         [HttpGet("getUserByUserId/{id}")]
         public async Task<ActionResult<User>> GetUser(int id)

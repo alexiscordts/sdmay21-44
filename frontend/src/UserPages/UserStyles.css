@@ -1,63 +1,65 @@
-.userHeaderRow{
-    display: flex;
-    flex-direction: row;
-    align-items: baseline;
-    width: 56%;
-    justify-content: space-between;
+.userHeaderRow {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  width: 56%;
+  justify-content: space-between;
 }
 
-.iconAddUserButton{
-    border: none;
-    border-radius: 25%;
-    background-color: #00529b;
+.iconAddUserButton {
+  border: none;
+  border-radius: 25%;
+  background-color: #00529b;
 }
 
 .iconAddUser {
-    height: 20px;
-    margin: 4px 1px 3px 4px;
+  height: 20px;
+  margin: 4px 1px 3px 4px;
 }
 
-.iconAddUser:hover   {
-    cursor: pointer;
-    opacity: 100%;
+.iconAddUser:hover {
+  cursor: pointer;
+  opacity: 100%;
 }
 
 /*Table Styles*/
 
 .user-table {
-    border-radius: 5px;
-    font-size: 15px;
-    font-weight: normal;
-    border-collapse: collapse;
-    width: 50%;
-    max-width: 100%;
-    white-space: nowrap;
-    background-color: white;
-    box-shadow: 0px 35px 50px rgba( 0, 0, 0, 0.2 );
-    margin-left: 75px;
+  border-radius: 5px;
+  font-size: 15px;
+  font-weight: normal;
+  border-collapse: collapse;
+  width: 50%;
+  max-width: 100%;
+  white-space: nowrap;
+  background-color: white;
+  /* box-shadow: 0px 35px 50px rgba(0, 0, 0, 0.2); //before trim */
+  box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.2);
+
+  margin-left: 75px;
 }
 
-.user-table td, .user-table th {
-    text-align: center;
-    padding: 8px;
+.user-table td,
+.user-table th {
+  text-align: center;
+  padding: 8px;
 }
 
 .user-table td {
-    border-right: 1px solid #f8f8f8;
-    font-size: 15px;
+  border-right: 1px solid #f8f8f8;
+  font-size: 15px;
 }
 
 .user-table thead th {
-    color: #ffffff;
-    background: #00A9D8;
+  color: #ffffff;
+  background: #00a9d8;
 }
 
-
 .user-table thead th:nth-child(odd) {
-    color: #ffffff;
-    background: #00529b;
+  color: #ffffff;
+  background: #00529b;
 }
 
 .user-table tr:nth-child(even) {
-    background: #F8F8F8;
+  background: #f8f8f8;
 }

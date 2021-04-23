@@ -14,36 +14,34 @@ class ViewTherapyTypes extends React.Component {
   }
 
   componentDidMount() {
-
     const url = "http://10.29.163.20:8081/api/therapy";
-    axios.get(url)
-      .then((response) => {
-        const therapyList = response.data;
-        this.setState({ therapyList });
-      });
+    axios.get(url).then((response) => {
+      const therapyList = response.data;
+      this.setState({ therapyList });
+    });
   }
 
   render() {
     var rows = [];
 
     var typesWithSubtypes = new Map();
-    
+
     this.state.therapyList.forEach((object) => {
-      if(typesWithSubtypes.has(object.type)){
+      if (typesWithSubtypes.has(object.type)) {
         var subs = typesWithSubtypes.get(object.type);
-        subs.push(object.adl)
-        typesWithSubtypes.set(object.type, subs)
+        subs.push(object.adl);
+        typesWithSubtypes.set(object.type, subs);
       } else {
         typesWithSubtypes.set(object.type, [object.adl]);
       }
-    })
+    });
 
     typesWithSubtypes.forEach(
       function (value, key) {
         const valuesToDisplay = [];
         value.forEach((val) => {
-          valuesToDisplay.push(val + ', ');
-        })
+          valuesToDisplay.push(val + ", ");
+        });
         rows.push(
           <tr>
             <td>{key}</td>
