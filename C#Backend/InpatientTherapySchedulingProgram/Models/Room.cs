@@ -14,11 +14,6 @@ namespace InpatientTherapySchedulingProgram.Models
             Patient = new HashSet<Patient>();
         }
 
-        [InverseProperty("Room")]
-        public virtual ICollection<Appointment> Appointment { get; set; }
-        [InverseProperty("Room")]
-        public virtual ICollection<Patient> Patient { get; set; }
-
         [Key]
         [Column("number")]
         public int Number { get; set; }
@@ -35,7 +30,7 @@ namespace InpatientTherapySchedulingProgram.Models
         public virtual ICollection<Appointment> Appointment { get; set; }
         [InverseProperty("Room")]
         public virtual ICollection<Patient> Patient { get; set; }
-        
+
         public override bool Equals(object obj)
         {
             return this.Equals(obj as Room);
