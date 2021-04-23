@@ -63,7 +63,6 @@ class AddAppointment extends React.Component {
   getTherapistOptions(users, therapists)
   {
     console.log(sessionStorage.getItem("role"));
-    console.log(sessionStorage.getItem("id"));
     var cols = [];
         if (sessionStorage.getItem("role") == "admin")
           try {
@@ -124,10 +123,13 @@ class AddAppointment extends React.Component {
 
   postTherapistEvent(event)  {
     event.preventDefault();
-    console.log(this.props.therapistEvent);
-    
+    let therapistEvent = this.props.therapistEvent;
+    console.log(therapistEvent.startTime);
+    therapistEvent.startTime.setHours(therapistEvent.startTime.getHours() - 5); //account for timezone
+    therapistEvent.endTime.setHours(therapistEvent.endTime.getHours() - 5);
+    console.log(therapistEvent.startTime.toISOString().substring(0,19));
     axios
-      .post("http://10.29.163.20:8081/api/therapistevent", this.props.therapistEvent)
+      .post("http://10.29.163.20:8081/api/therapistevent/", this.props.therapistEvent)
       .then((response) => {
         console.log("Success");
         console.log(response);

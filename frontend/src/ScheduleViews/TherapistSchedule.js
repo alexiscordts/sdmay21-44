@@ -53,24 +53,35 @@ class TherapistSchedule extends React.Component {
             if (i % 2)
             {
                 items.push(
-                    <div onClick={() => { this.setDay(day); showAddAppointment(time, "00", this.props.date)}} class="halfHour"><div class="hide">+</div></div>
+                    <div onClick={() => { this.setDay(day); showAddAppointment(time, "00", this.props.date); this.setTimes(this.props.date, time, 0)}} class="halfHour"><div class="hide">+</div></div>
                 );
                 items.push(
-                    <div onClick={() => { this.setDay(day); showAddAppointment(time, "30", this.props.date)}} class="halfHour"><div class="hide">+</div></div>
+                    <div onClick={() => { this.setDay(day); showAddAppointment(time, "30", this.props.date); this.setTimes(this.props.date, time, 0)}} class="halfHour"><div class="hide">+</div></div>
                 );
             }
             else
             {
                 items.push(
-                    <div onClick={() => { this.setDay(day); showAddAppointment(time, "00", this.props.date)}} class="halfHour printGrey"><div class="hide">+</div></div>
+                    <div onClick={() => { this.setDay(day); showAddAppointment(time, "00", this.props.date); this.setTimes(this.props.date, time, 0)}} class="halfHour printGrey"><div class="hide">+</div></div>
                 );
                 items.push(
-                    <div onClick={() => {this.setDay(day); showAddAppointment(time, "30", this.props.date)}} class="halfHour printGrey"><div class="hide">+</div></div>
+                    <div onClick={() => {this.setDay(day); showAddAppointment(time, "30", this.props.date); this.setTimes(this.props.date, time, 0)}} class="halfHour printGrey"><div class="hide">+</div></div>
                 );
 
             }
         }
         return items;
+    }
+
+    setTimes(date, hour, minute)
+    {
+        this.props.therapistEvent.startTime = new Date(date);
+        this.props.therapistEvent.endTime = new Date(date);
+        this.props.therapistEvent.startTime.setHours(hour);
+        this.props.therapistEvent.startTime.setMinutes(minute);
+        this.props.therapistEvent.endTime.setHours(hour + 1);
+        this.props.therapistEvent.endTime.setMinutes(minute);
+        this.props.therapistEvent.therapistId = sessionStorage.getItem("id");
     }
 
   setDay(day)    

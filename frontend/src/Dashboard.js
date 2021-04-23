@@ -47,11 +47,11 @@ class Dashboard extends React.Component {
         this.setState({ locations });
       });
       if (this.props.role == "therapist")
-        this.schedule = (<TherapistSchedule date={this.state.date} ref={(el) => (this.schedule = el)} role={this.props.role}/>);
+        this.schedule = (<TherapistSchedule date={this.state.date} ref={(el) => (this.schedule = el)} therapistEvent={this.therapistEvent} role={this.props.role}/>);
         else 
         {
             this.state.schedule = 3;
-            this.schedule = (<RoomSchedule date={this.state.date} ref={(el) => (this.schedule = el)} role={this.props.role}/>);
+            this.schedule = (<RoomSchedule date={this.state.date} ref={(el) => (this.schedule = el)} therapistEvent={this.therapistEvent} role={this.props.role}/>);
         }
         
     }
@@ -80,20 +80,20 @@ class Dashboard extends React.Component {
         this.schedule = <div></div>;
         switch(this.state.schedule) {
             case 1:
-                return (<TherapistSchedule date={newDate} ref={(el) => (this.schedule = el)} role={this.props.role}/>);
+                return (<TherapistSchedule date={newDate} ref={(el) => (this.schedule = el)} therapistEvent={this.therapistEvent} role={this.props.role}/>);
             case 2: 
                 return (<AllTherapistSchedule date={newDate} ref={(el) => (this.schedule = el)} therapistEvent={this.therapistEvent} role={this.props.role}/>);
             case 3: 
-                return (<RoomSchedule date={newDate} ref={(el) => (this.schedule = el)} role={this.props.role}/>);
+                return (<RoomSchedule date={newDate} ref={(el) => (this.schedule = el)} therapistEvent={this.therapistEvent} role={this.props.role}/>);
             case 4:
-                return (<PatientSchedule date={newDate} ref={(el) => (this.schedule = el)} role={this.props.role}/>);
+                return (<PatientSchedule date={newDate} ref={(el) => (this.schedule = el)} therapistEvent={this.therapistEvent} role={this.props.role}/>);
         }
     }
 
     getByRoomLinks()   {
         var byRoomLinks = [];
         this.state.locations.forEach(location => {
-            byRoomLinks.push(<div class="link" onClick={() => {this.schedule = (<RoomSchedule date={this.state.date} ref={(el) => (this.schedule = el)} role={this.props.role}/>); this.scheduleHeader = "Room Schedule"; this.locationHeader=location.name + ' - '; this.setState({schedule: 3});}}>{location.name}</div>);
+            byRoomLinks.push(<div class="link" onClick={() => {this.schedule = (<RoomSchedule date={this.state.date} ref={(el) => (this.schedule = el)} therapistEvent={this.therapistEvent} role={this.props.role}/>); this.scheduleHeader = "Room Schedule"; this.locationHeader=location.name + ' - '; this.setState({schedule: 3});}}>{location.name}</div>);
         });
         return byRoomLinks;
     }
@@ -101,7 +101,7 @@ class Dashboard extends React.Component {
     getByPatientLinks()   {
         var byRoomLinks = [];
         this.state.locations.forEach(location => {
-            byRoomLinks.push(<div class="link" onClick={() => {this.schedule = (<PatientSchedule date={this.state.date} ref={(el) => (this.schedule = el)} role={this.props.role}/>); this.scheduleHeader = "Patient Schedule"; this.locationHeader=location.name + " - "; this.setState({schedule: 4});}}>{location.name}</div>);
+            byRoomLinks.push(<div class="link" onClick={() => {this.schedule = (<PatientSchedule date={this.state.date} ref={(el) => (this.schedule = el)} therapistEvent={this.therapistEvent} role={this.props.role}/>); this.scheduleHeader = "Patient Schedule"; this.locationHeader=location.name + " - "; this.setState({schedule: 4});}}>{location.name}</div>);
         });
         return byRoomLinks;
     }
@@ -127,7 +127,7 @@ class Dashboard extends React.Component {
     getSchedule()   {
         console.log(this.props.role);
         if (this.props.role == "therapist")
-            return (<div class="link" onClick={() => {this.schedule = (<TherapistSchedule date={this.state.date} ref={(el) => (this.schedule = el)} role={this.props.role} />); this.scheduleHeader = "My Schedule"; this.locationHeader=""; this.setState({schedule: 1}); console.log(this.schedule)}}>My schedule</div>);
+            return (<div class="link" onClick={() => {this.schedule = (<TherapistSchedule date={this.state.date} ref={(el) => (this.schedule = el)} therapistEvent={this.therapistEvent} role={this.props.role} />); this.scheduleHeader = "My Schedule"; this.locationHeader=""; this.setState({schedule: 1}); console.log(this.schedule)}}>My schedule</div>);
         else return (<div class="link">&nbsp;</div>);
     }
 

@@ -5,6 +5,7 @@ import "./RoomSchedule.css";
 class RoomSchedule extends React.Component {
   constructor(props) {
     super(props);
+    this.numAppointments = 0;
     this.lines = {values: this.loadLines()};
     var d = new Date();
     this.time = {value: loadTimeLine()};
@@ -15,7 +16,7 @@ class RoomSchedule extends React.Component {
     {
         d.setDate(d.getDate() - 1);
     }
-    this.tuesday = {values: getAppointmentElements(appointments)}
+    this.tuesday = {values: this.getAppointmentElements(appointments)}
     console.log(new Intl.DateTimeFormat('en-US', {weekday: 'long'}).format(this.props.date));
   }
 
@@ -47,7 +48,7 @@ class RoomSchedule extends React.Component {
         const rooms = getRooms();
         const roomElements = [];
         var appointments = getAppointments(new Date());
-        const tuesday = getAppointmentElements(appointments);
+        const tuesday = this.getAppointmentElements(appointments);
         for (let i = 0; i < rooms.length; i++)
         {
             let lines = this.loadLines(i + 1);
@@ -154,6 +155,58 @@ class RoomSchedule extends React.Component {
         }
         return hours;
     }
+
+    getButtons(num)
+    {
+        console.log(this.props.role)
+        const items = [];
+        if (this.props.role == "admin")
+        items.push(
+            <button class="editAppointmentButton" id={"editAppointmentButton" + num} onClick={() => showEditAppointment()}>Edit</button>,
+            <button class="editAppointmentButton" id={"copyAppointmentButton" + num} onClick={() => showAddAppointment()}>Copy</button>,
+            <button class="editAppointmentButton" id={"deleteAppointmentButton" + num}>Delete</button>
+        )
+        return items;
+    }
+
+    getAppointmentElements(appointments)   {
+    var appointmentElements = []; 
+    appointments.forEach(appointment => {
+        var start = appointment.date.getHours();
+        var end = appointment.date.getHours() + appointment.length;
+        var position = (start - 5) * 52 + appointment.date.getMinutes() * 52/60 + 36;
+        var style = {
+                top: position,
+                height: appointment.length * 52, 
+                minHeight: appointment.length * 52
+            };
+        var startAMOrPM = "AM";
+        var endAMOrPM = "AM";
+        if (start >= 12)
+            startAMOrPM = "PM";
+        if (start > 12)
+            start -= 12;
+        if (end >= 12)
+            endAMOrPM = "PM";
+        if (end > 12)
+            end -= 12;
+        var time = start + " " + startAMOrPM + " - " + end + " " + endAMOrPM;
+        var id = "appointment" + this.numAppointments.toString();
+        var num = this.numAppointments.toString();
+        appointmentElements.push(
+            <div class="appointment" style={style} id={id} onClick={() => seeNotes(num)}>
+                <div class="hidden" id={id + "Height"}>{appointment.length * 52}px</div>
+                <div class="name">{appointment.title}</div>
+                <div class="name">Room {appointment.room}</div>
+                <div class="time">{appointment.type}: {appointment.subtype}</div>
+                <div class="notes" id={"notes" + num}>Notes: {appointment.notes}</div>
+                {this.getButtons(num)}
+            </div>
+        );
+        this.numAppointments++;
+    });
+    return appointmentElements;
+}
 
   render() {
     this.time = {value: loadTimeLine()} //Update timeline
@@ -288,48 +341,6 @@ function getAppointments(date) {
     return appointments;
 }
 
-var numAppointments = 0;
-function getAppointmentElements(appointments)   {
-    var appointmentElements = []; 
-    appointments.forEach(appointment => {
-        var start = appointment.date.getHours();
-        var end = appointment.date.getHours() + appointment.length;
-        var position = (start - 5) * 52 + appointment.date.getMinutes() * 52/60 + 36;
-        var style = {
-                top: position,
-                height: appointment.length * 52, 
-                minHeight: appointment.length * 52,
-            };
-        var startAMOrPM = "AM";
-        var endAMOrPM = "AM";
-        if (start >= 12)
-            startAMOrPM = "PM";
-        if (start > 12)
-            start -= 12;
-        if (end >= 12)
-            endAMOrPM = "PM";
-        if (end > 12)
-            end -= 12;
-        var time = start + " " + startAMOrPM + " - " + end + " " + endAMOrPM;
-        var id = "appointment" + numAppointments.toString();
-        var num = numAppointments.toString();
-        appointmentElements.push(
-            <div class="appointment" style={style} id={id} onClick={() => seeNotes(num)}>
-                <div class="hidden" id={id + "Height"}>{appointment.length * 52}px</div>
-                <div class="name">{appointment.therapist}</div>
-                <div class="time">{appointment.title}</div>
-                <div class="time">{appointment.type} - {appointment.subtype}</div>
-                <div class="notes" id={"notes" + num}>Notes: {appointment.notes}</div>
-                <button class="editAppointmentButton" id={"editAppointmentButton" + num} onClick={() => showEditAppointment()}>Edit</button>
-                <button class="editAppointmentButton" id={"copyAppointmentButton" + num} onClick={() => showAddAppointment()}>Copy</button>
-                <button class="editAppointmentButton" id={"deleteAppointmentButton" + num}>Delete</button>             
-            </div>
-        );
-        numAppointments++;
-    });
-    return appointmentElements;
-}
-
 var idExpanded = null;
 function seeNotes(id)   {
     let notes = "notes" + id;
@@ -344,9 +355,12 @@ function seeNotes(id)   {
         document.getElementById(id).style.backgroundColor = "#003e74";
         document.getElementById(id).style.zIndex = 4;
         document.getElementById(notes).style.display = "block";
-        document.getElementById(edit).style.display = "block";
-        document.getElementById(copy).style.display = "block";
-        document.getElementById(deleteApp).style.display = "block";
+        if (document.getElementById(edit) && document.getElementById(copy) && document.getElementById(deleteApp))
+        {
+            document.getElementById(edit).style.display = "block";
+            document.getElementById(copy).style.display = "block";
+            document.getElementById(deleteApp).style.display = "block";
+        }
         idExpanded = id;
     }
     else if (idExpanded == id)
@@ -356,9 +370,12 @@ function seeNotes(id)   {
         document.getElementById(id).style.backgroundColor = "#00529b";
         document.getElementById(id).style.zIndex = 2;
         document.getElementById(notes).style.display = "none";
-        document.getElementById(edit).style.display = "none";
-        document.getElementById(copy).style.display = "none";
-        document.getElementById(deleteApp).style.display = "none";
+        if (document.getElementById(edit) && document.getElementById(copy) && document.getElementById(deleteApp))
+        {
+            document.getElementById(edit).style.display = "none";
+            document.getElementById(copy).style.display = "none";
+            document.getElementById(deleteApp).style.display = "none";
+        }
         idExpanded = null;
     }
 }
