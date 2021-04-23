@@ -32,39 +32,60 @@ class ViewPatient extends React.Component {
   componentDidMount() {
     const url = "http://10.29.163.20:8081/api/Patient";
 
-    axios
-      .get(url)
-      // .then((json = {}) => json.data)
-      .then((response) => {
-        // console.log(response.data);
-        const patientList = response.data;
-        this.setState({ patientList });
-      });
+    axios.get(url).then((response) => {
+      console.log(response.data);
+      const patientList = response.data;
+      this.setState({ patientList });
+    });
   }
 
   render() {
     var rows = [];
     this.state.patientList.forEach(
       function (patient) {
-        rows.push(
-          <tr>
-            <td>{patient.firstName}</td>
-            <td>{patient.lastName}</td>
-            <td>{patient.startDate.substring(0, 10)}</td>
-            <td>
-              <button
-                class="iconButton"
-                onClick={this.onDelete(patient.patientId)}
-              >
-                <img
-                  src={require("../Icons/icons8-delete-64.png")}
-                  alt="delete"
-                  className="icon"
-                />
-              </button>
-            </td>
-          </tr>
-        );
+        if (patient.startDate) {
+          rows.push(
+            <tr>
+              <td>{patient.firstName}</td>
+              <td>{patient.lastName}</td>
+              <td>{patient.startDate.substring(0, 10)}</td>
+
+              <td>
+                <button
+                  class="iconButton"
+                  onClick={this.onDelete(patient.patientId)}
+                >
+                  <img
+                    src={require("../Icons/icons8-delete-64.png")}
+                    alt="delete"
+                    className="icon"
+                  />
+                </button>
+              </td>
+            </tr>
+          );
+        } else {
+          rows.push(
+            <tr>
+              <td>{patient.firstName}</td>
+              <td>{patient.lastName}</td>
+              <td>Unavailable</td>
+
+              <td>
+                <button
+                  class="iconButton"
+                  onClick={this.onDelete(patient.patientId)}
+                >
+                  <img
+                    src={require("../Icons/icons8-delete-64.png")}
+                    alt="delete"
+                    className="icon"
+                  />
+                </button>
+              </td>
+            </tr>
+          );
+        }
       }.bind(this)
     );
 
