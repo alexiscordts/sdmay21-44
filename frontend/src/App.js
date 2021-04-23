@@ -27,7 +27,6 @@ import EditTherapyTypes from "./TherapyTypes/EditTherapyTypes";
 import ViewTherapyTypes from "./TherapyTypes/ViewTherapyTypes";
 import ChangePassword from "./ChangePassword";
 
-
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -40,9 +39,11 @@ class App extends React.Component {
   }
 
   handleLogin(data) {
-    this.setState = {
+    console.log("Parent handled login");
+    this.setState({
       loggedIn: true,
-    };
+    });
+    console.log(this.state.loggedIn);
     return true;
   }
 
@@ -74,7 +75,21 @@ class App extends React.Component {
           <Route path="/view_Metrics" component={ViewMetrics} />
           <Route path="/change_password" component={ChangePassword} />
 
-          <Route path="/" component={Login} handleLogin={this.handleLogin} />
+          {/* <<<<<<< HEAD */}
+          <Route
+            path="/"
+            render={(props) => {
+              if (!this.state.loggedIn) {
+                return <Login handleLogin={this.handleLogin} />;
+              } else {
+                return <Dashboard />;
+              }
+            }}
+          />
+          {/* ======= */}
+
+          {/* <Route path="/" component={Login} handleLogin={this.handleLogin} /> */}
+          {/* >>>>>>> 81eddc17e459a1530ae41a01d1bf5a15541784f7 */}
         </Switch>
       </Router>
     );
