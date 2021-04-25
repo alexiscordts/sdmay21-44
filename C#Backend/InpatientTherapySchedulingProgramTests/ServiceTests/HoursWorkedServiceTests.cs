@@ -52,23 +52,27 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         {
             var returnHoursWorked = await _testHoursWorkedService.GetHoursWorkedByUserId(_testHoursWorked[0].UserId);
 
-            returnHoursWorked.Should().BeOfType<HoursWorked>();
+            returnHoursWorked.Should().BeOfType<List<HoursWorked>>();
         }
-        //get user id
+        
         [TestMethod]
         public async Task GetHoursWorkedByUserIdReturnsCorrectHours()
         {
             var returnHoursWorked = await _testHoursWorkedService.GetHoursWorkedByUserId(_testHoursWorked[0].UserId);
+            List<HoursWorked> listOfHoursWorked = (List<HoursWorked>)returnHoursWorked;
 
-            returnHoursWorked.Should().Be(_testHoursWorked[0]);
+            for (var i = 0; i < listOfHoursWorked.Count; i++)
+            {
+                _testHoursWorked.Contains(listOfHoursWorked[i]).Should().BeTrue();
+            }
         }
-        //get user id
+        
         [TestMethod]
         public async Task GetHoursWorkedByUserIdReturnsNullIfUserDoesNotExist()
         {
             var returnHoursWorked = await _testHoursWorkedService.GetHoursWorkedByUserId(-1);
 
-            returnHoursWorked.Should().BeNull();
+            returnHoursWorked.Should().BeEmpty();
         }
 
         [TestMethod]
@@ -115,7 +119,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
 
             var returnHoursWorked = await _testHoursWorkedService.GetHoursWorkedByUserId(newHoursWorked.UserId);
 
-            returnHoursWorked.Should().Be(newHoursWorked);
+            returnHoursWorked.Should().BeEquivalentTo(newHoursWorked);
         }
 
         [TestMethod]

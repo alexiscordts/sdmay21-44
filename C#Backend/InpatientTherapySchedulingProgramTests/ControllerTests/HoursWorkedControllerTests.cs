@@ -39,7 +39,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
             _fakeHoursWorkedService = new Mock<IHoursWorkedService>();
             _fakeHoursWorkedService.SetupAllProperties();
             _fakeHoursWorkedService.Setup(s => s.GetHoursWorkedById(It.IsAny<int>())).ReturnsAsync(_testHoursWorked[0]);
-            _fakeHoursWorkedService.Setup(s => s.GetHoursWorkedByUserId(It.IsAny<int>())).ReturnsAsync(_testHoursWorked[0]);
+            _fakeHoursWorkedService.Setup(s => s.GetHoursWorkedByUserId(It.IsAny<int>())).ReturnsAsync(_testHoursWorked);
             _fakeHoursWorkedService.Setup(s => s.UpdateHoursWorked(It.IsAny<int>(), It.IsAny<HoursWorked>())).ReturnsAsync(_testHoursWorked[0]);
             _fakeHoursWorkedService.Setup(s => s.AddHoursWorked(It.IsAny<HoursWorked>())).ReturnsAsync(_testHoursWorked[0]);
             _fakeHoursWorkedService.Setup(s => s.DeleteHoursWorked(It.IsAny<int>())).ReturnsAsync(_testHoursWorked[0]);
@@ -62,18 +62,7 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
             var response = await _testController.GetHoursWorkedByUserId(_testHoursWorked[0].UserId);
             var responseResult = response.Result as OkObjectResult;
 
-            responseResult.Value.Should().BeOfType<HoursWorked>();
-        }
-
-        [TestMethod]
-        public async Task GetNonExistingHoursWorkedByUserIdReturnsNotFoundResponse()
-        {
-            _fakeHoursWorkedService.Setup(s => s.GetHoursWorkedByUserId(It.IsAny<int>())).ReturnsAsync((HoursWorked)null);
-
-            var response = await _testController.GetHoursWorkedByUserId(-1);
-            var responseResult = response.Result;
-
-            responseResult.Should().BeOfType<NotFoundResult>();
+            responseResult.Value.Should().BeOfType<List<HoursWorked>>();
         }
 
         [TestMethod]

@@ -39,11 +39,11 @@ namespace InpatientTherapySchedulingProgram.Controllers
 
         // GET: api/HoursWorkeds/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<HoursWorked>> GetHoursWorkedByUserId(int hoursWorkedId)
+        public async Task<ActionResult<IEnumerable<HoursWorked>>> GetHoursWorkedByUserId(int hoursWorkedId)
         {
             var hoursWorked = await _service.GetHoursWorkedByUserId(hoursWorkedId);
 
-            if (hoursWorked == null)
+            if (hoursWorked == null || hoursWorked.Count() == 0)
             {
                 return NotFound();
             }

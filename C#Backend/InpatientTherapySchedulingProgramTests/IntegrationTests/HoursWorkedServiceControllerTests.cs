@@ -65,7 +65,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
             var responseResult = response.Result as OkObjectResult;
             var hoursWorked = responseResult.Value;
 
-            hoursWorked.Should().BeOfType<HoursWorked>();
+            hoursWorked.Should().BeOfType<List<HoursWorked>>();
         }
 
         [TestMethod]
@@ -73,9 +73,12 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
         {
             var response = await _testHoursWorkedController.GetHoursWorkedByUserId(_testHoursWorked[0].UserId);
             var responseResult = response.Result as OkObjectResult;
-            var hoursWorked = responseResult.Value;
+            List<HoursWorked> listOfHoursWorked = (List<HoursWorked>)responseResult.Value;
 
-            hoursWorked.Should().Be(_testHoursWorked[0]);
+            for (var i = 0; i < listOfHoursWorked.Count; i++)
+            {
+                _testHoursWorked.Contains(listOfHoursWorked[i]).Should().BeTrue();
+            }
         }
 
         [TestMethod]
@@ -213,7 +216,7 @@ namespace InpatientTherapySchedulingProgramTests.IntegrationTests
             var response = await _testHoursWorkedController.GetHoursWorked(_testHoursWorked[0].HoursWorkedId);
             var responseResult = response.Result;
 
-            responseResult.Should().BeOfType<OkObjectResult>();
+            responseResult.Should().BeOfType<NotFoundResult>();
         }
 
         [TestMethod]

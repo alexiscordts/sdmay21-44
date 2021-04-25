@@ -26,8 +26,6 @@ namespace InpatientTherapySchedulingProgram.Services
             {
                 return null;
             }
-
-            //_context.HoursWorked.Remove(hoursWorked);
             hoursWorked.Active = false;
 
             var local = _context.Set<HoursWorked>()
@@ -53,12 +51,15 @@ namespace InpatientTherapySchedulingProgram.Services
         public async Task<HoursWorked> GetHoursWorkedById(int hoursWorkedId)
         {
             return await _context.HoursWorked.FirstOrDefaultAsync(h => h.HoursWorkedId == hoursWorkedId && h.Active);
+
         }
 
         
-        public async Task<HoursWorked> GetHoursWorkedByUserId(int userId)
+        public async Task<IEnumerable<HoursWorked>> GetHoursWorkedByUserId(int userId)
         {
-            return await _context.HoursWorked.FirstOrDefaultAsync(h => h.UserId == userId && h.Active);
+            return await _context.HoursWorked
+                .Where(h => h.UserId == userId && h.Active)
+                .ToListAsync();
         }
 
         public async Task<HoursWorked> AddHoursWorked(HoursWorked hoursWorked)
