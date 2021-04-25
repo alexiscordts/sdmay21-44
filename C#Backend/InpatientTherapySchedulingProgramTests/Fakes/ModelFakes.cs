@@ -112,7 +112,6 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
             RoomFake.RuleFor(m => m.Number, r => r.Random.Int());
             RoomFake.RuleFor(m => m.LocationId, r => r.Random.Int(0,1000));
             RoomFake.RuleFor(m => m.Active, true);
-
         }
     }
     
