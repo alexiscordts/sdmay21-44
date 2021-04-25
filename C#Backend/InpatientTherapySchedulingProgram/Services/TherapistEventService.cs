@@ -42,6 +42,12 @@ namespace InpatientTherapySchedulingProgram.Services
             {
                 throw new UserIsNotATherapistException();
             }
+            if (therapistEvent.EndTime < therapistEvent.StartTime)
+            {
+                throw new TherapistEventCannotEndBeforeStartTimeException();
+            }
+
+            therapistEvent.Active = true;
 
             _context.TherapistEvent.Add(therapistEvent);
 
@@ -148,9 +154,13 @@ namespace InpatientTherapySchedulingProgram.Services
             {
                 throw new UserIsNotATherapistException();
             }
+            if (therapistEvent.EndTime < therapistEvent.StartTime)
+            {
+                throw new TherapistEventCannotEndBeforeStartTimeException();
+            }
 
-            var local = _context.TherapistEvent.Local.FirstOrDefault(t => t.EventId == eventId && t.Active);
-            //var local = await _context.TherapistEvent.FindAsync(eventId);
+            //var local = _context.TherapistEvent.Local.FirstOrDefault(t => t.EventId == eventId && t.Active);
+            var local = await _context.TherapistEvent.FindAsync(eventId);
 
             if (local == null)
             {
@@ -180,6 +190,8 @@ namespace InpatientTherapySchedulingProgram.Services
         /// <returns>Whether or not a record exists in database that matches the event id</returns>
         private async Task<bool> TherapistEventExistsById(int eventId)
         {
+            var therapistEvent = await _context.TherapistEvent.FindAsync(eventId);
+
             return await _context.TherapistEvent.FirstOrDefaultAsync(t => t.EventId == eventId && t.Active) != null;
         }
 

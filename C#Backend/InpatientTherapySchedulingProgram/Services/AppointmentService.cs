@@ -1,4 +1,5 @@
 ﻿using InpatientTherapySchedulingProgram.Exceptions.AppointmentExceptions;
+using InpatientTherapySchedulingProgram.Exceptions.UserExceptions;
 using InpatientTherapySchedulingProgram.Models;
 using InpatientTherapySchedulingProgram.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -12,50 +13,181 @@ namespace InpatientTherapySchedulingProgram.Services
     {
         private readonly CoreDbContext _context;
 
-        public AppointmentService(CoreDbContext _context) {
+        public AppointmentService(CoreDbContext _context)
+        {
             this._context = _context;
         }
-
-        Task<IEnumerable<Appointment>> IAppointmentService.GetAllAppointments(Appointment appointment)
+        public async Task<Appointment> AddAppointment(Appointment appointment)
         {
-            throw new System.NotImplementedException();
+            if (await AppointmentExistsById(appointment.AppointmentId))
+            {
+                throw new AppointmentIdAlreadyExistsException();
+            }
+            if (!await UserExists(appointment.TherapistId))
+            {
+                throw new UserDoesNotExistException("Therapist does not exist");
+            }
+            if (!await IsTherapist(appointment.TherapistId))
+            {
+                throw new UserIsNotATherapistException();
+            }
+            if (!await UserExists(appointment.PmrPhysicianId))
+            {
+                throw new UserDoesNotExistException("PMR Physician does not exist");
+            }
+            if (appointment.EndTime < appointment.StartTime)
+            {
+                throw new AppointmentCannotEndBeforeStartTimeException();
+            }
+
+            appointment.Active = true;
+
+            _context.Appointment.Add(appointment);
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                throw;
+            }
+
+            return appointment;
         }
 
-        Task<IEnumerable<Appointment>> IAppointmentService.GetAllAppointmentsByTherapostId(Appointment appointment)
+        public async Task<Appointment> DeleteAppointment(int appointmentId)
         {
-            throw new System.NotImplementedException();
+            var appointment = await _context.Appointment.FindAsync(appointmentId);
+
+            if (appointment is null)
+            {
+                return null;
+            }
+
+            appointment.Active = false;
+
+            var local = _context.Appointment.Local.FirstOrDefault(a => a.AppointmentId == appointmentId);
+
+            _context.Entry(local).State = EntityState.Detached;
+
+            _context.Entry(appointment).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return appointment;
         }
 
-        Task<IEnumerable<Appointment>> IAppointmentService.GetAllAppointmetnsByPatientId(Appointment appointment)
+        public async Task<IEnumerable<Appointment>> GetAllAppointments(Appointment appointment)
         {
-            throw new System.NotImplementedException();
+            return await _context.Appointment
+                .Where(a => a.StartTime >= appointment.StartTime && a.EndTime <= appointment.EndTime && a.Active)
+                .ToListAsync();
         }
 
-        Task<IEnumerable<Appointment>> IAppointmentService.GetAppointmentsByRoomNumber(Appointment appointment)
+        public async Task<IEnumerable<Appointment>> GetAllAppointmentsByTherapistId(Appointment appointment)
         {
-            throw new System.NotImplementedException();
+            return await _context.Appointment
+                .Where(a => a.StartTime >= appointment.StartTime
+                && a.EndTime <= appointment.EndTime 
+                && a.Active 
+                && a.TherapistId == appointment.TherapistId)
+                .ToListAsync();
         }
 
-        Task<Appointment> IAppointmentService.UpdateAppointment(int appointmentId, Appointment appointment)
+        public async Task<IEnumerable<Appointment>> GetAllAppointmetnsByPatientId(Appointment appointment)
         {
-            throw new System.NotImplementedException();
+            return await _context.Appointment
+                .Where(a => a.StartTime >= appointment.StartTime
+                && a.EndTime <= appointment.EndTime
+                && a.Active
+                && a.PatientId == appointment.PatientId)
+                .ToListAsync();
         }
 
-        Task<Appointment> IAppointmentService.DeleteAppointment(int appointmentId)
+        public async Task<IEnumerable<Appointment>> GetAppointmentsByRoomNumber(Appointment appointment)
         {
-            throw new System.NotImplementedException();
+            return await _context.Appointment
+                .Where(a => a.StartTime >= appointment.StartTime
+                && a.EndTime <= appointment.EndTime
+                && a.Active
+                && a.RoomNumber == appointment.RoomNumber)
+                .ToListAsync();
         }
 
-        Task<Appointment> IAppointmentService.AddAppointment(Appointment appointment)
+        public async Task<Appointment> UpdateAppointment(int appointmentId, Appointment appointment)
         {
-            
-            throw new System.NotImplementedException();
+            if (appointmentId != appointment.AppointmentId)
+            {
+                throw new AppointmentIdsDoNotMatchException();
+            }
+            if (!await UserExists(appointment.TherapistId))
+            {
+                throw new UserDoesNotExistException("Therapist does not exist");
+            }
+            if (!await IsTherapist(appointment.TherapistId))
+            {
+                throw new UserIsNotATherapistException();
+            }
+            if (!await UserExists(appointment.PmrPhysicianId))
+            {
+                throw new UserDoesNotExistException("PMR physician does not exist");
+            }
+            if (appointment.EndTime < appointment.StartTime)
+            {
+                throw new AppointmentCannotEndBeforeStartTimeException();
+            }
+
+            var local = _context.Appointment.FirstOrDefault(a => a.AppointmentId == appointmentId && a.Active);
+
+            if (local == null)
+            {
+                throw new AppointmentDoesNotExistException();
+            }
+
+            _context.Entry(local).State = EntityState.Detached;
+
+            _context.Entry(appointment).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return appointment;
         }
 
-        private async Task<bool> AppointmentExistById(int appointmentId) {
-            return await _context.Appointment.FirstOrDefaultAsync(a => a.AppointmentId == appointmentId && a.Active) != null;
+        private async Task<bool> AppointmentExistsById(int appointmentId)
+        {
+            return await  _context.Appointment.FirstOrDefaultAsync(a => a.AppointmentId == appointmentId && a.Active) != null;
         }
 
+        private async Task<bool> UserExists(int? therapistId)
+        {
+            var user = await _context.User.FirstOrDefaultAsync(u => u.UserId == therapistId && u.Active == true);
+
+            if (user is null || !user.Active)
+            {
+                return false;
+            }
+
+            return true;
+        }
+        private async Task<bool> IsTherapist(int? therapistId)
+        {
+            return await _context.Permission.FirstOrDefaultAsync(p => p.UserId == therapistId && p.Role.Equals("therapist")) != null;
+        }
 
     }
 }

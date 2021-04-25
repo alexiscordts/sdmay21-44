@@ -4,13 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-
 namespace InpatientTherapySchedulingProgram.Services.Interfaces
 {
     public interface IAppointmentService
     {
         Task<IEnumerable<Appointment>> GetAllAppointments(Appointment appointment);
-        Task<IEnumerable<Appointment>> GetAllAppointmentsByTherapostId(Appointment appointment);
+        Task<IEnumerable<Appointment>> GetAllAppointmentsByTherapistId(Appointment appointment);
         Task<IEnumerable<Appointment>> GetAllAppointmetnsByPatientId(Appointment appointment);
         Task<IEnumerable<Appointment>> GetAppointmentsByRoomNumber(Appointment appointment);
         Task<Appointment> UpdateAppointment(int appointmentId, Appointment appointment);

@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace InpatientTherapySchedulingProgram.Models
 {
     [Table("appointment")]
-    public partial class Appointment
+    public partial class Appointment : IEquatable<Appointment>
     {
         [Key]
         [Column("appointment_id")]
@@ -15,6 +15,8 @@ namespace InpatientTherapySchedulingProgram.Models
         public DateTime StartTime { get; set; }
         [Column("end_time", TypeName = "datetime")]
         public DateTime EndTime { get; set; }
+        [Column("pmr_physician_id")]
+        public int PmrPhysicianId { get; set; }
         [Column("therapist_id")]
         public int TherapistId { get; set; }
         [Column("patient_id")]
@@ -56,18 +58,23 @@ namespace InpatientTherapySchedulingProgram.Models
             return this.Equals(obj as Appointment);
         }
 
-        public bool Equals(Appointment appointment) {
-            if (appointment is null) {
+
+        public bool Equals(Appointment appointment)
+        {
+            if (appointment is null)
+            {
                 return false;
             }
-            if (Object.ReferenceEquals(this, appointment)) {
+
+            if (Object.ReferenceEquals(this, appointment))
+            {
                 return true;
             }
-
-            return this.AppointmentId == appointment.AppointmentId && this.StartTime == appointment.StartTime && this.EndTime == appointment.EndTime && this.TherapistId == appointment.TherapistId && this.PatientId == appointment.PatientId && this.RoomNumber == appointment.RoomNumber;
+            return this.AppointmentId == appointment.AppointmentId;
         }
 
-        public static bool operator ==(Appointment rhs, Appointment lhs) {
+        public static bool operator ==(Appointment lhs, Appointment rhs)
+        {
             if (Object.ReferenceEquals(lhs, rhs))
             {
                 return true;
@@ -79,7 +86,8 @@ namespace InpatientTherapySchedulingProgram.Models
             return lhs.Equals(rhs);
         }
 
-        public static bool operator !=(Appointment rhs, Appointment lhs) {
+        public static bool operator !=(Appointment lhs, Appointment rhs)
+        {
             return !(lhs == rhs);
         }
     }

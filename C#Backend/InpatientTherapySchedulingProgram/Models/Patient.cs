@@ -40,6 +40,8 @@ namespace InpatientTherapySchedulingProgram.Models
         public DateTime? StartDate { get; set; }
         [Column("pmr_physician_id")]
         public int PmrPhysicianId { get; set; }
+        [Column("therapist_id")]
+        public int TherapistId { get; set; }
         [Column("active")]
         public bool Active { get; set; }
 
@@ -47,11 +49,14 @@ namespace InpatientTherapySchedulingProgram.Models
         [InverseProperty("Patient")]
         public virtual Location Location { get; set; }
         [ForeignKey(nameof(PmrPhysicianId))]
-        [InverseProperty(nameof(User.Patient))]
+        [InverseProperty(nameof(User.PatientPmrPhysician))]
         public virtual User PmrPhysician { get; set; }
         [ForeignKey("RoomNumber,LocationId")]
         [InverseProperty("Patient")]
         public virtual Room Room { get; set; }
+        [ForeignKey(nameof(TherapistId))]
+        [InverseProperty(nameof(User.PatientTherapist))]
+        public virtual User Therapist { get; set; }
         [InverseProperty("Patient")]
         public virtual ICollection<Appointment> Appointment { get; set; }
 

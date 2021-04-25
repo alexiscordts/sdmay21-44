@@ -138,7 +138,7 @@ namespace InpatientTherapySchedulingProgram.Services
 
         private async Task<bool> UserExists(string username)
         {
-            return await _context.User.FirstOrDefaultAsync(u => u.Username == username) != null;
+            return await _context.User.FirstOrDefaultAsync(u => u.Username.Equals(username)) != null;
         }
 
         private static string Hash(string psw)

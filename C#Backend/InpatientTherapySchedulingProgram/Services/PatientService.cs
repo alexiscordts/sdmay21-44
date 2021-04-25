@@ -23,6 +23,8 @@ namespace InpatientTherapySchedulingProgram.Services
                 throw new PatientIdAlreadyExistException();
             }
 
+            patient.Active = true;
+
             _context.Patient.Add(patient);
 
             try
