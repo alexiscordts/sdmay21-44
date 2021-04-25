@@ -50,5 +50,37 @@ namespace InpatientTherapySchedulingProgram.Models
         [ForeignKey(nameof(TherapistId))]
         [InverseProperty(nameof(User.Appointment))]
         public virtual User Therapist { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            return this.Equals(obj as Appointment);
+        }
+
+        public bool Equals(Appointment appointment) {
+            if (appointment is null) {
+                return false;
+            }
+            if (Object.ReferenceEquals(this, appointment)) {
+                return true;
+            }
+
+            return this.AppointmentId == appointment.AppointmentId && this.StartTime == appointment.StartTime && this.EndTime == appointment.EndTime && this.TherapistId == appointment.TherapistId && this.PatientId == appointment.PatientId && this.RoomNumber == appointment.RoomNumber;
+        }
+
+        public static bool operator ==(Appointment rhs, Appointment lhs) {
+            if (Object.ReferenceEquals(lhs, rhs))
+            {
+                return true;
+            }
+            else if (lhs is null) {
+                return false;
+            }
+
+            return lhs.Equals(rhs);
+        }
+
+        public static bool operator !=(Appointment rhs, Appointment lhs) {
+            return !(lhs == rhs);
+        }
     }
 }

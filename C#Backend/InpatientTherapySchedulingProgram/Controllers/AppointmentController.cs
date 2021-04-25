@@ -14,6 +14,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
     public class AppointmentController : ControllerBase
     {
         private readonly CoreDbContext _context;
+       
 
         public AppointmentController(CoreDbContext context)
         {
