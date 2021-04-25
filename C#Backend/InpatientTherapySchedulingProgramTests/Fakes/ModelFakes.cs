@@ -99,7 +99,8 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
             {
                 "therapist",
                 "nurse",
-                "admin"
+                "admin",
+                "physician"
             };
 
             PermissionFake = new Faker<Permission>();
