@@ -1,10 +1,9 @@
-import React, { useState } from "react";
-import { Component } from "react";
+import React from "react";
 import "../FormStyles.css";
 import Nav from "../Nav";
 import axios from "axios";
-import { render } from "@testing-library/react";
-class AddPatient extends React.Component {
+
+class EditPatient extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -12,22 +11,22 @@ class AddPatient extends React.Component {
       userList: [],
       therapistList: [],
       locationList: [],
-      firstName: null,
-      middleName: null,
-      lastName: null,
-      address: null,
-      phoneNumber: null,
-      locationId: null,
-      roomNumber: null,
-      pmrPhysicianId: null,
-      therapistId: null,
       rooms: [],
+      patient: [],
     };
-    this.handleChange = this.handleChange.bind(this);
-    this.submitPatient = this.submitPatient.bind(this);
+    this.deletePatient = this.deletePatient.bind(this);
     this.updateRoom = this.updateRoom.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
+  handleChange(event) {
+    this.setState({
+      patient: {
+        ...this.state.patient,
+        [event.target.name]: event.target.value,
+      },
+    });
+  }
   componentDidMount() {
     const url = "http://10.29.163.20:8081/api/";
     axios.get(url + "user").then((response) => {
@@ -50,62 +49,21 @@ class AddPatient extends React.Component {
     axios.get("http://10.29.163.20:8081/api/room").then((response) => {
       this.setState({ roomList: this.state.roomList.concat(response.data) });
     });
-  }
 
-  submitPatient(e) {
-    const url = "http://10.29.163.20:8081/api/patient";
-    e.preventDefault();
-    const active = 1;
-    const roomNumber = 401;
-    const {
-      firstName,
-      middleName,
-      lastName,
-      address,
-      phoneNumber,
-      locationId,
-      pmrPhysicianId,
-      therapistId,
-    } = this.state;
-    const startDate = new Date();
-    const patient = {
-      firstName,
-      middleName,
-      lastName,
-      address,
-      phoneNumber,
-      locationId,
-      startDate,
-      pmrPhysicianId,
-      therapistId,
-      active,
-      roomNumber,
-    };
-    console.log(patient);
-    axios.post(url, patient).catch((error) => {
-      if (error.response) {
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
-      } else if (error.request) {
-        // The request was made but no response was received
-        console.log(error.request);
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.log("Error", error.message);
-      }
-      alert("There was a problem creating the patient");
+    var patient = [];
+    var id = sessionStorage.getItem("patientId");
+    axios.get("http://10.29.163.20:8081/api/patient/" + id).then((response) => {
+      patient = response.data;
+      this.setState({ patient });
     });
   }
-
-  handleChange(event) {
-    this.setState({
-      [event.target.name]: event.target.value,
-    });
-  }
-
   updateRoom(event) {
-    this.setState({ [event.target.name]: event.target.value });
+    this.setState({
+      patient: {
+        ...this.state.patient,
+        [event.target.name]: event.target.value,
+      },
+    });
     var id = event.target.value;
     var rooms = [];
     rooms.push(
@@ -119,6 +77,17 @@ class AddPatient extends React.Component {
       }
     });
     this.setState({ rooms });
+  }
+
+  deletePatient() {
+    if (window.confirm("Are you sure you want to delete this patient?")) {
+      const url =
+        "http://10.29.163.20:8081/api/patient/" + this.state.patient.patientId;
+      axios.delete(url);
+      setTimeout(() => {
+        window.location.href = "/view_patient";
+      }, 2000);
+    }
   }
 
   render() {
@@ -149,8 +118,6 @@ class AddPatient extends React.Component {
         Select a Location
       </option>
     );
-    // var rooms = [];
-    // rooms.push(<option value={0}>Select a Room</option>);
 
     this.state.locationList.forEach(
       function (location) {
@@ -161,6 +128,11 @@ class AddPatient extends React.Component {
     );
 
     var users = [];
+    users.push(
+      <option hidden disabled selected value>
+        Select a Physician
+      </option>
+    );
     this.state.userList.forEach(function (user) {
       users.push(
         <option value={user.userId}>
@@ -168,140 +140,131 @@ class AddPatient extends React.Component {
         </option>
       );
     });
-
     return (
       <div>
         <Nav />
         <div class="formScreen">
           <div class="form-style">
-            <div class="form-style-heading"> Add a Patient </div>
-            <form action="" method="post">
+            <div class="form-style-heading"> Edit Patient </div>
+            <form>
               <label for="firstName">
-                <span>
-                  First Name
-                  <span class="required">*</span>
-                </span>
+                <span>First Name</span>
                 <input
+                  target="patient"
                   type="text"
                   class="input-field"
                   onChange={this.handleChange}
                   name="firstName"
-                  value={this.state.firstName}
+                  defaultValue={this.state.patient.firstName}
                 />
               </label>
               <label for="middleName">
                 <span>Middle Name</span>
                 <input
+                  target="patient"
                   type="text"
                   class="input-field"
                   onChange={this.handleChange}
                   name="middleName"
-                  value={this.state.middleName}
+                  defaultValue={this.state.patient.middleName}
                 />
               </label>
               <label for="lastName">
-                <span>
-                  Last Name
-                  <span class="required">*</span>
-                </span>
+                <span>Last Name</span>
                 <input
+                  target="patient"
                   type="text"
                   class="input-field"
                   onChange={this.handleChange}
                   name="lastName"
-                  value={this.state.lastName}
+                  defaultValue={this.state.patient.lastName}
                 />
               </label>
               <label for="address">
-                <span>
-                  Address
-                  {/* <span class="required">*</span> */}
-                </span>
+                <span>Address</span>
                 <input
                   type="text"
                   class="input-field"
                   onChange={this.handleChange}
                   name="address"
-                  value={this.state.address}
+                  defaultValue={this.state.patient.address}
                 />
               </label>
               <label for="phoneNumber">
-                <span>
-                  Phone Number
-                  {/* <span class="required">*</span> */}
-                </span>
+                <span>Phone Number</span>
                 <input
                   type="text"
                   class="input-field"
                   onChange={this.handleChange}
                   name="phoneNumber"
-                  value={this.state.phoneNumber}
+                  defaultValue={this.state.patient.phoneNumber}
                 />
               </label>
               <label for="location">
-                <span>
-                  Location <span class="required">*</span>
-                </span>
+                <span>Location</span>
                 <select
                   type="number"
                   class="input-field"
                   onChange={this.updateRoom}
                   name="locationId"
-                  value={this.state.locationId}
+                  defaultValue={this.state.patient.locationId}
                 >
                   {locations}
                 </select>
               </label>
               <label for="roomNumber">
-                <span>
-                  Room<span class="required">*</span>
-                </span>
+                <span>Room</span>
                 <select
                   type="number"
                   class="input-field"
                   onChange={this.handleChange}
                   name="roomNumber"
-                  value={this.state.roomNumber}
+                  defaultValue={this.state.roomNumber}
                 >
                   {this.state.rooms}
                 </select>
               </label>
               <label for="pmrPhysician">
-                <span>
-                  Primary Physician
-                  <span class="required">*</span>
-                </span>
+                <span>Primary Physician</span>
                 <select
                   type="number"
                   class="input-field"
                   onChange={this.handleChange}
                   name="pmrPhysicianId"
-                  value={this.state.pmrPhysicianId}
+                  defaultValue={this.state.patient.pmrPhysicianId}
                 >
                   {users}
                 </select>
               </label>
               <br></br>
               <label for="therapist">
-                <span>
-                  Therapist <span class="required">*</span>
-                </span>
+                <span>Therapist</span>
                 <select
                   type="number"
                   class="input-field"
-                  id="therapistId"
                   name="therapistId"
-                  value={this.state.therapistId}
+                  defaultValue={this.state.patient.therapistId}
                   onChange={this.handleChange}
                 >
                   {therapists}
                 </select>
               </label>
-              <div class="submitLabel">
+              <div class="buttonContainer">
                 <input
-                  type="submit"
-                  value="Create"
-                  onClick={this.submitPatient}
+                  type="button"
+                  value="Delete"
+                  onClick={this.deletePatient}
+                />
+                <input
+                  type="button"
+                  value="Save"
+                  onClick={() => {
+                    console.log(this.state.patient);
+                    const url =
+                      "http://10.29.163.20:8081/api/patient/" +
+                      this.state.patient.patientId;
+                    axios.put(url, this.state.patient);
+                  }}
                 />
               </div>
             </form>
@@ -311,5 +274,4 @@ class AddPatient extends React.Component {
     );
   }
 }
-
-export default AddPatient;
+export default EditPatient;

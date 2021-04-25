@@ -11,21 +11,6 @@ class ViewPatient extends React.Component {
     this.state = {
       patientList: [],
     };
-
-    this.onDelete = this.onDelete.bind(this);
-  }
-
-  onDelete(userID) {
-    const url = "http://10.29.163.20:8081/api/patient/";
-    // axios
-    //   .delete(url + userID)
-    //   .then((res) => {
-    //     console.log(res);
-    //   })
-    //   .catch((error) => {
-    //     console.log("Error caught");
-    //     console.log(error);
-    //   });
   }
 
   componentDidMount() {
@@ -51,10 +36,15 @@ class ViewPatient extends React.Component {
               <td>
                 <button
                   class="iconButton"
-                  onClick={this.onDelete(patient.patientId)}
+                  onClick={() => {
+                    // sessionStorage.setItem("email", admin.email);
+                    sessionStorage.setItem("patientId", patient.patientId);
+
+                    window.location.href = "/edit_patient";
+                  }}
                 >
                   <img
-                    src={require("../Icons/icons8-delete-64.png")}
+                    src={require("../Icons/icons8-edit-64.png")}
                     alt="delete"
                     className="icon"
                   />
@@ -72,7 +62,9 @@ class ViewPatient extends React.Component {
               <td>
                 <button
                   class="iconButton"
-                  onClick={this.onDelete(patient.patientId)}
+                  onClick={() => {
+                    window.location.href = "/edit_patient";
+                  }}
                 >
                   <img
                     src={require("../Icons/icons8-delete-64.png")}
@@ -111,7 +103,7 @@ class ViewPatient extends React.Component {
               <th>First Name</th>
               <th>Last Name</th>
               <th>Admission Date</th>
-              <th>Delete</th>
+              <th>Edit</th>
             </tr>
           </thead>
           <tbody>{rows}</tbody>

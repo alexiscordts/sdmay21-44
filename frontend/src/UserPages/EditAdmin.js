@@ -12,7 +12,6 @@ class EditAdmin extends React.Component {
   deleteAdmin() {
     const url =
       "http://10.29.163.20:8081/api/user/" + sessionStorage.getItem("userId");
-    console.log(url);
     axios.delete(url);
     setTimeout(this.deletePermission, 2000);
   }
