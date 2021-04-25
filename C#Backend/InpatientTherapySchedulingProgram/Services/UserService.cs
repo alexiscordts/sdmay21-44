@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using InpatientTherapySchedulingProgram.Exceptions.UserExceptions;
 using System.Security.Cryptography;
 using System.Text;
+using System.Reflection;
 
 namespace InpatientTherapySchedulingProgram.Services
 {
@@ -109,15 +110,18 @@ namespace InpatientTherapySchedulingProgram.Services
                 throw new UserDoesNotExistException();
             }
 
-            user.Password = Hash(user.Password);
+            if (user.Password != null && !user.Password.Equals(""))
+            {
+                user.Password = Hash(user.Password);
+            }
 
             var local = _context.Set<User>()
                 .Local
                 .FirstOrDefault(u => u.UserId == user.UserId);
 
-            _context.Entry(local).State = EntityState.Detached;
+            updateNonNullAndNonEmptyFields(local, user);
 
-            _context.Entry(user).State = EntityState.Modified;
+            _context.Entry(local).State = EntityState.Modified;
 
             try
             {
@@ -129,6 +133,17 @@ namespace InpatientTherapySchedulingProgram.Services
             }
 
             return user;
+        }
+
+        private void updateNonNullAndNonEmptyFields(User local, User user)
+        {
+            foreach(PropertyInfo prop in typeof(User).GetProperties())
+            {
+                if (prop.GetValue(user) != null && (prop.PropertyType != typeof(string) || !prop.GetValue(user).Equals("")))
+                {
+                    prop.SetValue(local, prop.GetValue(user));
+                }
+            }
         }
 
         private async Task<bool> UserExists(int id)
