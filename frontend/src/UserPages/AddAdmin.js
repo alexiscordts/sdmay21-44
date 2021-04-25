@@ -6,8 +6,16 @@ import axios from "axios";
 const AddAdmin = () => {
   const [firstName, setFName] = useState("");
   const [lastName, setLName] = useState("");
+  const [middleName, setMName] = useState("");
+
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
+
+  function handleChange(event) {
+    this.setState({
+      [event.target.name]: event.target.value,
+    });
+  }
 
   function submitAdmin(e) {
     //need to add the therapist to the user list
@@ -71,6 +79,16 @@ const AddAdmin = () => {
                 onChange={(e) => setFName(e.target.value)}
                 name="firstName"
                 value={firstName}
+              />
+            </label>
+            <label for="middleName">
+              <span>Middle Name</span>
+              <input
+                type="text"
+                class="input-field"
+                onChange={(e) => setMName(e.target.value)}
+                name="middleName"
+                value={middleName}
               />
             </label>
             <label for="lastName">

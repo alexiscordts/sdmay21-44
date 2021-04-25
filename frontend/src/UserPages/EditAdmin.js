@@ -5,8 +5,30 @@ import axios from "axios";
 class EditAdmin extends React.Component {
   constructor(props) {
     super(props);
+    this.state = { admin: [] };
     this.deleteAdmin = this.deleteAdmin.bind(this);
     this.deletePermission = this.deletePermission.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  componentDidMount() {
+    var admin = [];
+    var id = sessionStorage.getItem("userId");
+    axios
+      .get("http://10.29.163.20:8081/api/user/getUserByUserId/" + id)
+      .then((response) => {
+        admin = response.data;
+        this.setState({ admin });
+      });
+  }
+
+  handleChange(event) {
+    this.setState({
+      admin: {
+        ...this.state.admin,
+        [event.target.name]: event.target.value,
+      },
+    });
   }
 
   deleteAdmin() {
@@ -23,6 +45,7 @@ class EditAdmin extends React.Component {
     axios.delete(url);
     window.location.href = "/view_admin";
   }
+
   render() {
     return (
       <div>
@@ -39,7 +62,18 @@ class EditAdmin extends React.Component {
                   type="text"
                   class="input-field"
                   name="fname"
-                  defaultValue={sessionStorage.getItem("firstName")}
+                  defaultValue={this.state.admin.firstName}
+                  onChange={this.handleChange}
+                />
+              </label>
+              <label for="middleName">
+                <span>Middle Name</span>
+                <input
+                  type="text"
+                  class="input-field"
+                  onChange={this.handleChange}
+                  name="middleName"
+                  defaultValue={this.state.admin.middleName}
                 />
               </label>
               <label for="lname">
@@ -50,7 +84,8 @@ class EditAdmin extends React.Component {
                   type="text"
                   class="input-field"
                   name="lname"
-                  defaultValue={sessionStorage.getItem("lastName")}
+                  onChange={this.handleChange}
+                  defaultValue={this.state.admin.lastName}
                 />
               </label>
               {/* <label for="email">
@@ -78,7 +113,20 @@ class EditAdmin extends React.Component {
                     }
                   }}
                 />
-                <input type="submit" value="Save" />
+                <input
+                  type="button"
+                  value="Save"
+                  onClick={() => {
+                    console.log(this.state.admin);
+                    const url =
+                      "http://10.29.163.20:8081/api/user/" +
+                      this.state.admin.userId;
+                    axios.put(url, this.state.admin);
+                    setTimeout(() => {
+                      window.location.href = "/view_admin";
+                    }, 2000);
+                  }}
+                />
               </div>
             </form>
           </div>
