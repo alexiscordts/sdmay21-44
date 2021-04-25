@@ -96,6 +96,9 @@ class AddPatient extends React.Component {
       }
       alert("There was a problem creating the patient");
     });
+    setTimeout(() => {
+      window.location.href = "/view_patient";
+    }, 2000);
   }
 
   handleChange(event) {
