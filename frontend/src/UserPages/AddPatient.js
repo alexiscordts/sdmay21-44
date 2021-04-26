@@ -152,9 +152,6 @@ class AddPatient extends React.Component {
         Select a Location
       </option>
     );
-    // var rooms = [];
-    // rooms.push(<option value={0}>Select a Room</option>);
-
     this.state.locationList.forEach(
       function (location) {
         locations.push(

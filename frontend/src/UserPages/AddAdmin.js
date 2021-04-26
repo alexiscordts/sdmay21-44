@@ -11,12 +11,6 @@ const AddAdmin = () => {
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
 
-  function handleChange(event) {
-    this.setState({
-      [event.target.name]: event.target.value,
-    });
-  }
-
   function submitAdmin(e) {
     //need to add the therapist to the user list
     e.preventDefault();

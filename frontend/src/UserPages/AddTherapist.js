@@ -66,13 +66,15 @@ class AddTherapist extends React.Component {
     setTimeout(function () {
       axios.get(getUserUrl).then((response) => {
         var userId = parseInt(response.data.userId);
-        console.log(userId);
         setTimeout(
           () => {
             const permUrl = "http://10.29.163.20:8081/api/permission/";
             const role = "therapist";
             const permission = { userId, role };
-            axios.post(permUrl, permission);
+            console.log(userId);
+            axios.post(permUrl, permission).catch((error) => {
+              console.log(error);
+            });
           },
           2000,
           userId
@@ -82,7 +84,7 @@ class AddTherapist extends React.Component {
 
     setTimeout(function () {
       window.location.href = "/view_therapist";
-    }, 4000);
+    }, 5000);
   }
 
   render() {

@@ -5,7 +5,7 @@ import axios from "axios";
 class EditAdmin extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { admin: [] };
+    this.state = { admin: [], password: null };
     this.deleteAdmin = this.deleteAdmin.bind(this);
     this.deletePermission = this.deletePermission.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -19,6 +19,8 @@ class EditAdmin extends React.Component {
       .then((response) => {
         admin = response.data;
         this.setState({ admin });
+        var password = admin.password;
+        this.setState({ password });
       });
   }
 
@@ -88,17 +90,52 @@ class EditAdmin extends React.Component {
                   defaultValue={this.state.admin.lastName}
                 />
               </label>
-              {/* <label for="email">
+              <label for="address">
+                <span>Address</span>
+                <input
+                  type="text"
+                  class="input-field"
+                  onChange={this.handleChange}
+                  name="address"
+                  value={this.state.admin.address}
+                />
+              </label>
+              <label for="phoneNumber">
+                <span>Phone Number</span>
+                <input
+                  type="text"
+                  class="input-field"
+                  onChange={this.handleChange}
+                  name="phoneNumber"
+                  value={this.state.admin.phoneNumber}
+                />
+              </label>
+              <label for="email">
                 <span>
-                  E-mail <span class="required">*</span>
+                  Username
+                  <span class="required">*</span>
                 </span>
                 <input
                   type="text"
                   class="input-field"
-                  name="email"
-                  defaultValue={sessionStorage.getItem("email")}
+                  onChange={this.handleChange}
+                  name="username"
+                  value={this.state.admin.username}
                 />
-              </label> */}
+              </label>
+              <label for="password">
+                <span>
+                  Password
+                  <span class="required">*</span>
+                </span>
+                <input
+                  type="password"
+                  class="input-field"
+                  onChange={this.handleChange}
+                  name="password"
+                  value={this.state.admin.password}
+                />
+              </label>
               <div class="buttonContainer">
                 <input
                   type="button"
@@ -117,11 +154,37 @@ class EditAdmin extends React.Component {
                   type="button"
                   value="Save"
                   onClick={() => {
-                    console.log(this.state.admin);
                     const url =
                       "http://10.29.163.20:8081/api/user/" +
                       this.state.admin.userId;
-                    axios.put(url, this.state.admin);
+
+                    if (this.state.password != this.state.admin.password) {
+                      axios.put(url, this.state.admin);
+                    } else {
+                      const {
+                        userId,
+                        username,
+                        firstName,
+                        lastName,
+                        middleName,
+                        address,
+                        phoneNumber,
+                        color,
+                      } = this.state.admin;
+                      const active = 1;
+                      const admin = {
+                        userId,
+                        username,
+                        firstName,
+                        lastName,
+                        middleName,
+                        address,
+                        phoneNumber,
+                        color,
+                        active,
+                      };
+                      axios.put(url, admin);
+                    }
                     setTimeout(() => {
                       window.location.href = "/view_admin";
                     }, 2000);
