@@ -91,6 +91,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
             return CreatedAtAction("GetRoom", new { number = room.Number }, room);
         }
 
+        // DELETE: api/room/{JSONObject}
         [HttpDelete]
         public async Task<ActionResult<Room>> DeleteRoom(Room room)
         {
