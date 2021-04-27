@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, {useState} from "react";
 import "../FormStyles.css";
 import Nav from "../Nav";
 import axios from "axios";
@@ -8,7 +8,6 @@ const EditTherapyTypes = () => {
   const subtypes = sessionStorage.getItem("subtypes").split(',');
 
   const deleteAdl = async (adl) => {
-    console.log(adl)
     const url = "http://10.29.163.20:8081/api/therapy/"+adl; 
   
      await axios
@@ -22,7 +21,9 @@ const EditTherapyTypes = () => {
       window.location.href = "/view_therapy_types";
   }
   
-  const SubtypeInputs = ({subtypeName}) => (
+  const SubtypeInputs = ({subtypeName}) => {
+    const [adl, setAdl] = useState(subtypeName);
+    return (
     <div style={{
       display: "flex",
       flexDirection: "row",
@@ -31,12 +32,34 @@ const EditTherapyTypes = () => {
         type="text"
         className="inputFieldSubtype"
         name={`subtype${subtypeName}`}
-        defaultValue={subtypeName}
+        defaultValue={adl}
         style={{width: "350px"}}
+        onChange={(e)=> {
+          setAdl(e.target.value)
+        }}
       />
       <input type="button" value="Delete" style={{marginLeft: "10px"}} onClick={() => deleteAdl(subtypeName)}/>
+      <input type="button" value="Save" onClick={()=> updateAdl(subtypeName, adl)}/>
     </div>
-  );
+  )};
+
+  const updateAdl = async(subtypeName, adl) => {
+      const url = "http://10.29.163.20:8081/api/therapy/" + subtypeName; 
+  
+      await axios
+      .put(url, {
+        "adl": adl,
+        "therapyType": sessionStorage.getItem("name"),
+        "abbreviation": adl.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'')
+      })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+   // window.location.href = "/view_therapy_types";
+  }
   
   return (
     <div >
@@ -44,7 +67,7 @@ const EditTherapyTypes = () => {
       <div className="formScreen">
         <div className="form-style">
           <div className="form-style-heading"> Edit Therapy Types</div>
-            <form action="" method="post">
+            <form >
               <label for="name"><span>Name<span className="required">*</span></span><input type="text" className="input-field" name="name" defaultValue={sessionStorage.getItem("name")} /></label>
               <label for="subtypes">
                 <span>Subtypes
@@ -54,9 +77,6 @@ const EditTherapyTypes = () => {
                   {subtypes.map((subtype) => <SubtypeInputs subtypeName={subtype} />)}
                 </div>
               </label>
-              <div className="buttonContainer">
-                <input type="submit" value="Save" />
-              </div>
             </form>
           </div>
         </div>
