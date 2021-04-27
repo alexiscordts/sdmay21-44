@@ -115,11 +115,13 @@ namespace InpatientTherapySchedulingProgram.Services
                 user.Password = Hash(user.Password);
             }
 
-            var local = _context.Set<User>()
-                .Local
-                .FirstOrDefault(u => u.UserId == user.UserId);
+            var local = await _context.User.FindAsync(id);
 
-            updateNonNullAndNonEmptyFields(local, user);
+            //var local = _context.Set<User>()
+            //    .Local
+            //    .FirstOrDefault(u => u.UserId == user.UserId);
+
+            UpdateNonNullAndNonEmptyFields(local, user);
 
             _context.Entry(local).State = EntityState.Modified;
 
@@ -135,7 +137,7 @@ namespace InpatientTherapySchedulingProgram.Services
             return user;
         }
 
-        private void updateNonNullAndNonEmptyFields(User local, User user)
+        private void UpdateNonNullAndNonEmptyFields(User local, User user)
         {
             foreach(PropertyInfo prop in typeof(User).GetProperties())
             {

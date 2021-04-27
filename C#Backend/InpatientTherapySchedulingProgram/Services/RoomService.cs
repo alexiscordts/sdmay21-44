@@ -5,6 +5,7 @@ using InpatientTherapySchedulingProgram.Exceptions.RoomException;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace InpatientTherapySchedulingProgram.Services
 {
@@ -66,10 +67,20 @@ namespace InpatientTherapySchedulingProgram.Services
                 throw new RoomDoesNotExistException();
             }
 
-            var local = _context.Set<Room>().Local.FirstOrDefault(r => r.Number == room.Number);
+            var local = await _context.Room.FindAsync(number);
 
-            _context.Entry(local).State = EntityState.Detached;
-            _context.Entry(room).State = EntityState.Modified;
+            if (local is null)
+            {
+                throw new RoomDoesNotExistException();
+            }
+
+            UpdateNonNullAndNonEmptyFields(local, room);
+
+            //var local = _context.Set<Room>().Local.FirstOrDefault(r => r.Number == room.Number);
+
+            _context.Entry(local).State = EntityState.Modified;
+            
+            //_context.Entry(room).State = EntityState.Modified;
 
             try
             {
@@ -80,6 +91,17 @@ namespace InpatientTherapySchedulingProgram.Services
             }
 
             return room;
+        }
+
+        private void UpdateNonNullAndNonEmptyFields(Room local, Room room)
+        {
+            foreach (PropertyInfo prop in typeof(Room).GetProperties())
+            {
+                if (prop.GetValue(room) != null && (prop.PropertyType != typeof(string) || !prop.GetValue(room).Equals("")))
+                {
+                    prop.SetValue(local, prop.GetValue(room));
+                }
+            }
         }
 
         public async Task<IEnumerable<Room>> GetAllRooms()

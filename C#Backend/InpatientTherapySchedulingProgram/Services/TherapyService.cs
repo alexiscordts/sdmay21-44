@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace InpatientTherapySchedulingProgram.Services
 {
@@ -118,11 +119,18 @@ namespace InpatientTherapySchedulingProgram.Services
                 throw new TherapyMainDoesNotExistException();
             }
 
-            var local = _context.Therapy.Local.FirstOrDefault(t => t.Adl.Equals(adl));
+            var local = await _context.Therapy.FindAsync(adl);
 
-            _context.Entry(local).State = EntityState.Detached;
+            if (local == null)
+            {
+                throw new TherapyDoesNotExistException();
+            }
 
-            _context.Entry(therapy).State = EntityState.Modified;
+            UpdateNonNullAndNonEmptyFields(local, therapy);
+
+            _context.Entry(local).State = EntityState.Modified;
+
+            //_context.Entry(therapy).State = EntityState.Modified;
 
             try
             {
@@ -134,6 +142,17 @@ namespace InpatientTherapySchedulingProgram.Services
             }
 
             return therapy;
+        }
+
+        private void UpdateNonNullAndNonEmptyFields(Therapy local, Therapy therapy)
+        {
+            foreach (PropertyInfo prop in typeof(Therapy).GetProperties())
+            {
+                if (prop.GetValue(therapy) != null && (prop.PropertyType != typeof(string) || !prop.GetValue(therapy).Equals("")))
+                {
+                    prop.SetValue(local, prop.GetValue(therapy));
+                }
+            }
         }
 
         private async Task<bool> TherapyExistsByAdl(string adl)

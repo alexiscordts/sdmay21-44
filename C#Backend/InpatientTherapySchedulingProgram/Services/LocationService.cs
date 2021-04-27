@@ -5,6 +5,7 @@ using System.Linq;
 using InpatientTherapySchedulingProgram.Exceptions.LocationExceptions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace InpatientTherapySchedulingProgram.Services
 {
@@ -19,11 +20,11 @@ namespace InpatientTherapySchedulingProgram.Services
 
         public async Task<Location> AddLocation(Location location)
         {
-            if(await LocationExists(location.LocationId))
+            if (await LocationExists(location.LocationId))
             {
                 throw new LocationIdAlreadyExistsException();
             }
-            if(await LocationExists(location.Name))
+            if (await LocationExists(location.Name))
             {
                 throw new LocationNameAlreadyExistsException();
             }
@@ -36,7 +37,7 @@ namespace InpatientTherapySchedulingProgram.Services
             {
                 await _context.SaveChangesAsync();
             }
-            catch(DbUpdateException)
+            catch (DbUpdateException)
             {
                 throw;
             }
@@ -59,7 +60,7 @@ namespace InpatientTherapySchedulingProgram.Services
             {
                 await _context.SaveChangesAsync();
             }
-            catch(DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException)
             {
                 throw;
             }
@@ -89,20 +90,27 @@ namespace InpatientTherapySchedulingProgram.Services
 
         public async Task<Location> UpdateLocation(int id, Location location)
         {
-            if(location.LocationId != id)
+            if (location.LocationId != id)
             {
                 throw new LocationIdsDoNotMatchException();
             }
-            if(!await LocationExists(location.LocationId))
+            if (!await LocationExists(location.LocationId))
             {
                 throw new LocationDoesNotExistException();
             }
 
             var local = await _context.Location.FindAsync(id);
 
-            _context.Entry(local).State = EntityState.Detached;
+            if (local is null)
+            {
+                throw new LocationDoesNotExistException();
+            }
 
-            _context.Entry(location).State = EntityState.Modified;
+            UpdateNonNullAndNonEmptyFields(local, location);
+
+            _context.Entry(local).State = EntityState.Modified;
+
+            //_context.Entry(location).State = EntityState.Modified;
 
             try
             {
@@ -114,6 +122,17 @@ namespace InpatientTherapySchedulingProgram.Services
             }
 
             return location;
+        }
+
+        private void UpdateNonNullAndNonEmptyFields(Location local, Location location)
+        {
+            foreach (PropertyInfo prop in typeof(Location).GetProperties())
+            {
+                if (prop.GetValue(location) != null && (prop.PropertyType != typeof(string) || !prop.GetValue(location).Equals("")))
+                {
+                    prop.SetValue(local, prop.GetValue(location));
+                }
+            }
         }
 
         private async Task<bool> LocationExists(int id)

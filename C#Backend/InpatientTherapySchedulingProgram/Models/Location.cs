@@ -22,11 +22,11 @@ namespace InpatientTherapySchedulingProgram.Models
         [Column("name")]
         [StringLength(255)]
         public string Name { get; set; }
-        [Required]
+        //[Required]
         [Column("address")]
         [StringLength(255)]
         public string Address { get; set; }
-        [Required]
+        //[Required]
         [Column("phone_number")]
         [StringLength(15)]
         public string PhoneNumber { get; set; }
