@@ -10,17 +10,16 @@ class AllTherapistSchedule extends React.Component {
     this.lines = {values: this.loadLines()};
     this.hours = {values: this.loadHours(this.props.date)};
     this.time = {value: loadTimeLine()};
-    var appointments = getAppointments(d);
     var d = new Date();
     while (d.getDay() != 1) //get Monday
     {
         d.setDate(d.getDate() - 1);
     }
-    this.tuesday = {values: this.getAppointmentElements(appointments)};
     this.state = {
         userList: [],
         therapistList: [],
-        therapistEvents: []
+        patients: [],
+        locations: []
       };
       console.log(this.props.role);
   }
@@ -29,18 +28,22 @@ class AllTherapistSchedule extends React.Component {
     {
         therapists = this.getRooms(users, therapists);
         const roomElements = [];
-        const appointments = getAppointments(new Date());
-        const tuesday = this.getAppointmentElements(appointments);
         for (let i = 0; i < therapists[0].length; i++)
         {
             let lines = this.loadLines(i + 1, therapists[1][i]);
             let percent = Math.floor(Math.random() * 100);
             var color = getColor(percent);
             const therapistEvents = [];
-            for(let j = 0; j < this.state.therapistEvents.length; j++) //get therapist events for this therapist
+            for(let j = 0; j < this.props.therapistEvents.length; j++) //get therapist events for this therapist
             {
-                if (this.state.therapistEvents[j].therapistId == therapists[1][i])
-                    therapistEvents.push(this.state.therapistEvents[j]);
+                if (this.props.therapistEvents[j].therapistId == therapists[1][i])
+                    therapistEvents.push(this.props.therapistEvents[j]);
+            }
+            const appointments = [];
+            for(let j = 0; j < this.props.appointments.length; j++) //get appointments for this therapist
+            {
+                if (this.props.appointments[j].therapistId == therapists[1][i])
+                    appointments.push(this.props.appointments[j]);
             }
             if (i % 10 == 0)
                 roomElements.push(<div class="printHours">{this.loadHours(date)}</div>);
@@ -51,6 +54,7 @@ class AllTherapistSchedule extends React.Component {
                     <div class="therapistMetrics" style={color}>{percent} %</div>
                     {lines}
                     {this.getTherapistEventElements(therapistEvents)}
+                    {this.getAppointmentElements(appointments)}
                 </div>
                 );            
         }
@@ -63,24 +67,24 @@ class AllTherapistSchedule extends React.Component {
         for (var i = 0; i < 15; i++)
         {
             let time = (i + 5);
-            if (this.props.role == "admin")
+            if (this.props.role == "admin" || (this.props.role == "therapist" && sessionStorage.getItem('id') == therapistId))
             {
                 if (i % 2)
                 {
                     items.push(
-                        <div onClick={() => { showAddAppointment(time, "00", this.props.date, therapistIndex); this.props.therapistEvent.therapistId = therapistId; this.setTimes(this.props.date, time, 0)}} class="halfHour"><div class="hide">+</div></div>
+                        <div onClick={() => {this.showAddAppointment(time, "00", this.props.date, therapistIndex); this.props.therapistEvent.therapistId = therapistId; this.props.appointment.therapistId = therapistId; this.props.setTimes(this.props.date, time, 0)}} class="halfHour"><div class="hide">+</div></div>
                     );
                     items.push(
-                        <div onClick={() => {showAddAppointment(time, "30", this.props.date, therapistIndex); this.props.therapistEvent.therapistId = therapistId; this.setTimes(this.props.date, time, 30)}} class="halfHour"><div class="hide">+</div></div>
+                        <div onClick={() => {this.showAddAppointment(time, "30", this.props.date, therapistIndex); this.props.therapistEvent.therapistId = therapistId; this.props.appointment.therapistId = therapistId; this.props.setTimes(this.props.date, time, 30)}} class="halfHour"><div class="hide">+</div></div>
                     );
                 }
                 else
                 {
                     items.push(
-                        <div onClick={() => { showAddAppointment(time, "00", this.props.date, therapistIndex); this.props.therapistEvent.therapistId = therapistId; this.setTimes(this.props.date, time, 0)}} class="halfHour printGrey"><div class="hide">+</div></div>
+                        <div onClick={() => {this.showAddAppointment(time, "00", this.props.date, therapistIndex); this.props.therapistEvent.therapistId = therapistId; this.props.appointment.therapistId = therapistId; this.props.setTimes(this.props.date, time, 0)}} class="halfHour printGrey"><div class="hide">+</div></div>
                     );
                     items.push(
-                        <div onClick={() => { showAddAppointment(time, "30", this.props.date, therapistIndex); this.props.therapistEvent.therapistId = therapistId; this.setTimes(this.props.date, time, 30)}} class="halfHour printGrey"><div class="hide">+</div></div>
+                        <div onClick={() => {this.showAddAppointment(time, "30", this.props.date, therapistIndex); this.props.therapistEvent.therapistId = therapistId; this.props.appointment.therapistId = therapistId; this.props.setTimes(this.props.date, time, 30)}} class="halfHour printGrey"><div class="hide">+</div></div>
                     );
 
                 }
@@ -103,16 +107,6 @@ class AllTherapistSchedule extends React.Component {
         return items;
     }
 
-    setTimes(date, hour, minute)
-    {
-        this.props.therapistEvent.startTime = new Date(date);
-        this.props.therapistEvent.endTime = new Date(date);
-        this.props.therapistEvent.startTime.setHours(hour);
-        this.props.therapistEvent.startTime.setMinutes(minute);
-        this.props.therapistEvent.endTime.setHours(hour + 1);
-        this.props.therapistEvent.endTime.setMinutes(minute);
-    }
-
     setDay(day)    
     {
         while(this.props.date.getDay() != day)
@@ -122,7 +116,9 @@ class AllTherapistSchedule extends React.Component {
             else
                 this.props.date.setDate(this.props.date.getDate() + 1);
         }
-        this.getTherapistEvents();
+
+        this.props.getTherapistEvents();
+        this.props.getAppointments();
     }
 
   updateDimensions = () => {
@@ -141,17 +137,35 @@ class AllTherapistSchedule extends React.Component {
     toggleDay(new Intl.DateTimeFormat('en-US', {weekday: 'long'}).format(this.props.date));
     const url = "http://10.29.163.20:8081/api/";
         axios.get(url + "user").then((response) => {
-            console.log(response);
-          const userList = response.data;
-          this.setState({ userList });
+            const userList = response.data;
+            this.setState({ userList });
+              axios.get("http://10.29.163.20:8081/api/permission").then((response) => {
+              const therapistList = [];
+              const permissions = response.data;
+              this.state.userList.forEach(user =>{
+                  permissions.forEach(permission => {
+                      if (permission.userId == user.userId && permission.role == "therapist")
+                          therapistList.push(user);
+                  })
+                    this.setState({therapistList});
+                });
+            });
         });
-    
-        axios.get("http://10.29.163.20:8081/api/permission").then((response) => {
-          this.setState({
-            therapistList: this.state.therapistList.concat(response.data),
-          });
+
+        axios
+        .get("http://10.29.163.20:8081/api/patient")
+        .then((response) => {
+            const patients = response.data;
+            this.setState({ patients });
+            axios.get("http://10.29.163.20:8081/api/Location")
+                    .then((response) => {
+                    const locations = response.data;
+                    this.setState({ locations });
+                    this.props.getTherapistEvents();
+                    this.props.getAppointments();
+                    });
         });
-        this.getTherapistEvents();
+
   }
 
   componentWillUnmount() {
@@ -163,18 +177,10 @@ class AllTherapistSchedule extends React.Component {
   getRooms(users, therapists) {
         var names = [];
         var ids = [];
-        console.log(users);
-        console.log(therapists);
         try {
         therapists.forEach(therapist => {
-            users.forEach(user => {
-                if (therapist.role == "therapist" && user.userId == therapist.userId)
-                {
-                    names.push(user.firstName + " " + user.lastName);
-                    ids.push(user.userId);
-                }
-            });
-            
+                    names.push(therapist.firstName + " " + therapist.lastName);
+                    ids.push(therapist.userId);
         });
         }
         catch (error)
@@ -185,35 +191,6 @@ class AllTherapistSchedule extends React.Component {
         therapists.push(names);
         therapists.push(ids);
         return therapists;
-    }
-
-    getTherapistEvents() {
-        console.log(this.props.date);
-        var start = new Date(this.props.date);
-        var end = new Date(this.props.date);
-        start.setHours(0);
-        start.setMinutes(0);
-        start.setMinutes(0);
-        end.setHours(15);
-        end.setMinutes(0);
-        end.setMinutes(0);
-        
-        const event = ({
-            startTime: start,
-            endTime: end
-        })
-
-         axios
-        .post("http://10.29.163.20:8081/api/therapistevent/getTherapistEvent", event)
-        .then((response) => {
-            console.log(response.data);
-            const therapistEvents = response.data;
-            this.setState({ therapistEvents });
-          })
-        .catch((error) => {
-            console.log("Error caught");
-            console.log(error);
-        });       
     }
 
     loadHours(date)
@@ -241,27 +218,23 @@ class AllTherapistSchedule extends React.Component {
         return hours;
     }
 
-    getButtons(num)
+    getTherapistEventButtons(num, therapistEvent)
     {
-        console.log(this.props.role)
         const items = [];
-        if (this.props.role == "admin")
+        if (this.props.role == "admin" || (this.props.role == "therapist" && therapistEvent.therapistId == sessionStorage.getItem("id")))
         items.push(
-            <button class="editAppointmentButton" id={"editAppointmentButton" + num} onClick={() => showEditAppointment()}>Edit</button>,
-            <button class="editAppointmentButton" id={"copyAppointmentButton" + num} onClick={() => showAddAppointment()}>Copy</button>,
-            <button class="editAppointmentButton" id={"deleteAppointmentButton" + num}>Delete</button>
+            <button class="editAppointmentButton" id={"deleteAppointmentButton" + num} onClick={() => this.deleteTherapistEvent(therapistEvent.eventId)}>Delete</button>
         )
         return items;
     }
 
-    getTherapistEventButtons(num, id)
+    getAppointmentButtons(num, appointment)
     {
         const items = [];
-        if (this.props.role == "admin")
+        if (this.props.role == "admin" || (this.props.role == "therapist" && appointment.therapistId == sessionStorage.getItem("id")))
         items.push(
-            <button class="editAppointmentButton" id={"editAppointmentButton" + num} onClick={() => showEditAppointment()}>Edit</button>,
-            <button class="editAppointmentButton" id={"copyAppointmentButton" + num} onClick={() => {showAddAppointment(); this.deleteTherapistEvent(id)}}>Copy</button>,
-            <button class="editAppointmentButton" id={"deleteAppointmentButton" + num} onClick={() => this.deleteTherapistEvent(id)}>Delete</button>
+            <button class="editAppointmentButton" id={"copyAppointmentButton" + num} onClick={() => this.props.copyAppointment(appointment.appointmentId)}>Copy</button>,
+            <button class="editAppointmentButton" id={"deleteAppointmentButton" + num} onClick={() => this.deleteAppointment(appointment.appointmentId)}>Delete</button>
         )
         return items;
     }
@@ -270,57 +243,90 @@ class AllTherapistSchedule extends React.Component {
     {
         axios.delete("http://10.29.163.20:8081/api/therapistevent/" + id).then((response) => {
             console.log(response);
-            this.forceUpdate(); 
+            this.props.getTherapistEvents();
         }).catch((error) => {
             console.log("Error caught");
             console.log(error);
         });
     }
 
+    deleteAppointment(id)
+    {
+        axios.delete("http://10.29.163.20:8081/api/appointment/" + id).then((response) => {
+            console.log(response);
+            this.props.getAppointments();
+        }).catch((error) => {
+            console.log("Error caught");
+            console.log(error);
+        });
+    }
+
+    getColor(id)
+    {
+        for (let i = 0; i < this.state.therapistList.length; i++)
+        {
+            let therapist = this.state.therapistList[i];
+            if (therapist.userId == id && therapist.color != null)
+                return therapist.color;
+        }
+        return "#00529b";
+    }
+
     getAppointmentElements(appointments)   {
     var appointmentElements = []; 
     appointments.forEach(appointment => {
-        var start = appointment.date.getHours();
-        var end = appointment.date.getHours() + appointment.length;
-        var position = (start - 5) * 52 + appointment.date.getMinutes() * 52/60 + 36;
-        var style = {
-                top: position,
-                height: appointment.length * 52, 
-                minHeight: appointment.length * 52
-            };
-        var startAMOrPM = "AM";
-        var endAMOrPM = "AM";
-        if (start >= 12)
-            startAMOrPM = "PM";
-        if (start > 12)
-            start -= 12;
-        if (end >= 12)
-            endAMOrPM = "PM";
-        if (end > 12)
-            end -= 12;
-        var time = start + " " + startAMOrPM + " - " + end + " " + endAMOrPM;
+        var start = new Date(appointment.startTime);
+        var end = new Date(appointment.endTime);
+        var position = (start.getHours() - 5) * 52 + start.getMinutes() * 52/60 + 36;
         var id = "appointment" + this.numAppointments.toString();
         var num = this.numAppointments.toString();
-        appointmentElements.push(
-            <div class="appointment" style={style} id={id} onClick={() => seeNotes(num)}>
-                <div class="hidden" id={id + "Height"}>{appointment.length * 52}px</div>
-                <div class="name">{appointment.title}</div>
-                <div class="name">Room {appointment.room}</div>
-                <div class="time">{appointment.type}: {appointment.subtype}</div>
-                <div class="notes" id={"notes" + num}>Notes: {appointment.notes}</div>
-                {this.getButtons(num)}
-            </div>
-        );
-        this.numAppointments++;
+        var patient = this.getPatientById(appointment.patientId);
+        var location = this.getLocationById(appointment.locationId);
+        if(patient != null && location != null)
+        {
+            var style = {
+                top: position,
+                height: Math.abs(end - start) / 36e5 * 52, 
+                minHeight: Math.abs(end - start) / 36e5 * 52,
+                backgroundColor: this.getColor(patient.therapistId)
+            };
+            appointmentElements.push(
+                <div class="appointment" style={style} id={id} onClick={() => seeNotes(num)}>
+                    <div class="hidden" id={id + "Height"}>{Math.abs(end - start) / 36e5 * 52}px</div>
+                    <div class="name">{patient.firstName + " " + patient.lastName}</div>
+                    <div class="name">{location.name} {appointment.roomNumber}</div>
+                    <div class="time">{appointment.adl}</div>
+                    <div class="notes" id={"notes" + num}>Notes: {appointment.notes}</div>
+                    {this.getAppointmentButtons(num, appointment)}
+                </div>
+            );
+            this.numAppointments++;
+        }
     });
     return appointmentElements;
 }
 
+    getLocationById(id)
+    {
+        for (let i = 0; i < this.state.locations.length; i++)
+        {
+            if (this.state.locations[i].locationId == id)
+                return this.state.locations[i];
+        } 
+    }
+
+    getPatientById(id)
+    {
+        for (let i = 0; i < this.state.patients.length; i++)
+        {
+            if (this.state.patients[i].patientId == id)
+                return this.state.patients[i];
+        }
+        
+    }
+
     getTherapistEventElements(therapistEvents)
     {
-        console.log(therapistEvents);
-        console.log(this.state.therapistEvents);
-        
         var therapistEventElements = []; 
         therapistEvents.forEach(therapistEvent => {
         var start = new Date(therapistEvent.startTime);
@@ -331,6 +337,7 @@ class AllTherapistSchedule extends React.Component {
                 height: Math.abs(end - start) / 36e5 * 52, 
                 minHeight: Math.abs(end - start) / 36e5 * 52
             };
+        
         var id = "appointment" + this.numAppointments.toString();
         var num = this.numAppointments.toString();
         therapistEventElements.push(
@@ -340,14 +347,56 @@ class AllTherapistSchedule extends React.Component {
                 <div class="name">{}</div>
                 <div class="time">{}</div>
                 <div class="notes" id={"notes" + num}>Notes: {therapistEvent.notes}</div>
-                {this.getTherapistEventButtons(num, therapistEvent.eventId)}
+                {this.getTherapistEventButtons(num, therapistEvent)}
             </div>
         );
         this.numAppointments++;
     });
     return therapistEventElements;
-    
-    
+    }
+
+    showAddAppointment(hour, minute, date, therapistIndex)   {
+        document.getElementById("addAppointment").style.display = "block";
+        let time = "";
+        if (hour < 10)
+            time = "0" + hour + ":" + minute;
+        else
+            time = hour + ":" + minute;
+        var startElements = document.getElementsByClassName("startTime");
+        for (let i = 0; i < startElements.length; i++)
+        {
+            startElements[i].value = time;
+        }
+        let endTime = "";
+        if (hour + 1 < 10)
+            endTime = "0" + (hour + 1) + ":" + minute;
+        else
+            endTime = (hour + 1) + ":" + minute;
+        var endElements = document.getElementsByClassName("endTime");
+        for (let i = 0; i < startElements.length; i++)
+        {
+            endElements[i].value = endTime;
+        }
+        var dateElements = document.getElementsByClassName("date");
+        for (let i = 0; i < dateElements.length; i++)
+        {
+            let year = date.getFullYear();
+            let month = date.getMonth() + 1;
+            if (month < 10)
+                month = '0' + month;
+            let day = date.getDate();
+            if (day < 10)
+                day = '0' + day;
+            dateElements[i].value = year + "-" + month + "-" + day;
+        }
+        var therapistElements = document.getElementsByClassName("selectTherapist");
+        for (let i = 0; i < therapistElements.length; i++)
+        {
+            if (this.props.role == "admin")
+                therapistElements[i].selectedIndex = therapistIndex;
+            else if (this.props.role == "therapist")
+                therapistElements[i].selectedIndex = 1;
+        }
     }
 
   render() {
@@ -410,7 +459,7 @@ class AllTherapistSchedule extends React.Component {
             </label>
 
             <label class="metricLabel" for="metricCheck">
-            show metrics
+            show metrics {this.props.update}
             <input type = "checkbox" id="metricCheck" onChange={() => showMetrics()}/>
             </label>
             </div>
@@ -450,30 +499,9 @@ function getPositionForTimeLine()
     return hour * 52 + minute * 52/60 + 36;
 }
 
-function getAppointments(date) {
-    var d = new Date();
-    while (d.getDay() != 1) //get Monday
-    {
-        d.setDate(d.getDate() - 1);
-    }
-    //placeholder appointments
-    d.setHours(13,0,0,0);
-    var appointment1 = { title: "Beatrice Coleman", room: "123", notes: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin porta sem ut ipsum dictum bibendum. Curabitur sodales interdum lorem, ac.", date: new Date(d), length: 1, type: "Pt", subtype: "U" };
-    d.setHours(8,0,0,0);
-    var appointment2 = { title: "Vivian Allison", room: "123", notes: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque egestas, lectus in congue scelerisque.", date: new Date(d), length: 1, type: "Ot", subtype: "ULG" };
-    d.setHours(9,0,0,0);
-    var appointment3 = { title: "Marsha Morgan", room: "123", notes: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sed mauris at nisi consequat eleifend. Sed nulla quam, vehicula at turpis a, cursus aliquet justo. Donec et erat sed mauris semper.", date: new Date(d), length: 2, type: "Sp", subtype: "Kitchen" };
-    d.setHours(19,0,0,0);
-    var appointment4 = { title: "Vivian Allison", room: "123", notes: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sed mauris at nisi consequat eleifend. Sed nulla quam, vehicula at turpis a, cursus aliquet justo. Donec et erat sed mauris semper.", date: new Date(d), length: 1, type: "Rt", subtype: "W/CA" };
-    var appointments = [];
-    appointments.push(appointment1, appointment2, appointment3, appointment4);
-    return appointments;
-}
-
 var idExpanded = null;
 function seeNotes(id)   {
     let notes = "notes" + id;
-    let edit = "editAppointmentButton" + id;
     let copy = "copyAppointmentButton" + id;
     let deleteApp = "deleteAppointmentButton" + id;
     id = "appointment" + id;
@@ -481,30 +509,24 @@ function seeNotes(id)   {
     {
         document.getElementById(id).style.height = "auto";
         document.getElementById(id).style.width = "150%";
-        document.getElementById(id).style.backgroundColor = "#003e74";
         document.getElementById(id).style.zIndex = 4;
         document.getElementById(notes).style.display = "block";
-        if (document.getElementById(edit) && document.getElementById(copy) && document.getElementById(deleteApp))
-        {
-            document.getElementById(edit).style.display = "block";
+        if (document.getElementById(copy))
             document.getElementById(copy).style.display = "block";
+        if (document.getElementById(deleteApp))
             document.getElementById(deleteApp).style.display = "block";
-        }
         idExpanded = id;
     }
     else if (idExpanded == id)
     {
         document.getElementById(id).style.height = document.getElementById(id + "Height").innerHTML;
         document.getElementById(id).style.width = "100%";
-        document.getElementById(id).style.backgroundColor = "#00529b";
         document.getElementById(id).style.zIndex = 2;
         document.getElementById(notes).style.display = "none";
-        if (document.getElementById(edit) && document.getElementById(copy) && document.getElementById(deleteApp))
-        {    
-            document.getElementById(edit).style.display = "none";
+        if (document.getElementById(copy))  
             document.getElementById(copy).style.display = "none";
+        if (document.getElementById(deleteApp))
             document.getElementById(deleteApp).style.display = "none";
-        }
         idExpanded = null;
     }
 }
@@ -542,58 +564,6 @@ function rightScroll()
         left: w,
         behavior: 'smooth'
       });
-}
-
-function showAddAppointment(hour, minute, date, therapistIndex)   {
-    document.getElementById("addAppointment").style.display = "block";
-    document.getElementById("editAppointment").style.display = "none";
-    let time = "";
-    if (hour < 10)
-        time = "0" + hour + ":" + minute;
-    else
-        time = hour + ":" + minute;
-    var selectElements = document.getElementsByClassName("select-field");
-    for (var i = 0; i < selectElements.length; i++)
-    {
-        selectElements[i].selectedIndex = 0;
-    }
-    var startElements = document.getElementsByClassName("startTime");
-    for (let i = 0; i < startElements.length; i++)
-    {
-        startElements[i].value = time;
-    }
-    let endTime = "";
-    if (hour + 1 < 10)
-        endTime = "0" + (hour + 1) + ":" + minute;
-    else
-        endTime = (hour + 1) + ":" + minute;
-    var endElements = document.getElementsByClassName("endTime");
-    for (let i = 0; i < startElements.length; i++)
-    {
-        endElements[i].value = endTime;
-    }
-    var dateElements = document.getElementsByClassName("date");
-    for (let i = 0; i < dateElements.length; i++)
-    {
-        let year = date.getFullYear();
-        let month = date.getMonth() + 1;
-        if (month < 10)
-            month = '0' + month;
-        let day = date.getDate();
-        if (day < 10)
-            day = '0' + day;
-        dateElements[i].value = year + "-" + month + "-" + day;
-    }
-    var therapistElements = document.getElementsByClassName("selectTherapist");
-    for (let i = 0; i < therapistElements.length; i++)
-    {
-        therapistElements[i].selectedIndex = therapistIndex;
-    }
-}
-
-function showEditAppointment()   {
-    document.getElementById("editAppointment").style.display = "block";
-    document.getElementById("addAppointment").style.display = "none";
 }
 
 function showScroll()   {

@@ -105,7 +105,7 @@ background-color:#8DD5ED;
     outline: none;
 }
 
-#addAppointment, #editAppointment {
+#addAppointment, #editAppointment, #copyAppointment {
     background-color: white;
     height: auto;
     width: 540px;
@@ -131,6 +131,14 @@ background-color:#8DD5ED;
     height: 30px;
     cursor: move;
 }
+
+#copyFormHeader    {
+    line-height: 30px;
+    font-size: 18px;
+    padding-left: 20px;
+}
+
+
 
 #close  {
     height: 100%;
