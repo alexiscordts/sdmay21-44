@@ -22,7 +22,7 @@ namespace InpatientTherapySchedulingProgram.Models
         [Key]
         [Column("user_id")]
         public int UserId { get; set; }
-        [Required]
+        //[Required]
         [Column("first_name")]
         [StringLength(255)]
         public string FirstName { get; set; }
@@ -38,11 +38,11 @@ namespace InpatientTherapySchedulingProgram.Models
         [Column("phone_number")]
         [StringLength(255)]
         public string PhoneNumber { get; set; }
-        [Required]
+        //[Required]
         [Column("username")]
         [StringLength(255)]
         public string Username { get; set; }
-        [Required]
+        //[Required]
         [Column("password")]
         [StringLength(255)]
         public string Password { get; set; }
