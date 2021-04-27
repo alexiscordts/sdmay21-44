@@ -8,11 +8,11 @@ const AddTherapyTypes = () => {
   const [name, setName] = useState('');
   const [subtypes, setSubtypes] = useState('');
 
-  const handleAdd = async ()  => {
-    subtypes.split(',').forEach(async (adl) => {
+  const handleAdd = ()  => {
+    subtypes.split(',').forEach((adl) => {
       const url = "http://10.29.163.20:8081/api/therapy/"; 
       const abbreviation = adl.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'');
-      await  axios
+      axios
         .post(url, {
           adl,
           type: name,
@@ -22,13 +22,12 @@ const AddTherapyTypes = () => {
           console.log(response);
         })
         .catch(function (error) {
-         
-        console.log('data',error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
+          console.log(error.response)
         });
     })
-    //   window.location.href = "/view_therapy_types";
+    setTimeout(function () {
+     window.location.href = "/view_therapy_types";
+    }, 2000);
   }
 
   return (
@@ -47,11 +46,10 @@ const AddTherapyTypes = () => {
               </label>
               <label for="name">
                 <span>
-                  Subtypes
+                  Subtype
                   <span class="required">*</span>
                 </span>
                 <input type="text" class="input-field" name="subtypes" onChange={(e) => setSubtypes(e.target.value)}/>
-                <p class="submitLabel">(Comma seperated values)</p>
               </label>
               <div class="submitLabel"><input type="button" value="Create" onClick={() => handleAdd()} /></div>
             </form>
