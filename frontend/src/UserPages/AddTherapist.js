@@ -71,7 +71,6 @@ class AddTherapist extends React.Component {
             const permUrl = "http://10.29.163.20:8081/api/permission/";
             const role = "therapist";
             const permission = { userId, role };
-            console.log(userId);
             axios.post(permUrl, permission).catch((error) => {
               console.log(error);
             });

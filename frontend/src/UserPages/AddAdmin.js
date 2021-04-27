@@ -51,7 +51,6 @@ const AddAdmin = () => {
     const permUrl = "http://10.29.163.20:8081/api/permission/";
     const role = "admin";
     const permission = { userId, role };
-    console.log(permission);
 
     axios.post(permUrl, permission);
   }
