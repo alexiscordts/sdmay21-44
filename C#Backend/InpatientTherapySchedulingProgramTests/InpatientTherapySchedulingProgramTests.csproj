@@ -25,4 +25,10 @@
     <ProjectReference Include="..\InpatientTherapySchedulingProgram\InpatientTherapySchedulingProgram.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="ServiceTests\HoursWorkedServiceTests.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+  </ItemGroup>
+
 </Project>

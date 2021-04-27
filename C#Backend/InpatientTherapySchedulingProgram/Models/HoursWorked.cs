@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace InpatientTherapySchedulingProgram.Models
 {
     [Table("hours_worked")]
-    public partial class HoursWorked
+    public partial class HoursWorked : IEquatable<HoursWorked>
     {
         [Key]
         [Column("hours_worked_id")]
