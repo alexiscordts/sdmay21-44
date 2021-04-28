@@ -17,7 +17,6 @@ class Dashboard extends React.Component {
             this.scheduleHeader = "My Schedule";
         else
             this.scheduleHeader = "Therapist Schedule";
-        this.weeks = this.getDropdownDates();
         this.state = {
             locations: [],
             weekChanged: false,
@@ -146,6 +145,7 @@ class Dashboard extends React.Component {
         {
             this.setState({schedule: 2});
         }
+        this.weeks = this.getDropdownDates();
     }
 
     getTherapistEvents(therapistId) {
@@ -308,6 +308,21 @@ class Dashboard extends React.Component {
         return elements;
     }
 
+    updateAppointments()  {
+
+        if (this.state.schedule != 1)
+        {
+            this.getAppointments();
+            this.getTherapistEvents();
+        }
+        else
+        {
+            this.getAppointments(sessionStorage.getItem("id"));
+            this.getTherapistEvents(sessionStorage.getItem("id"));
+        }
+    }
+    
+
     getDropdownDates()  {
         let d = new Date();
         while (d.getDay() != 0) //get Sunday
@@ -320,9 +335,9 @@ class Dashboard extends React.Component {
         d.setDate(d.getDate() - 7);
         for(let i = 0; i < 5; i++)
         {
-            let newDate = new Date(d.getTime());
+            let newDate = new Date(d);
             elements.push(
-                <div class="link" onClick={() => {this.state.date = newDate; this.setSchedule(newDate); this.week=newDate.toLocaleDateString('en-US'); this.setState({weekChanged:true}); }}>{newDate.toLocaleDateString('en-US')}</div>
+                <div class="link" onClick={() => {this.setState({date: new Date(newDate)}); this.week=newDate.toLocaleDateString('en-US'); this.updateAppointments() }}>{newDate.toLocaleDateString('en-US')}</div>
             );
             d.setDate(d.getDate() + 7);
         }

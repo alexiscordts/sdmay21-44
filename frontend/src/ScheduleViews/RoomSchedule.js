@@ -360,6 +360,7 @@ showAddAppointment(hour, minute, date, room)   {
 
   render() {
     this.time = {value: loadTimeLine()} //Update timeline
+    toggleDay(new Intl.DateTimeFormat('en-US', {weekday: 'long'}).format(this.props.date));
     return (
         <div>
         <div id="roomSchedule">

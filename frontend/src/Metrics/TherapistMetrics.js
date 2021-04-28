@@ -1,84 +1,105 @@
 import React from "react";
 import "../Dashboard.css";
 import "../ViewMetrics.css";
+import axios from "axios";
 import { ResponsiveBar } from '@nivo/bar'
 
 class TherapistMetrics extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            appointments: [],
+            userList: [],
+            therapistList: []
+        }
+    }
+
+    componentDidMount() {
+        const url = "http://10.29.163.20:8081/api/";
+        axios.get(url + "user").then((response) => {
+            const userList = response.data;
+            this.setState({ userList });
+              axios.get("http://10.29.163.20:8081/api/permission").then((response) => {
+              const therapistList = [];
+              const permissions = response.data;
+              this.state.userList.forEach(user =>{
+                  permissions.forEach(permission => {
+                      if (permission.userId == user.userId && permission.role == "therapist")
+                          therapistList.push(user);
+                  })
+                    this.setState({therapistList});
+                });
+            });
+        });
+    }
+
+    getData()
+    {
+        const data = [];
+        this.state.therapistList.forEach(therapist => {
+            const dataEntry = {
+                therapist: therapist.firstName + " " + therapist.lastName,
+                Sunday: 0,
+                Monday: 0,
+                Tuesday: 0,
+                Wednesday: 0,
+                Thursday: 0,
+                Friday: 0,
+                Saturday: 0,
+            }
+            this.props.appointments.forEach(appointment => {
+                if (appointment.therapistId == therapist.userId)
+                {
+                    let start = new Date(appointment.startTime);
+                    let end = new Date(appointment.endTime);
+                    switch (start.getDay())
+                    {
+                        case 0:
+                            dataEntry.Sunday += Math.round((Math.abs(end - start) / 36e5) * 100) / 100;
+                            break;
+                        case 1:
+                            dataEntry.Monday += Math.round((Math.abs(end - start) / 36e5) * 100) / 100;
+                            break;
+                        case 2:
+                            dataEntry.Tuesday += Math.round((Math.abs(end - start) / 36e5) * 100) / 100;
+                            break;
+                        case 3:
+                            dataEntry.Wednesday += Math.round((Math.abs(end - start) / 36e5) * 100) / 100;
+                            break;
+                        case 4:
+                            dataEntry.Thursday += Math.round((Math.abs(end - start) / 36e5) * 100) / 100;
+                            break;
+                        case 5:
+                            dataEntry.Friday += Math.round((Math.abs(end - start) / 36e5) * 100) / 100;
+                            break;
+                        case 6:
+                            dataEntry.Saturday += Math.round((Math.abs(end - start) / 36e5) * 100) / 100;
+                            break;
+                    }
+                }
+            });
+            data.push(dataEntry);
+        });
+        return data;
+    }
 
   render() {
+    const data = this.getData();
 
-    const data = ([
-        {
-        "therapist": "Spongebob Squarepants",
-          "sunday": 39,
-          "monday": 65,
-          "tuesday": 25,
-          "wednesday": 47,
-          "thursday": 79,
-          "friday": 34,
-          "saturday": 70,
-        },
-        {
-            "therapist": "Patrick Star",
-              "sunday": 64,
-              "monday": 25,
-              "tuesday": 5,
-              "wednesday": 20,
-              "thursday": 48,
-              "friday": 59,
-              "saturday": 80,
-        },
-        {
-            "therapist": "Squidward Tentacles",
-              "sunday": 39,
-              "monday": 65,
-              "tuesday": 25,
-              "wednesday": 47,
-              "thursday": 79,
-              "friday": 34,
-              "saturday": 70,
-            },
-            {
-                "therapist": "Sandy Cheeks",
-                  "sunday": 64,
-                  "monday": 25,
-                  "tuesday": 5,
-                  "wednesday": 20,
-                  "thursday": 48,
-                  "friday": 59,
-                  "saturday": 80,
-            },
-            {
-                "therapist": "Mr.Krabs",
-                  "sunday": 39,
-                  "monday": 65,
-                  "tuesday": 25,
-                  "wednesday": 47,
-                  "thursday": 79,
-                  "friday": 34,
-                  "saturday": 70,
-                },
-                {
-                    "therapist": "Mrs. Puff",
-                      "sunday": 64,
-                      "monday": 25,
-                      "tuesday": 5,
-                      "wednesday": 20,
-                      "thursday": 48,
-                      "friday": 59,
-                      "saturday": 80,
-                }
-      ]);
+    const style = {
+        minWidth: 200 * this.state.therapistList.length
+    }
 
     return (   
         <div id="chart">
+        <div id="innerChartContainer" style={style}>
         <ResponsiveBar
         data={data}
-        keys={[ 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday' ]}
+        keys={[ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ]}
         indexBy="therapist"
         margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
         padding={0.3}
-        maxValue={100}
+        maxValue={12}
         groupMode="grouped"
         valueScale={{ type: 'linear' }}
         indexScale={{ type: 'band', round: true }}
@@ -110,7 +131,7 @@ class TherapistMetrics extends React.Component {
             tickSize: 5,
             tickPadding: 5,
             tickRotation: 0,
-            legend: 'Therapist',
+            legend: '',
             legendPosition: 'middle',
             legendOffset: 32
         }}
@@ -118,7 +139,7 @@ class TherapistMetrics extends React.Component {
             tickSize: 5,
             tickPadding: 5,
             tickRotation: 0,
-            legend: 'Percent of Time in Therapy',
+            legend: 'Hours in Therapy',
             legendPosition: 'middle',
             legendOffset: -40
         }}
@@ -153,6 +174,7 @@ class TherapistMetrics extends React.Component {
         motionStiffness={90}
         motionDamping={15}
     />
+    </div>
     </div>
     );
     }

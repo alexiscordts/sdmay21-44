@@ -320,6 +320,7 @@ getAppointmentButtons(num, id)
   render() {
     this.time = {value: loadTimeLine()} //Update timeline
     var roomSchedules = this.loadPatients();
+    toggleDay(new Intl.DateTimeFormat('en-US', {weekday: 'long'}).format(this.props.date));
     return (
         <div>
         <div id="roomSchedule">
@@ -554,10 +555,10 @@ function decColWidth()  {
     var cols = document.getElementsByClassName("therapist");
     for (var i = 0; i < cols.length; i++)
     {
-        if (cols[i].getBoundingClientRect().width > 150)
+        if (cols[i].getBoundingClientRect().width > 100)
         {
             cols[i].style.minWidth = (cols[i].getBoundingClientRect().width - 10) + "px";
-            cols[i].style.width = (cols[i].getBoundingClientRect().width + 10) + "px";
+            cols[i].style.width = (cols[i].getBoundingClientRect().width - 10) + "px";
         }
     }
 }

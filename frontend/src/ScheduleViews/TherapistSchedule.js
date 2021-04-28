@@ -160,9 +160,6 @@ class TherapistSchedule extends React.Component {
         {
             let appointment = this.props.appointments[i]
             let start = new Date(appointment.startTime);
-            console.log(start.getFullYear() + " - " + date.getFullYear());
-            console.log(start.getMonth() + " - " + date.getMonth());
-            console.log(start.getDate() + " - " + date.getDate());
             if (start.getFullYear() === date.getFullYear() &&
             start.getMonth() === date.getMonth() &&
             start.getDate() === date.getDate())

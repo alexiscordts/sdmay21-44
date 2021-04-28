@@ -1,42 +1,82 @@
 import React from "react";
 import "../Dashboard.css";
 import "../ViewMetrics.css";
+import axios from "axios";
 import { ResponsiveBar } from '@nivo/bar'
 
 class MyMetrics extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            appointments: []
+        }
+    }
+
+    componentDidMount() {
+            var start = new Date(this.props.date);
+            var end = new Date(this.props.date);
+            start.setHours(0);
+            start.setMinutes(0);
+            start.setMinutes(0);
+            end.setHours(15);
+            end.setMinutes(0);
+            end.setMinutes(0);
+            while (start.getDay() != 0) //get Sunday
+            {
+                start.setDate(start.getDate() - 1);
+            }
+            while (end.getDay() != 6) //get Sunday
+            {
+                end.setDate(end.getDate() + 1);
+            }
+
+            const event = ({
+                startTime: start,
+                endTime: end,
+                therapistId: sessionStorage.getItem("id"),
+                adl: "null"
+            })
+
+            axios
+            .post("http://10.29.163.20:8081/api/appointment/getAppointmentsByTherapistId", event)
+            .then((response) => {
+                console.log(response.data);
+                const appointments = response.data;
+                this.setState({ appointments });
+            })
+            .catch((error) => {
+                console.log("Error caught");
+                console.log(error);
+            });
+    }
+
+    getData()   {
+        this.totalHours = 0.0;
+        var date = new Date(this.props.date);
+        const data = [];
+        const days = ["Sunday", 'Monday', "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        days.forEach(day => {
+            var total = 0.0;
+            this.state.appointments.forEach(appointment => {
+                let start = new Date(appointment.startTime);
+                let end = new Date(appointment.endTime);
+                if (start.getFullYear() === date.getFullYear() &&
+                start.getMonth() === date.getMonth() &&
+                start.getDate() === date.getDate())
+                {
+                    total += Math.round((Math.abs(end - start) / 36e5) * 100) / 100;
+                    this.totalHours += Math.round((Math.abs(end - start) / 36e5) * 100) / 100;
+                }
+                    
+            });
+            date.setDate(date.getDate() + 1);
+            data.push({"day": day, "percent": total})
+        });
+        return data;
+    }
 
   render() {
-
-    const data = ([
-        {
-            "day": "Sunday",
-            "percent": 25
-        },
-        {
-            "day": "Monday",
-            "percent": 67
-        },
-        {
-            "day": "Tuesday",
-            "percent": 80
-        },
-        {
-            "day": "Wednesday",
-            "percent": 73
-        },
-        {
-          "day": "Thursday",
-          "percent": 42
-        },
-        {
-            "day": "Friday",
-            "percent": 21
-        },
-        {
-            "day": "Saturday",
-            "percent": 5
-        }
-      ]);
+    const data = this.getData();
 
     return (
         <div>
@@ -47,7 +87,7 @@ class MyMetrics extends React.Component {
                 indexBy="day"
                 margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
                 padding={0.3}
-                maxValue={100}
+                maxValue={12}
                 valueScale={{ type: 'linear' }}
                 indexScale={{ type: 'band', round: true }}
                 colors={{ scheme: 'paired' }}
@@ -79,7 +119,7 @@ class MyMetrics extends React.Component {
                     tickSize: 5,
                     tickPadding: 5,
                     tickRotation: 0,
-                    legend: 'Day',
+                    legend: '',
                     legendPosition: 'middle',
                     legendOffset: 32
                 }}
@@ -87,7 +127,7 @@ class MyMetrics extends React.Component {
                     tickSize: 5,
                     tickPadding: 5,
                     tickRotation: 0,
-                    legend: 'Percent of Time in Therapy',
+                    legend: 'Hours in Therapy',
                     legendPosition: 'middle',
                     legendOffset: -40
                 }}
@@ -101,9 +141,8 @@ class MyMetrics extends React.Component {
             </div>
             <div id="mystats">
                 <h3>My Stats</h3>
-                <div class="col">Hours in Therapy: 30</div>
-                <div class="col">Percent in Therapy: 75%</div>
-                <div class="col">More stats...</div>
+                <div class="col">Hours in Therapy: {this.totalHours.toFixed(2)}</div>
+                <div class="col">Percent in Therapy: {((this.totalHours / 40) * 100).toFixed(2)}%</div>
             </div>
             </div>
     );

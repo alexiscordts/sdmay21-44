@@ -32,14 +32,28 @@ import axios from "axios";
 export default class App extends React.Component {
   constructor() {
     super();
+    this.state = {
+      loggedIn: false
+    }
     console.log("local storage: " + sessionStorage.getItem('loggedIn'));
-      if (sessionStorage.getItem('loggedIn') && sessionStorage.getItem('role') != null && sessionStorage.getItem('username') != null)
+      if (sessionStorage.getItem('loggedIn') != null && sessionStorage.getItem('role') != null && sessionStorage.getItem('username') != null && sessionStorage.getItem('password') != null)
       {
-        this.state = {
-          loggedIn: true,
-        }
-        this.role = sessionStorage.getItem('role');
-        this.username = sessionStorage.getItem('username');
+        const url = "http://10.29.163.20:8081/api/user/getUserByUsername/";
+        axios
+        .get(url + sessionStorage.getItem('username'))
+        .then((response) => {
+          console.log(response.data);
+          
+          this.setState({ errors: "" });
+          this.handleLogin(response.data, sessionStorage.getItem('password'));
+        })
+        .catch((error) => {
+          console.log("Error caught");
+          console.log(error);
+          this.setState({
+            errors: "Error: username / password incorrect",
+          });
+        });
       }
      else
      {
@@ -60,14 +74,24 @@ export default class App extends React.Component {
       .post("http://10.29.163.20:8081/api/user/login/", data)
       .then((response) => {
         console.log("log in success!");
-        this.setState({
-          loggedIn: true,
-        });
-        sessionStorage.setItem('loggedIn', true);
         sessionStorage.setItem('username', this.username);
         sessionStorage.setItem('id', data.userId);
         sessionStorage.setItem('firstname', data.firstName);
         sessionStorage.setItem('lastname', data.lastName);
+        sessionStorage.setItem('password', data.password);
+        axios //get permission of user
+        .get("http://10.29.163.20:8081/api/permission/" + data.userId)
+        .then((response) => {
+          this.role = response.data.role;
+          sessionStorage.setItem('role', response.data.role);
+          this.setState({
+            loggedIn: true,
+          });
+          sessionStorage.setItem('loggedIn', true);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
       })
       .catch((error) => {
         console.log("Error caught");
@@ -77,16 +101,6 @@ export default class App extends React.Component {
         });
       });
     console.log("Parent handled login");
-
-    axios //get permission of user
-      .get("http://10.29.163.20:8081/api/permission/" + data.userId)
-      .then((response) => {
-        this.role = response.data.role;
-        sessionStorage.setItem('role', response.data.role);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
 
     console.log(this.state.loggedIn);
     return true;
