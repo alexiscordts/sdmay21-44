@@ -4,26 +4,48 @@ import "../TableStyles.css";
 import "../UserPages/UserStyles.css";
 import "../Settings.css";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 class ViewRooms extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      locationList: [],
+      roomList: [],
+      rooms: [],
+      locationId: null,
+    };
+    this.updateRoom = this.updateRoom.bind(this);
   }
 
-  render() {
-    var roomsList = [{ number: 401 }, { number: 402 }];
-    var rows = [];
-    roomsList.forEach(
-      function (room) {
-        rows.push(
+  componentDidMount() {
+    axios.get("http://10.29.163.20:8081/api/location/").then((response) => {
+      this.setState({
+        locationList: this.state.locationList.concat(response.data),
+      });
+    });
+
+    axios.get("http://10.29.163.20:8081/api/room").then((response) => {
+      this.setState({ roomList: this.state.roomList.concat(response.data) });
+    });
+  }
+
+  updateRoom(event) {
+    this.setState({ [event.target.name]: event.target.value });
+    var id = event.target.value;
+    var rooms = [];
+    this.state.roomList.forEach(function (room) {
+      if (id == room.locationId) {
+        rooms.push(
           <tr>
             <td>{room.number}</td>
             <td>
               <button
                 class="iconButton"
                 onClick={() => {
-                  //Delete room
-                  console.log("Room delete click" + room.number);
+                  const url =
+                    "http://10.29.163.20:8081/api/room/" + room.number;
+                  axios.delete(url);
                 }}
               >
                 <img
@@ -35,6 +57,23 @@ class ViewRooms extends React.Component {
             </td>
           </tr>
         );
+      }
+    });
+    this.setState({ rooms });
+  }
+
+  render() {
+    var locations = [];
+    locations.push(
+      <option hidden disabled selected value>
+        Select a Location
+      </option>
+    );
+    this.state.locationList.forEach(
+      function (location) {
+        locations.push(
+          <option value={location.locationId}>{location.name}</option>
+        );
       }.bind(this)
     );
 
@@ -43,17 +82,13 @@ class ViewRooms extends React.Component {
         <div class="userHeaderRow">
           <h2>Rooms</h2>
           <div class="dropdown">
-            <button class="dropbtn">
-              Location
-              <i class="arrow down"></i>
-            </button>
-            <div class="dropdown-content">
-              <a>Location 1 </a>
-              <br></br>
-              <a>Location 2</a>
-              <br></br>
-              <a>Location 3</a>
-            </div>
+            <select
+              class="dropbtn"
+              value={this.state.locationId}
+              onChange={this.updateRoom}
+            >
+              {locations}
+            </select>
           </div>
 
           <Link to="/add_room"><button
@@ -73,7 +108,7 @@ class ViewRooms extends React.Component {
               <th>Delete</th>
             </tr>
           </thead>
-          <tbody>{rows}</tbody>
+          <tbody>{this.state.rooms}</tbody>
         </table>
       </div>
     );

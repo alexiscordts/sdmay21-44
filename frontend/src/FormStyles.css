@@ -81,38 +81,37 @@
 	cursor: pointer;
 }
 
-.buttonContainer{
-	display: flex;
-  	justify-content: space-around;
+.buttonContainer {
+  display: flex;
+  justify-content: space-around;
 }
 
-.checkBoxArea{
-	margin-left: 105px;
+.checkBoxArea {
+  margin-left: 105px;
 }
 
 .subtypeInputContainer {
-	display: flex;
-	flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .inputFieldSubtype {
-	margin-bottom: 5px;
-	box-sizing: border-box;
-	border: 1px solid #C2C2C2;
-	box-shadow: 1px 1px 4px #EBEBEB;
-	border-radius: 3px;
-	padding: 3px;
-	outline: none;
-	height: 30px;
-
+  margin-bottom: 5px;
+  box-sizing: border-box;
+  border: 1px solid #c2c2c2;
+  box-shadow: 1px 1px 4px #ebebeb;
+  border-radius: 3px;
+  padding: 3px;
+  outline: none;
+  height: 30px;
 }
 
 .changePasswordSubmitButtonContainer {
-	padding-top: 10px;
+  padding-top: 10px;
 }
 
 .labelChangePassword {
-	padding-bottom: 15px;
+  padding-bottom: 15px;
 }
 
 @font-face {
@@ -123,14 +122,15 @@
     format("otf");
 }
 
-#delete	{
-	background-color: #df0000;
+#delete {
+  background-color: #df0000;
 }
 
-#delete:hover	{
-	opacity: 25%;
+#delete:hover {
+  opacity: 25%;
 }
 
-textarea, input	{
-	font-family: Arial, Sans-serif;
+textarea,
+input {
+  font-family: Arial, Sans-serif;
 }

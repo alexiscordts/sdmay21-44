@@ -44,8 +44,6 @@ class ViewAdmin extends React.Component {
                     <Link to="/edit_admin"><button
                       class="iconButton"
                       onClick={() => {
-                        sessionStorage.setItem("firstName", admin.firstName);
-                        sessionStorage.setItem("lastName", admin.lastName);
                         sessionStorage.setItem("userId", admin.userId);
                         // sessionStorage.setItem("email", admin.email);
                       }}

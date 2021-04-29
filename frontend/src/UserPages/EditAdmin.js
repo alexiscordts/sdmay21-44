@@ -5,14 +5,37 @@ import axios from "axios";
 class EditAdmin extends React.Component {
   constructor(props) {
     super(props);
+    this.state = { admin: [], password: null };
     this.deleteAdmin = this.deleteAdmin.bind(this);
     this.deletePermission = this.deletePermission.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  componentDidMount() {
+    var admin = [];
+    var id = sessionStorage.getItem("userId");
+    axios
+      .get("http://10.29.163.20:8081/api/user/getUserByUserId/" + id)
+      .then((response) => {
+        admin = response.data;
+        this.setState({ admin });
+        var password = admin.password;
+        this.setState({ password });
+      });
+  }
+
+  handleChange(event) {
+    this.setState({
+      admin: {
+        ...this.state.admin,
+        [event.target.name]: event.target.value,
+      },
+    });
   }
 
   deleteAdmin() {
     const url =
       "http://10.29.163.20:8081/api/user/" + sessionStorage.getItem("userId");
-    console.log(url);
     axios.delete(url);
     setTimeout(this.deletePermission, 2000);
   }
@@ -24,6 +47,7 @@ class EditAdmin extends React.Component {
     axios.delete(url);
     window.location.href = "/view_admin";
   }
+
   render() {
     return (
       <div>
@@ -40,7 +64,18 @@ class EditAdmin extends React.Component {
                   type="text"
                   class="input-field"
                   name="fname"
-                  defaultValue={sessionStorage.getItem("firstName")}
+                  defaultValue={this.state.admin.firstName}
+                  onChange={this.handleChange}
+                />
+              </label>
+              <label for="middleName">
+                <span>Middle Name</span>
+                <input
+                  type="text"
+                  class="input-field"
+                  onChange={this.handleChange}
+                  name="middleName"
+                  defaultValue={this.state.admin.middleName}
                 />
               </label>
               <label for="lname">
@@ -51,20 +86,56 @@ class EditAdmin extends React.Component {
                   type="text"
                   class="input-field"
                   name="lname"
-                  defaultValue={sessionStorage.getItem("lastName")}
+                  onChange={this.handleChange}
+                  defaultValue={this.state.admin.lastName}
                 />
               </label>
-              {/* <label for="email">
+              <label for="address">
+                <span>Address</span>
+                <input
+                  type="text"
+                  class="input-field"
+                  onChange={this.handleChange}
+                  name="address"
+                  value={this.state.admin.address}
+                />
+              </label>
+              <label for="phoneNumber">
+                <span>Phone Number</span>
+                <input
+                  type="text"
+                  class="input-field"
+                  onChange={this.handleChange}
+                  name="phoneNumber"
+                  value={this.state.admin.phoneNumber}
+                />
+              </label>
+              <label for="email">
                 <span>
-                  E-mail <span class="required">*</span>
+                  Username
+                  <span class="required">*</span>
                 </span>
                 <input
                   type="text"
                   class="input-field"
-                  name="email"
-                  defaultValue={sessionStorage.getItem("email")}
+                  onChange={this.handleChange}
+                  name="username"
+                  value={this.state.admin.username}
                 />
-              </label> */}
+              </label>
+              <label for="password">
+                <span>
+                  Password
+                  <span class="required">*</span>
+                </span>
+                <input
+                  type="password"
+                  class="input-field"
+                  onChange={this.handleChange}
+                  name="password"
+                  value={this.state.admin.password}
+                />
+              </label>
               <div class="buttonContainer">
                 <input
                   type="button"
@@ -79,7 +150,46 @@ class EditAdmin extends React.Component {
                     }
                   }}
                 />
-                <input type="submit" value="Save" />
+                <input
+                  type="button"
+                  value="Save"
+                  onClick={() => {
+                    const url =
+                      "http://10.29.163.20:8081/api/user/" +
+                      this.state.admin.userId;
+
+                    if (this.state.password != this.state.admin.password) {
+                      axios.put(url, this.state.admin);
+                    } else {
+                      const {
+                        userId,
+                        username,
+                        firstName,
+                        lastName,
+                        middleName,
+                        address,
+                        phoneNumber,
+                        color,
+                      } = this.state.admin;
+                      const active = 1;
+                      const admin = {
+                        userId,
+                        username,
+                        firstName,
+                        lastName,
+                        middleName,
+                        address,
+                        phoneNumber,
+                        color,
+                        active,
+                      };
+                      axios.put(url, admin);
+                    }
+                    setTimeout(() => {
+                      window.location.href = "/view_admin";
+                    }, 2000);
+                  }}
+                />
               </div>
             </form>
           </div>

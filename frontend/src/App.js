@@ -28,6 +28,7 @@ import ViewTherapyTypes from "./TherapyTypes/ViewTherapyTypes";
 import ChangePassword from "./ChangePassword";
 import Nav from './Nav.js'
 import axios from "axios";
+import EditPatient from "./UserPages/EditPatient";
 
 export default class App extends React.Component {
   constructor() {
@@ -138,6 +139,7 @@ export default class App extends React.Component {
             <Route path="/add_room" component={AddRoom} />
             <Route path="/view_Metrics" component={ViewMetrics} />
             <Route path="/change_password" component={ChangePassword} />
+            <Route path="/edit_patient" component={EditPatient} />
             <Route exact path="/" component={() => <Dashboard role={this.role} />} />
           </Switch>
         </Router>

@@ -41,10 +41,7 @@ class ViewNurse extends React.Component {
                     <button
                       class="iconButton"
                       onClick={() => {
-                        sessionStorage.setItem("fname", nurse.firstName);
-                        sessionStorage.setItem("lname", nurse.lastName);
                         sessionStorage.setItem("userId", nurse.userId);
-                        // sessionStorage.setItem("email", admin.email);
                         window.location.href = "/edit_nurse";
                       }}
                     >
