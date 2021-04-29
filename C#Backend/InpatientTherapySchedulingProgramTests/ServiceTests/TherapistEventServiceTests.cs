@@ -395,11 +395,5 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
 
             await _testTherapistEventService.Invoking(s => s.UpdateTherapistEvent(fakeTherapistEvent.EventId, fakeTherapistEvent)).Should().ThrowAsync<TherapistEventDoesNotExistException>();
         }
-
-        [TestMethod]
-        public async Task UpdateNonActiveTherapistEventThrowsTherapistEventDoesNotExistException()
-        {
-            await _testTherapistEventService.Invoking(s => s.UpdateTherapistEvent(_nonActiveTherapistEvent.EventId, _nonActiveTherapistEvent)).Should().ThrowAsync<TherapistEventDoesNotExistException>();
-        }
     }
 }

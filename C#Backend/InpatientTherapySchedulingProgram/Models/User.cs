@@ -2,18 +2,19 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
 
 namespace InpatientTherapySchedulingProgram.Models
 {
     [Table("user")]
-    public partial class User
+    public partial class User : IEquatable<User>
     {
         public User()
         {
             Appointment = new HashSet<Appointment>();
+            Authentication = new HashSet<Authentication>();
             HoursWorked = new HashSet<HoursWorked>();
-            Patient = new HashSet<Patient>();
+            PatientPmrPhysician = new HashSet<Patient>();
+            PatientTherapist = new HashSet<Patient>();
             Permission = new HashSet<Permission>();
             TherapistEvent = new HashSet<TherapistEvent>();
         }
@@ -21,7 +22,7 @@ namespace InpatientTherapySchedulingProgram.Models
         [Key]
         [Column("user_id")]
         public int UserId { get; set; }
-        [Required]
+        //[Required]
         [Column("first_name")]
         [StringLength(255)]
         public string FirstName { get; set; }
@@ -37,23 +38,30 @@ namespace InpatientTherapySchedulingProgram.Models
         [Column("phone_number")]
         [StringLength(255)]
         public string PhoneNumber { get; set; }
-        [Required]
+        //[Required]
         [Column("username")]
         [StringLength(255)]
         public string Username { get; set; }
-        [Required]
+        //[Required]
         [Column("password")]
         [StringLength(255)]
         public string Password { get; set; }
+        [Column("color")]
+        [StringLength(255)]
+        public string Color { get; set; }
         [Column("active")]
         public bool Active { get; set; }
 
         [InverseProperty("Therapist")]
         public virtual ICollection<Appointment> Appointment { get; set; }
         [InverseProperty("User")]
+        public virtual ICollection<Authentication> Authentication { get; set; }
+        [InverseProperty("User")]
         public virtual ICollection<HoursWorked> HoursWorked { get; set; }
-        [InverseProperty("PmrPhysician")]
-        public virtual ICollection<Patient> Patient { get; set; }
+        [InverseProperty(nameof(Patient.PmrPhysician))]
+        public virtual ICollection<Patient> PatientPmrPhysician { get; set; }
+        [InverseProperty(nameof(Patient.Therapist))]
+        public virtual ICollection<Patient> PatientTherapist { get; set; }
         [InverseProperty("User")]
         public virtual ICollection<Permission> Permission { get; set; }
         [InverseProperty("Therapist")]

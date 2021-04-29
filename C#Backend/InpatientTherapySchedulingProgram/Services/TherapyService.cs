@@ -33,6 +33,8 @@ namespace InpatientTherapySchedulingProgram.Services
                 throw new TherapyMainDoesNotExistException();
             }
 
+            therapy.Active = true;
+
             _context.Therapy.Add(therapy);
 
             try

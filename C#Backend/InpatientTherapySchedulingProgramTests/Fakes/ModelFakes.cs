@@ -10,6 +10,7 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
         public static Faker<TherapyMain> TherapyMainFake { get; set; }
         public static Faker<Therapy> TherapyFake { get; set; }
         public static Faker<Location> LocationFake { get; set; }
+        public static Faker<HoursWorked> HoursWorkedFake { get; set; }
         public static Faker<TherapistEvent> TherapistEventFake { get; set; }
         public static Faker<Permission> PermissionFake { get; set; }
         public static Faker<Patient> PatientFake { get; set; }
@@ -23,6 +24,7 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
             BuildTherapyMainFakes();
             BuildTherapyFakes();
             BuildLocationFakes();
+            BuildHoursWorkedFakes();
             BuildTherapistEventFakes();
             BuildPermissionFakes();
             BuildPatientFakes();
@@ -81,6 +83,16 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
             LocationFake.RuleFor(m => m.PhoneNumber, r => r.Phone.PhoneNumber());
             LocationFake.RuleFor(m => m.Active, true);
         }
+        private static void BuildHoursWorkedFakes()
+        {
+            HoursWorkedFake = new Faker<HoursWorked>();
+            HoursWorkedFake.RuleFor(m => m.HoursWorkedId, r => r.UniqueIndex);
+            HoursWorkedFake.RuleFor(m => m.StartTime, r => r.Date.Past());
+            HoursWorkedFake.RuleFor(m => m.EndTime, r => r.Date.Past());
+            HoursWorkedFake.RuleFor(m => m.UserId, r => r.UniqueIndex);
+            HoursWorkedFake.RuleFor(m => m.Active, r => true);
+            //HoursWorkedFake.RuleFor(m => m.User, BuildUserFakes());
+        }
 
         private static void BuildTherapistEventFakes()
         {
@@ -99,7 +111,8 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
             {
                 "therapist",
                 "nurse",
-                "admin"
+                "admin",
+                "physician"
             };
 
             PermissionFake = new Faker<Permission>();
@@ -112,7 +125,6 @@ namespace InpatientTherapySchedulingProgramTests.Fakes
             RoomFake.RuleFor(m => m.Number, r => r.Random.Int());
             RoomFake.RuleFor(m => m.LocationId, r => r.Random.Int(0,1000));
             RoomFake.RuleFor(m => m.Active, true);
-
         }
     }
     

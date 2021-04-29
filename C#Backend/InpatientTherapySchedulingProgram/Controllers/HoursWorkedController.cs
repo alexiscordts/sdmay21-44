@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using InpatientTherapySchedulingProgram.Models;
+using InpatientTherapySchedulingProgram.Services.Interfaces;
+using InpatientTherapySchedulingProgram.Exceptions.HoursWorkedExceptions;
+using InpatientTherapySchedulingProgram.Exceptions.UserExceptions;
 
 namespace InpatientTherapySchedulingProgram.Controllers
 {
@@ -13,32 +16,39 @@ namespace InpatientTherapySchedulingProgram.Controllers
     [ApiController]
     public class HoursWorkedController : ControllerBase
     {
-        private readonly CoreDbContext _context;
+        private readonly IHoursWorkedService _service;
 
-        public HoursWorkedController(CoreDbContext context)
+        public HoursWorkedController(IHoursWorkedService service)
         {
-            _context = context;
+            _service = service;
         }
 
-        // GET: api/HoursWorkeds
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<HoursWorked>>> GetHoursWorked()
+        // GET: api/HoursWorkeds/5
+        [HttpGet("single/{hoursWorkedId}")]
+        public async Task<ActionResult<HoursWorked>> GetHoursWorked(int hoursWorkedId)
         {
-            return await _context.HoursWorked.ToListAsync();
+            var hoursWorked = await _service.GetHoursWorkedById(hoursWorkedId);
+
+            if (hoursWorked == null)
+            {
+               return NotFound();
+            }
+
+            return Ok(hoursWorked);
         }
 
         // GET: api/HoursWorkeds/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<HoursWorked>> GetHoursWorked(int id)
+        public async Task<ActionResult<IEnumerable<HoursWorked>>> GetHoursWorkedByUserId(int hoursWorkedId)
         {
-            var hoursWorked = await _context.HoursWorked.FindAsync(id);
+            var hoursWorked = await _service.GetHoursWorkedByUserId(hoursWorkedId);
 
-            if (hoursWorked == null)
+            if (hoursWorked == null || hoursWorked.Count() == 0)
             {
                 return NotFound();
             }
 
-            return hoursWorked;
+            return Ok(hoursWorked);
         }
 
         // PUT: api/HoursWorkeds/5
@@ -47,27 +57,21 @@ namespace InpatientTherapySchedulingProgram.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutHoursWorked(int id, HoursWorked hoursWorked)
         {
-            if (id != hoursWorked.HoursWorkedId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(hoursWorked).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _service.UpdateHoursWorked(id, hoursWorked);
+            }
+            catch (HoursWorkedIdsDoNotMatchException e)
+            {
+                return BadRequest(e);
+            }
+            catch (HoursWorkedDoesNotExistException)
+            {
+                return NotFound();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!HoursWorkedExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
             return NoContent();
@@ -79,45 +83,39 @@ namespace InpatientTherapySchedulingProgram.Controllers
         [HttpPost]
         public async Task<ActionResult<HoursWorked>> PostHoursWorked(HoursWorked hoursWorked)
         {
-            _context.HoursWorked.Add(hoursWorked);
             try
             {
-                await _context.SaveChangesAsync();
+                await _service.AddHoursWorked(hoursWorked);
             }
             catch (DbUpdateException)
             {
-                if (HoursWorkedExists(hoursWorked.HoursWorkedId))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
             return CreatedAtAction("GetHoursWorked", new { id = hoursWorked.HoursWorkedId }, hoursWorked);
         }
 
         // DELETE: api/HoursWorkeds/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<HoursWorked>> DeleteHoursWorked(DateTime id)
+        [HttpDelete("{hoursWorkedId}")]
+        public async Task<ActionResult<HoursWorked>> DeleteHoursWorked(int hoursWorkedId)
         {
-            var hoursWorked = await _context.HoursWorked.FindAsync(id);
-            if (hoursWorked == null)
+            HoursWorked hoursWorked;
+
+            try
             {
-                return NotFound();
+                hoursWorked = await _service.DeleteHoursWorked(hoursWorkedId);
+
+                if (hoursWorked == null)
+                {
+                    return NotFound();
+                }
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
             }
 
-            _context.HoursWorked.Remove(hoursWorked);
-            await _context.SaveChangesAsync();
-
-            return hoursWorked;
-        }
-
-        private bool HoursWorkedExists(int id)
-        {
-            return _context.HoursWorked.Any(e => e.HoursWorkedId == id);
+            return Ok(hoursWorked);
         }
     }
 }

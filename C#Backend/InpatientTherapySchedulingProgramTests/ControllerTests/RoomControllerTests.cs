@@ -76,7 +76,9 @@ namespace InpatientTherapySchedulingProgramTests.ControllerTests
 
         [TestMethod]
         public async Task NullGetRoomByLocationIdReturnsNotFound() {
-            _fakeService.Setup(s => s.GetAllRoomsByLocationId(It.IsAny<int>())).ReturnsAsync((List<Room>)null);
+            List<Room> listOfRooms = new List<Room>();
+            
+            _fakeService.Setup(s => s.GetAllRoomsByLocationId(It.IsAny<int>())).ReturnsAsync(listOfRooms);
 
             var response = await _testController.GetRoomsByLocationId(-1);
 

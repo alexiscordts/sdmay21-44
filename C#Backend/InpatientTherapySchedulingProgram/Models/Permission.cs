@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace InpatientTherapySchedulingProgram.Models
 {
     [Table("permission")]
-    public partial class Permission : IEquatable<Permission>
+    public partial class Permission
     {
         [Key]
         [Column("user_id")]

@@ -15,6 +15,7 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
     public class RoomServiceTests
     {
         private List<Room> _testRooms;
+        private List<Location> _testLocations;
         private Room _nonActiveRooms;
         private CoreDbContext _testContext;
         private RoomService _testRoomService;
@@ -22,18 +23,31 @@ namespace InpatientTherapySchedulingProgramTests.ServiceTests
         [TestInitialize]
         public void Initialize() {
             var options = new DbContextOptionsBuilder<CoreDbContext>().UseInMemoryDatabase(databaseName: "RoomDatabase").Options;
-            _testRooms = new List<Room>();
             _testContext = new CoreDbContext(options);
             _testContext.Database.EnsureDeleted();
+            _testRooms = new List<Room>();
+            _testLocations = new List<Location>();
 
             for (var i = 0; i < 10; i++) {
+                var newLocation = ModelFakes.LocationFake.Generate();
+                _testContext.Add(newLocation);
+                _testContext.SaveChanges();
+                _testLocations.Add(ObjectExtensions.Copy(newLocation));
+                
                 var newRoom = ModelFakes.RoomFake.Generate();
+                newRoom.Location = newLocation;
                 _testContext.Add(newRoom);
                 _testContext.SaveChanges();
                 _testRooms.Add(ObjectExtensions.Copy(newRoom));
+
             }
 
+            var location = ModelFakes.LocationFake.Generate();
+            _testContext.Add(location);
+            _testContext.SaveChanges();
+            _testLocations.Add(ObjectExtensions.Copy(location));
             _nonActiveRooms = ModelFakes.RoomFake.Generate();
+            _nonActiveRooms.Location = location;
             _nonActiveRooms.Active = false;
             _testContext.Add(_nonActiveRooms);
             _testContext.SaveChanges();

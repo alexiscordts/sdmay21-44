@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace InpatientTherapySchedulingProgram.Models
 {
     [Table("therapist_event")]
-    public partial class TherapistEvent : IEquatable<TherapistEvent>
+    public partial class TherapistEvent
     {
         [Key]
         [Column("event_id")]
@@ -47,9 +47,7 @@ namespace InpatientTherapySchedulingProgram.Models
                 return true;
             }
 
-            return this.EventId == therapistEvent.EventId && this.TherapistId == therapistEvent.TherapistId
-                && this.ActivityName.Equals(therapistEvent.ActivityName) && this.StartTime.Equals(therapistEvent.StartTime)
-                && this.EndTime.Equals(therapistEvent.EndTime);
+            return this.EventId == therapistEvent.EventId && this.TherapistId == therapistEvent.TherapistId;
         }
 
         public static bool operator ==(TherapistEvent lhs, TherapistEvent rhs)
