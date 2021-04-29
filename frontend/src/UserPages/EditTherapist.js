@@ -4,17 +4,43 @@ import "../FormStyles.css";
 import Nav from "../Nav";
 
 class EditTherapist extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { therapist: [], password: null };
+    this.handleChange = this.handleChange.bind(this);
+    this.deletePermission = this.deletePermission.bind(this);
+  }
+  handleChange(event) {
+    this.setState({
+      therapist: {
+        ...this.state.therapist,
+        [event.target.name]: event.target.value,
+      },
+    });
+  }
+  componentDidMount() {
+    var therapist = [];
+    var id = sessionStorage.getItem("userId");
+    axios
+      .get("http://10.29.163.20:8081/api/user/getUserByUserId/" + id)
+      .then((response) => {
+        therapist = response.data;
+        var password = therapist.password;
+        this.setState({ password });
+        this.setState({ therapist });
+      });
+  }
+
   deleteTherapist() {
     const url =
-      "http://10.29.163.20:8081/api/user/" + sessionStorage.getItem("userId");
+      "http://10.29.163.20:8081/api/user/" + this.state.therapist.userId;
     console.log(url);
     axios.delete(url);
     setTimeout(this.deletePermission, 2000);
   }
   deletePermission() {
     const url =
-      "http://10.29.163.20:8081/api/permission/" +
-      sessionStorage.getItem("userId");
+      "http://10.29.163.20:8081/api/permission/" + this.state.therapist.userId;
     window.location.href = "/view_therapist";
   }
 
@@ -24,60 +50,100 @@ class EditTherapist extends React.Component {
         <Nav />
         <div class="formScreen">
           <div class="form-style">
-            <div class="form-style-heading"> Edit Therapist Information</div>
+            <div class="form-style-heading"> Edit Therapist </div>
             <form action="" method="post">
               <label for="fname">
                 <span>
-                  First Name <span class="required">*</span>
+                  First Name
+                  <span class="required">*</span>
                 </span>
                 <input
                   type="text"
                   class="input-field"
-                  name="fname"
-                  defaultValue={sessionStorage.getItem("fname")}
+                  onChange={this.handleChange}
+                  name="firstName"
+                  value={this.state.therapist.firstName}
                 />
               </label>
-              <label for="lname">
-                <span>
-                  Last Name <span class="required">*</span>
-                </span>
+              <label for="middleName">
+                <span>Middle Name</span>
                 <input
                   type="text"
                   class="input-field"
-                  name="lname"
-                  defaultValue={sessionStorage.getItem("lname")}
+                  onChange={this.handleChange}
+                  name="middleName"
+                  value={this.state.therapist.middleName}
                 />
               </label>
-              {/* <label for="email">
+              <label for="lastName">
                 <span>
-                  E-mail <span class="required">*</span>
+                  Last Name
+                  <span class="required">*</span>
                 </span>
                 <input
                   type="text"
                   class="input-field"
-                  name="email"
-                  defaultValue={sessionStorage.getItem("email")}
+                  onChange={this.handleChange}
+                  name="lastName"
+                  value={this.state.therapist.lastName}
                 />
-              </label> */}
-              {/* <label>
+              </label>
+              <label for="address">
+                <span>Address</span>
+                <input
+                  type="text"
+                  class="input-field"
+                  onChange={this.handleChange}
+                  name="address"
+                  value={this.state.therapist.address}
+                />
+              </label>
+              <label for="phoneNumber">
+                <span>Phone Number</span>
+                <input
+                  type="text"
+                  class="input-field"
+                  onChange={this.handleChange}
+                  name="phoneNumber"
+                  value={this.state.therapist.phoneNumber}
+                />
+              </label>
+              <label for="email">
                 <span>
-                  Therapy Type <span class="required">*</span>
+                  Username
+                  <span class="required">*</span>
                 </span>
-                <div className="checkBoxArea">
-                  <label for="chkPT">
-                    <input type="checkbox" id="chkPT" value="PT" />
-                    Physical Therapy
-                  </label>
-                  <label for="chkOT">
-                    <input type="checkbox" id="chkOT" value="OT" />
-                    Occupational Therapy
-                  </label>
-                  <label for="chkST">
-                    <input type="checkbox" id="chkST" value="ST" />
-                    Speech Therapy
-                  </label>
-                </div>
-              </label> */}
+                <input
+                  type="text"
+                  class="input-field"
+                  onChange={this.handleChange}
+                  name="username"
+                  value={this.state.therapist.username}
+                />
+              </label>
+              <label for="password">
+                <span>
+                  Password
+                  <span class="required">*</span>
+                </span>
+                <input
+                  type="password"
+                  class="input-field"
+                  onChange={this.handleChange}
+                  name="password"
+                  value={this.state.therapist.password}
+                />
+              </label>
+              <label for="color">
+                <span>Color</span>
+                <span class="required">*</span>
+                <input
+                  type="color"
+                  name="color"
+                  onChange={this.handleChange}
+                  defaultValue={this.state.therapist.color}
+                ></input>
+              </label>
               <div class="buttonContainer">
                 <input
                   type="button"
@@ -92,7 +158,45 @@ class EditTherapist extends React.Component {
                     }
                   }}
                 />
-                <input type="submit" value="Save" />
+                <input
+                  type="button"
+                  value="Save"
+                  onClick={() => {
+                    const url =
+                      "http://10.29.163.20:8081/api/user/" +
+                      this.state.therapist.userId;
+                    if (this.state.password != this.state.therapist.password) {
+                      axios.put(url, this.state.therapist);
+                    } else {
+                      const {
+                        userId,
+                        username,
+                        firstName,
+                        lastName,
+                        middleName,
+                        address,
+                        phoneNumber,
+                        color,
+                      } = this.state.therapist;
+                      const active = 1;
+                      const therapist = {
+                        userId,
+                        username,
+                        firstName,
+                        lastName,
+                        middleName,
+                        address,
+                        phoneNumber,
+                        color,
+                        active,
+                      };
+                      axios.put(url, therapist);
+                    }
+                    setTimeout(() => {
+                      window.location.href = "/view_therapist";
+                    }, 2000);
+                  }}
+                />
               </div>
             </form>
           </div>

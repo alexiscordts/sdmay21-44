@@ -48,15 +48,13 @@ const AddNurse = () => {
 
     setTimeout(function () {
       window.location.href = "/view_nurse";
-    }, 2000);
+    }, 3000);
   }
 
   function postPermission(userId) {
     const permUrl = "http://10.29.163.20:8081/api/permission/";
     const role = "nurse";
     const permission = { userId, role };
-    console.log(permission);
-
     axios.post(permUrl, permission);
   }
 

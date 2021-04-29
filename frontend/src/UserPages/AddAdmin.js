@@ -6,6 +6,8 @@ import axios from "axios";
 const AddAdmin = () => {
   const [firstName, setFName] = useState("");
   const [lastName, setLName] = useState("");
+  const [middleName, setMName] = useState("");
+
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
 
@@ -49,7 +51,6 @@ const AddAdmin = () => {
     const permUrl = "http://10.29.163.20:8081/api/permission/";
     const role = "admin";
     const permission = { userId, role };
-    console.log(permission);
 
     axios.post(permUrl, permission);
   }
@@ -71,6 +72,16 @@ const AddAdmin = () => {
                 onChange={(e) => setFName(e.target.value)}
                 name="firstName"
                 value={firstName}
+              />
+            </label>
+            <label for="middleName">
+              <span>Middle Name</span>
+              <input
+                type="text"
+                class="input-field"
+                onChange={(e) => setMName(e.target.value)}
+                name="middleName"
+                value={middleName}
               />
             </label>
             <label for="lastName">

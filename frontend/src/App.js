@@ -26,6 +26,7 @@ import AddTherapyTypes from "./TherapyTypes/AddTherapyTypes";
 import EditTherapyTypes from "./TherapyTypes/EditTherapyTypes";
 import ViewTherapyTypes from "./TherapyTypes/ViewTherapyTypes";
 import ChangePassword from "./ChangePassword";
+import EditPatient from "./UserPages/EditPatient";
 
 class App extends React.Component {
   constructor(props) {
@@ -74,8 +75,8 @@ class App extends React.Component {
           <Route path="/add_room" component={AddRoom} />
           <Route path="/view_Metrics" component={ViewMetrics} />
           <Route path="/change_password" component={ChangePassword} />
+          <Route path="/edit_patient" component={EditPatient} />
 
-          {/* <<<<<<< HEAD */}
           <Route
             path="/"
             render={(props) => {
@@ -86,10 +87,6 @@ class App extends React.Component {
               }
             }}
           />
-          {/* ======= */}
-
-          {/* <Route path="/" component={Login} handleLogin={this.handleLogin} /> */}
-          {/* >>>>>>> 81eddc17e459a1530ae41a01d1bf5a15541784f7 */}
         </Switch>
       </Router>
     );
