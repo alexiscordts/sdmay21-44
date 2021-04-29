@@ -264,6 +264,9 @@ class EditPatient extends React.Component {
                       "http://10.29.163.20:8081/api/patient/" +
                       this.state.patient.patientId;
                     axios.put(url, this.state.patient);
+                    setTimeout(function () {
+                      window.location.href = "/view_patient";
+                    }, 2000);
                   }}
                 />
               </div>

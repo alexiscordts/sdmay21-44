@@ -42,9 +42,11 @@ class ViewRooms extends React.Component {
               <button
                 class="iconButton"
                 onClick={() => {
-                  const url =
-                    "http://10.29.163.20:8081/api/room/" + room.number;
-                  axios.delete(url);
+                  const url = "http://10.29.163.20:8081/api/room";
+                  console.log(room);
+                  axios.delete(url, { data: room }).catch((error) => {
+                    console.log(error);
+                  });
                 }}
               >
                 <img

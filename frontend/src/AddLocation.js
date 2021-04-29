@@ -86,28 +86,6 @@ class AddLocation extends React.Component {
             </form>
           </div>
         </div>
-        {/* <button
-        onClick={() => {
-          console.log("submitted");
-          const url = "http://10.29.163.20:8081/api/location/";
-          axios
-            .post(url, {
-              locationID: "7",
-              name: "test",
-              appointment: [],
-              patient: [],
-              room: [],
-            })
-            .then(function (response) {
-              console.log(response);
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
-        }}
-      >
-        Click
-      </button> */}
       </div>
     );
   }
