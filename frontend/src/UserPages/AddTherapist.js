@@ -31,14 +31,7 @@ class AddTherapist extends React.Component {
       },
     });
   }
-  // postPermission(userId) {
-  //   const permUrl = "http://10.29.163.20:8081/api/permission/";
-  //   const role = "therapist";
-  //   const permission = { userId, role };
-  //   console.log(permission);
 
-  //   axios.post(permUrl, permission);
-  // }
   submitTherapist(e) {
     //need to add the therapist to the user list
     e.preventDefault();
@@ -87,6 +80,8 @@ class AddTherapist extends React.Component {
   }
 
   render() {
+    //form for adding a therpaist
+
     return (
       <div>
         <Nav />

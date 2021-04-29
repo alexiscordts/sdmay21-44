@@ -2,6 +2,7 @@ import React from "react";
 import Nav from "./Nav";
 import "./Settings.css";
 
+//This is a page with buttons linking to different settings pages
 const Settings = () => {
   return (
     <div>

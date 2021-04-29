@@ -168,7 +168,7 @@ class AddPatient extends React.Component {
         </option>
       );
     });
-
+    //Form for adding a patient to the system
     return (
       <div>
         <Nav />

@@ -49,6 +49,7 @@ class EditNurse extends React.Component {
     window.location.href = "/view_nurse";
   }
   render() {
+    //form for editing a nurse's information
     return (
       <div>
         <Nav />

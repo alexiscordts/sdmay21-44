@@ -28,6 +28,8 @@ class ViewTherapist extends React.Component {
   }
   render() {
     var rows = [];
+    //Iterate throught the list of therapists and render each one on it's own row in the table
+
     this.state.therapistList.forEach(
       function (permission) {
         if (permission.role === "therapist") {

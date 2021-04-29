@@ -54,6 +54,8 @@ const AddAdmin = () => {
 
     axios.post(permUrl, permission);
   }
+
+  //Form for adding an admin user
   return (
     <div>
       <Nav />

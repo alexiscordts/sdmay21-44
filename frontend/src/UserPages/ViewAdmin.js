@@ -28,7 +28,7 @@ class ViewAdmin extends React.Component {
 
   render() {
     var rows = [];
-
+    //Iterate throught the list of admins and render each one on it's own row in the table
     this.state.adminList.forEach(
       function (permission) {
         if (permission.role === "admin") {
