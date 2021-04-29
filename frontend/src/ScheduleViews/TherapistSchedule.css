@@ -118,15 +118,14 @@
   }
 
   #therapistSchedule .name {
-      font-weight: bold;
-      font-size: 1em;
-      margin-top: 10px;
-      margin-left: 10px;
+    font-size: 12px;
+    margin-top: 2px;
+    margin-left: 10px;
   }
 
   #therapistSchedule .time  {
-    font-size: 0.8em;
-    margin-top: 5px;
+    font-size: 12px;
+    margin-top: 2px;
     margin-left: 10px;
   }
 

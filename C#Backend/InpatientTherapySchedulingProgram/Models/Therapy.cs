@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace InpatientTherapySchedulingProgram.Models
 {
     [Table("therapy")]
-    public partial class Therapy : IEquatable<Therapy>
+    public partial class Therapy
     {
         public Therapy()
         {

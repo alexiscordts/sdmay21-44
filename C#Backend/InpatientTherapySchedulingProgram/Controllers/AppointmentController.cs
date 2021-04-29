@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using InpatientTherapySchedulingProgram.Models;
+using InpatientTherapySchedulingProgram.Services.Interfaces;
+using InpatientTherapySchedulingProgram.Exceptions.AppointmentExceptions;
+using InpatientTherapySchedulingProgram.Exceptions.UserExceptions;
 
 namespace InpatientTherapySchedulingProgram.Controllers
 {
@@ -13,61 +13,66 @@ namespace InpatientTherapySchedulingProgram.Controllers
     [ApiController]
     public class AppointmentController : ControllerBase
     {
-        private readonly CoreDbContext _context;
+        private readonly IAppointmentService _appointmentService;
 
-        public AppointmentController(CoreDbContext context)
+        public AppointmentController(IAppointmentService appoinmentService)
         {
-            _context = context;
+            _appointmentService = appoinmentService;
         }
 
-        // GET: api/Appointments
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointment()
+        // GET: api/Appointments/getAppointments
+        [HttpPost("getAppointments")]
+        public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointment(Appointment appointment)
         {
-            return await _context.Appointment.ToListAsync();
-        }
-
-        // GET: api/Appointments/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Appointment>> GetAppointment(DateTime id)
-        {
-            var appointment = await _context.Appointment.FindAsync(id);
-
             if (appointment == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            return appointment;
+            var allAppointments = await _appointmentService.GetAllAppointments(appointment);
+
+            return Ok(allAppointments);
+        }
+
+        // GET: api/Appointments/getAppointmentsByTherapistId
+        [HttpPost("getAppointmentsByTherapistId")]
+        public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointmentByTherapistId(Appointment appointment)
+        {
+            if (appointment == null)
+            {
+                return BadRequest();
+            }
+
+            var allAppointments = await _appointmentService.GetAllAppointmentsByTherapistId(appointment);
+
+            return Ok(allAppointments);
         }
 
         // PUT: api/Appointments/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutAppointment(int id, Appointment appointment)
+        [HttpPut("{appointmentId}")]
+        public async Task<IActionResult> PutAppointment(int appointmentId, Appointment appointment)
         {
-            if (id != appointment.AppointmentId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(appointment).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _appointmentService.UpdateAppointment(appointmentId, appointment);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (AppointmentIdsDoNotMatchException e)
             {
-                if (!AppointmentExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(e);
+            }
+            catch (UserDoesNotExistException e)
+            {
+                return BadRequest(e);
+            }
+            catch (UserIsNotATherapistException e)
+            {
+                return BadRequest(e);
+            }
+            catch (AppointmentCannotEndBeforeStartTimeException e)
+            {
+                return BadRequest(e);
             }
 
             return NoContent();
@@ -79,45 +84,55 @@ namespace InpatientTherapySchedulingProgram.Controllers
         [HttpPost]
         public async Task<ActionResult<Appointment>> PostAppointment(Appointment appointment)
         {
-            _context.Appointment.Add(appointment);
             try
             {
-                await _context.SaveChangesAsync();
+                await _appointmentService.AddAppointment(appointment);
             }
-            catch (DbUpdateException)
+            catch (AppointmentIdsDoNotMatchException e)
             {
-                if (AppointmentExists(appointment.AppointmentId))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
+                return Conflict(e);
+            }
+            catch (UserDoesNotExistException e)
+            {
+                return BadRequest(e);
+            }
+            catch (UserIsNotATherapistException e)
+            {
+                return BadRequest(e);
+            }
+            catch (AppointmentCannotEndBeforeStartTimeException e)
+            {
+                return BadRequest(e);
+            }
+            catch (AppointmentDoesNotExistException e)
+            {
+                return BadRequest(e);
             }
 
             return CreatedAtAction("GetAppointment", new { id = appointment.AppointmentId }, appointment);
         }
 
         // DELETE: api/Appointments/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Appointment>> DeleteAppointment(DateTime id)
+        [HttpDelete("{appointmentId}")]
+        public async Task<ActionResult<Appointment>> DeleteAppointment(int appointmentId)
         {
-            var appointment = await _context.Appointment.FindAsync(id);
-            if (appointment == null)
+            Appointment appointment;
+
+            try
+            {
+                appointment = await _appointmentService.DeleteAppointment(appointmentId);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            if (appointment is null)
             {
                 return NotFound();
             }
 
-            _context.Appointment.Remove(appointment);
-            await _context.SaveChangesAsync();
-
-            return appointment;
-        }
-
-        private bool AppointmentExists(int id)
-        {
-            return _context.Appointment.Any(e => e.AppointmentId == id);
+            return Ok(appointment);
         }
     }
 }

@@ -26,7 +26,7 @@ import AddTherapyTypes from "./TherapyTypes/AddTherapyTypes";
 import EditTherapyTypes from "./TherapyTypes/EditTherapyTypes";
 import ViewTherapyTypes from "./TherapyTypes/ViewTherapyTypes";
 import ChangePassword from "./ChangePassword";
-
+import EditPatient from "./UserPages/EditPatient";
 
 class App extends React.Component {
   constructor(props) {
@@ -40,9 +40,11 @@ class App extends React.Component {
   }
 
   handleLogin(data) {
-    this.setState = {
+    console.log("Parent handled login");
+    this.setState({
       loggedIn: true,
-    };
+    });
+    console.log(this.state.loggedIn);
     return true;
   }
 
@@ -73,8 +75,18 @@ class App extends React.Component {
           <Route path="/add_room" component={AddRoom} />
           <Route path="/view_Metrics" component={ViewMetrics} />
           <Route path="/change_password" component={ChangePassword} />
+          <Route path="/edit_patient" component={EditPatient} />
 
-          <Route path="/" component={Login} handleLogin={this.handleLogin} />
+          <Route
+            path="/"
+            render={(props) => {
+              if (!this.state.loggedIn) {
+                return <Login handleLogin={this.handleLogin} />;
+              } else {
+                return <Dashboard />;
+              }
+            }}
+          />
         </Switch>
       </Router>
     );
