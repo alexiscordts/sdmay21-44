@@ -1,68 +1,71 @@
-import axios from "axios";
 import React from "react";
 import "../FormStyles.css";
 import Nav from "../Nav";
+import axios from "axios";
 
-class EditTherapist extends React.Component {
+class EditPhysician extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { therapist: [], password: null };
-    this.handleChange = this.handleChange.bind(this);
+    this.state = { physician: [], password: null };
+    this.deletePhysician = this.deletePhysician.bind(this);
     this.deletePermission = this.deletePermission.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
   handleChange(event) {
     this.setState({
-      therapist: {
-        ...this.state.therapist,
+      physician: {
+        ...this.state.physician,
         [event.target.name]: event.target.value,
       },
     });
   }
+
   componentDidMount() {
-    var therapist = [];
+    var physician = [];
     var id = sessionStorage.getItem("userId");
     axios
       .get("http://10.29.163.20:8081/api/user/getUserByUserId/" + id)
       .then((response) => {
-        therapist = response.data;
-        var password = therapist.password;
+        physician = response.data;
+        const password = physician.password;
+        this.setState({ physician });
         this.setState({ password });
-        this.setState({ therapist });
       });
   }
 
-  deleteTherapist() {
+  deletePhysician() {
     const url =
-      "http://10.29.163.20:8081/api/user/" + this.state.therapist.userId;
+      "http://10.29.163.20:8081/api/user/" + sessionStorage.getItem("userId");
     console.log(url);
     axios.delete(url);
     setTimeout(this.deletePermission, 2000);
   }
+
   deletePermission() {
     const url =
-      "http://10.29.163.20:8081/api/permission/" + this.state.therapist.userId;
-    window.location.href = "/view_therapist";
+      "http://10.29.163.20:8081/api/permission/" +
+      sessionStorage.getItem("userId");
+    axios.delete(url);
+    window.location.href = "/view_physician";
   }
-
   render() {
     return (
       <div>
         <Nav />
         <div class="formScreen">
           <div class="form-style">
-            <div class="form-style-heading"> Edit Therapist </div>
+            <div class="form-style-heading"> Edit Physician Information</div>
             <form action="" method="post">
-              <label for="fname">
+              <label for="firstName">
                 <span>
-                  First Name
-                  <span class="required">*</span>
+                  First Name <span class="required">*</span>
                 </span>
                 <input
                   type="text"
                   class="input-field"
-                  onChange={this.handleChange}
                   name="firstName"
-                  value={this.state.therapist.firstName}
+                  onChange={this.handleChange}
+                  defaultValue={this.state.physician.firstName}
                 />
               </label>
               <label for="middleName">
@@ -72,20 +75,19 @@ class EditTherapist extends React.Component {
                   class="input-field"
                   onChange={this.handleChange}
                   name="middleName"
-                  value={this.state.therapist.middleName}
+                  defaultValue={this.state.physician.middleName}
                 />
               </label>
               <label for="lastName">
                 <span>
-                  Last Name
-                  <span class="required">*</span>
+                  Last Name <span class="required">*</span>
                 </span>
                 <input
                   type="text"
                   class="input-field"
-                  onChange={this.handleChange}
                   name="lastName"
-                  value={this.state.therapist.lastName}
+                  onChange={this.handleChange}
+                  defaultValue={this.state.physician.lastName}
                 />
               </label>
               <label for="address">
@@ -95,7 +97,7 @@ class EditTherapist extends React.Component {
                   class="input-field"
                   onChange={this.handleChange}
                   name="address"
-                  value={this.state.therapist.address}
+                  value={this.state.physician.address}
                 />
               </label>
               <label for="phoneNumber">
@@ -105,7 +107,7 @@ class EditTherapist extends React.Component {
                   class="input-field"
                   onChange={this.handleChange}
                   name="phoneNumber"
-                  value={this.state.therapist.phoneNumber}
+                  value={this.state.physician.phoneNumber}
                 />
               </label>
               <label for="email">
@@ -118,7 +120,7 @@ class EditTherapist extends React.Component {
                   class="input-field"
                   onChange={this.handleChange}
                   name="username"
-                  value={this.state.therapist.username}
+                  value={this.state.physician.username}
                 />
               </label>
               <label for="password">
@@ -131,18 +133,8 @@ class EditTherapist extends React.Component {
                   class="input-field"
                   onChange={this.handleChange}
                   name="password"
-                  value={this.state.therapist.password}
+                  value={this.state.physician.password}
                 />
-              </label>
-              <label for="color">
-                <span>Color</span>
-                <span class="required">*</span>
-                <input
-                  type="color"
-                  name="color"
-                  onChange={this.handleChange}
-                  defaultValue={this.state.therapist.color}
-                ></input>
               </label>
               <div class="buttonContainer">
                 <input
@@ -154,7 +146,7 @@ class EditTherapist extends React.Component {
                         "Are you sure you want to delete this user?"
                       )
                     ) {
-                      this.deleteTherapist();
+                      this.deletePhysician();
                     }
                   }}
                 />
@@ -164,9 +156,9 @@ class EditTherapist extends React.Component {
                   onClick={() => {
                     const url =
                       "http://10.29.163.20:8081/api/user/" +
-                      this.state.therapist.userId;
-                    if (this.state.password != this.state.therapist.password) {
-                      axios.put(url, this.state.therapist);
+                      this.state.physician.userId;
+                    if (this.state.password != this.state.physician.password) {
+                      axios.put(url, this.state.physician);
                     } else {
                       const {
                         userId,
@@ -177,9 +169,9 @@ class EditTherapist extends React.Component {
                         address,
                         phoneNumber,
                         color,
-                      } = this.state.therapist;
+                      } = this.state.physician;
                       const active = 1;
-                      const therapist = {
+                      const physician = {
                         userId,
                         username,
                         firstName,
@@ -190,11 +182,10 @@ class EditTherapist extends React.Component {
                         color,
                         active,
                       };
-                      console.log(therapist);
-                      axios.put(url, therapist);
+                      axios.put(url, physician);
                     }
                     setTimeout(() => {
-                      window.location.href = "/view_therapist";
+                      window.location.href = "/view_physician";
                     }, 2000);
                   }}
                 />
@@ -206,4 +197,4 @@ class EditTherapist extends React.Component {
     );
   }
 }
-export default EditTherapist;
+export default EditPhysician;

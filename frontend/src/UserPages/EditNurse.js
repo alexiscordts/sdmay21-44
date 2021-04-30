@@ -56,14 +56,14 @@ class EditNurse extends React.Component {
           <div class="form-style">
             <div class="form-style-heading"> Edit Nurse Information</div>
             <form action="" method="post">
-              <label for="fname">
+              <label for="firstName">
                 <span>
                   First Name <span class="required">*</span>
                 </span>
                 <input
                   type="text"
                   class="input-field"
-                  name="fname"
+                  name="firstName"
                   onChange={this.handleChange}
                   defaultValue={this.state.nurse.firstName}
                 />
@@ -78,14 +78,14 @@ class EditNurse extends React.Component {
                   defaultValue={this.state.nurse.middleName}
                 />
               </label>
-              <label for="lname">
+              <label for="lastName">
                 <span>
                   Last Name <span class="required">*</span>
                 </span>
                 <input
                   type="text"
                   class="input-field"
-                  name="lname"
+                  name="lastName"
                   onChange={this.handleChange}
                   defaultValue={this.state.nurse.lastName}
                 />

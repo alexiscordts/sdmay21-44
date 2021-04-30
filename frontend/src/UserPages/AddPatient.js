@@ -22,24 +22,32 @@ class AddPatient extends React.Component {
       pmrPhysicianId: null,
       therapistId: null,
       rooms: [],
+      patients: []
     };
     this.handleChange = this.handleChange.bind(this);
     this.submitPatient = this.submitPatient.bind(this);
     this.updateRoom = this.updateRoom.bind(this);
   }
 
-  componentDidMount() {
-    const url = "http://10.29.163.20:8081/api/";
-    axios.get(url + "user").then((response) => {
-      const userList = response.data;
-      this.setState({ userList });
-    });
-
-    axios.get("http://10.29.163.20:8081/api/permission").then((response) => {
-      this.setState({
-        therapistList: this.state.therapistList.concat(response.data),
+    componentDidMount() {
+      const url = "http://10.29.163.20:8081/api/";
+      axios.get(url + "user").then((response) => {
+        const userList = response.data;
+        this.setState({ userList });
+        axios.get("http://10.29.163.20:8081/api/permission").then((response) => {
+        this.setState({
+          therapistList: this.state.therapistList.concat(response.data),
+        });
+        const physicians = [];
+        this.state.therapistList.forEach(permission => {
+            this.state.userList.forEach(user => {
+              if (user.userId == permission.userId && permission.role == 'physician')
+                physicians.push(user);
+            });
+        });
+        this.setState({physicians});
       });
-    });
+      });
 
     axios.get("http://10.29.163.20:8081/api/location").then((response) => {
       this.setState({
@@ -161,7 +169,7 @@ class AddPatient extends React.Component {
     );
 
     var users = [];
-    this.state.userList.forEach(function (user) {
+    this.state.physicians.forEach(function (user) {
       users.push(
         <option value={user.userId}>
           {user.firstName} {user.lastName}

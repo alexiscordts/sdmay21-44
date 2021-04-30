@@ -13,6 +13,7 @@ class EditPatient extends React.Component {
       locationList: [],
       rooms: [],
       patient: [],
+      physicians: []
     };
     this.deletePatient = this.deletePatient.bind(this);
     this.updateRoom = this.updateRoom.bind(this);
@@ -32,12 +33,19 @@ class EditPatient extends React.Component {
     axios.get(url + "user").then((response) => {
       const userList = response.data;
       this.setState({ userList });
-    });
-
-    axios.get("http://10.29.163.20:8081/api/permission").then((response) => {
+      axios.get("http://10.29.163.20:8081/api/permission").then((response) => {
       this.setState({
         therapistList: this.state.therapistList.concat(response.data),
       });
+      const physicians = [];
+      this.state.therapistList.forEach(permission => {
+          this.state.userList.forEach(user => {
+            if (user.userId == permission.userId && permission.role == 'physician')
+              physicians.push(user);
+          });
+      });
+      this.setState({physicians});
+    });
     });
 
     axios.get("http://10.29.163.20:8081/api/location").then((response) => {
@@ -133,7 +141,7 @@ class EditPatient extends React.Component {
         Select a Physician
       </option>
     );
-    this.state.userList.forEach(function (user) {
+    this.state.physicians.forEach(function (user) {
       users.push(
         <option value={user.userId}>
           {user.firstName} {user.lastName}

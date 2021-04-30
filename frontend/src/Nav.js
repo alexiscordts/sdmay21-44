@@ -72,6 +72,16 @@ class Nav extends React.Component {
         />
         <div class="menuLabel">Manage Nurses</div>
       </button></Link>,
+
+<Link to="/view_physician"><button
+    class="menuButton"
+    >
+    <img
+      class="menuButtonImg"
+      src={require("./Icons/icons8-doctor-male-48.png")}
+    />
+    <div class="menuLabel">Manage Physicians</div>
+    </button></Link>,
   
   <Link to="/view_admin"><button
         class="menuButton"

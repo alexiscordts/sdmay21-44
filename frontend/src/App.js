@@ -29,6 +29,9 @@ import ChangePassword from "./ChangePassword";
 import Nav from './Nav.js'
 import axios from "axios";
 import EditPatient from "./UserPages/EditPatient";
+import ViewPhysician from "./UserPages/ViewPhysician";
+import AddPhysician from './UserPages/AddPhysician';
+import EditPhysician from './UserPages/EditPhysician';
 
 export default class App extends React.Component {
   constructor() {
@@ -95,6 +98,8 @@ export default class App extends React.Component {
 
   render() {
     if (this.state.loggedIn)
+    {
+      if (this.role == "admin")
       return (
         <div>
         <div id="topNav">
@@ -140,11 +145,45 @@ export default class App extends React.Component {
             <Route path="/view_Metrics" component={ViewMetrics} />
             <Route path="/change_password" component={ChangePassword} />
             <Route path="/edit_patient" component={EditPatient} />
+            <Route path="/view_physician" component={ViewPhysician} />
+            <Route path="/add_physician" component={AddPhysician} />
+            <Route path="/edit_physician" component={EditPhysician} />
             <Route exact path="/" component={() => <Dashboard role={this.role} />} />
           </Switch>
         </Router>
         </div>
       );
+      else
+      return (
+        <div>
+        <div id="topNav">
+          <div id="collapseMenuToggle" onClick={closeNav}>
+            ☰
+          </div>
+          <img src="https://www.unitypoint.org/images/unitypoint/UnityPointHealthLogo.svg" />
+          <div id="appName"> - &nbsp;Therapy Scheduler</div>
+          <div id="signout" onClick={() => {this.setState({
+          loggedIn: false,
+           });}}>
+            <img src={require("./Icons/icons8-exit-48.png")} />
+          </div>
+          <div id="userinfo">
+            <div id="username">{this.username}</div>
+            <div id="role">{this.role}</div>
+          </div>
+        </div>
+        <Router>
+          <Nav role={this.role}/>
+          <Switch>
+            <Route path="/dashboard" component={() => <Dashboard role={this.role} />} />
+            <Route path="/view_Metrics" component={ViewMetrics} />
+            <Route path="/change_password" component={ChangePassword} />>
+            <Route exact path="/" component={() => <Dashboard role={this.role} />} />
+          </Switch>
+        </Router>
+        </div>
+      );
+      }
       else
       return (
         <Login handleLogin={this.handleLogin} />
@@ -158,9 +197,19 @@ function closeNav() {
   if (closed == false) {
     document.getElementById("sideNav").style.minWidth = "50px";
     document.getElementById("sideNav").style.width = "50px";
+    const elements = document.getElementsByClassName("menuLabel");
+    for (let i = 0; i < elements.length; i++)
+    {
+      elements[i].style.display = "none";
+    }
   } else {
     document.getElementById("sideNav").style.minWidth = "230px";
     document.getElementById("sideNav").style.width = "18%";
+    const elements = document.getElementsByClassName("menuLabel");
+    for (let i = 0; i < elements.length; i++)
+    {
+      elements[i].style.display = "block";
+    }
   }
   closed = closed == false ? true : false;
 }

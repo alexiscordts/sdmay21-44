@@ -47,6 +47,7 @@ class TherapistMetrics extends React.Component {
                 Friday: 0,
                 Saturday: 0,
             }
+            var total = 0;
             this.props.appointments.forEach(appointment => {
                 if (appointment.therapistId == therapist.userId)
                 {
@@ -76,8 +77,10 @@ class TherapistMetrics extends React.Component {
                             dataEntry.Saturday += Math.round((Math.abs(end - start) / 36e5) * 100) / 100;
                             break;
                     }
+                    total += Math.round((Math.abs(end - start) / 36e5) * 100) / 100;
                 }
             });
+            dataEntry.therapist += " - " + Math.round(total * 100) / 100;
             data.push(dataEntry);
         });
         return data;

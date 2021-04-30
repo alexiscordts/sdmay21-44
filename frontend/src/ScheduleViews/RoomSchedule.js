@@ -416,12 +416,7 @@ showAddAppointment(hour, minute, date, room)   {
             <label class="scrollLabel" for="scrollCheck">
             scroll
             <input type = "checkbox" id="scrollCheck" onChange={() => showScroll()}/>
-            </label>
-
-            <label class="scrollLabel" for="scrollCheck">
-            show metrics
-            <input type = "checkbox" id="scrollCheck"/>
-            </label>
+            </label>     
             </div>
         </div>
     );

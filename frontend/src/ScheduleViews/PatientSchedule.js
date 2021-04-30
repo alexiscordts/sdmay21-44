@@ -379,10 +379,7 @@ getAppointmentButtons(num, id)
             <input type = "checkbox" id="scrollCheck" onChange={() => showScroll()}/>
             </label>
 
-            <label class="metricLabel" for="metricCheck">
-            show metrics
-            <input type = "checkbox" id="metricCheck" onChange={() => showMetrics()}/>
-            </label>
+            
             </div>
         </div>
     );

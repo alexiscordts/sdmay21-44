@@ -412,6 +412,7 @@ class Dashboard extends React.Component {
     copyDay()   {   //copies all appointments from one day to another day
         var start = new Date(this.copyDates.from);
         var end = new Date(this.copyDates.from);
+      if (confirm(start.toLocaleDateString('en-US'), new Date(this.copyDates.to).toLocaleDateString('en-US'))) {
         start.setHours(0);
         start.setMinutes(0);
         start.setMinutes(0);
@@ -469,6 +470,7 @@ class Dashboard extends React.Component {
             console.log("Error caught");
             console.log(error);
         }); 
+      }
     }
 
     render() {
@@ -593,6 +595,12 @@ function hideCopyDayForm() {
     copyDayFormIsHidden = true;
     document.getElementById("copyDayForm").style.display = "none";
   }
+}
+
+function confirm(date1, date2)  {
+  return window.confirm(
+    "Are you sure you want to copy all appointments from " + date1 + " to " + date2 + "?"
+  )
 }
 
 export default Dashboard;

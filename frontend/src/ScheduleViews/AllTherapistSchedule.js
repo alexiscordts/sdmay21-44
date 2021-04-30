@@ -459,10 +459,6 @@ class AllTherapistSchedule extends React.Component {
             <input type = "checkbox" id="scrollCheck" onChange={() => showScroll()}/>
             </label>
 
-            <label class="metricLabel" for="metricCheck">
-            show metrics {this.props.update}
-            <input type = "checkbox" id="metricCheck" onChange={() => showMetrics()}/>
-            </label>
             </div>
         </div>
     );
