@@ -91,7 +91,7 @@ namespace InpatientTherapySchedulingProgram.Controllers
             return CreatedAtAction("GetRoom", new { number = room.Number }, room);
         }
 
-        [HttpDelete]
+        [HttpPost]
         public async Task<ActionResult<Room>> DeleteRoom(Room room)
         {
             if (room == null)
