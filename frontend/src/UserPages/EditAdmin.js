@@ -15,7 +15,7 @@ class EditAdmin extends React.Component {
     var admin = [];
     var id = sessionStorage.getItem("userId");
     axios
-      .get("http://10.29.163.20:8081/api/user/getUserByUserId/" + id)
+      .get(process.env.REACT_APP_SERVER_URL + "user/getUserByUserId/" + id)
       .then((response) => {
         admin = response.data;
         this.setState({ admin });
@@ -35,14 +35,14 @@ class EditAdmin extends React.Component {
 
   deleteAdmin() {
     const url =
-      "http://10.29.163.20:8081/api/user/" + sessionStorage.getItem("userId");
+      process.env.REACT_APP_SERVER_URL + "user/" + sessionStorage.getItem("userId");
     axios.delete(url);
     setTimeout(this.deletePermission, 2000);
   }
 
   deletePermission() {
     const url =
-      "http://10.29.163.20:8081/api/permission/" +
+      process.env.REACT_APP_SERVER_URL + "permission/" +
       sessionStorage.getItem("userId");
     axios.delete(url);
     window.location.href = "/view_admin";
@@ -58,14 +58,14 @@ class EditAdmin extends React.Component {
           <div class="form-style">
             <div class="form-style-heading"> Edit Admin Information</div>
             <form action="" method="post">
-              <label for="fname">
+              <label for="firstName">
                 <span>
                   First Name <span class="required">*</span>
                 </span>
                 <input
                   type="text"
                   class="input-field"
-                  name="fname"
+                  name="firstName"
                   defaultValue={this.state.admin.firstName}
                   onChange={this.handleChange}
                 />
@@ -80,14 +80,14 @@ class EditAdmin extends React.Component {
                   defaultValue={this.state.admin.middleName}
                 />
               </label>
-              <label for="lname">
+              <label for="lastName">
                 <span>
                   Last Name <span class="required">*</span>
                 </span>
                 <input
                   type="text"
                   class="input-field"
-                  name="lname"
+                  name="lastName"
                   onChange={this.handleChange}
                   defaultValue={this.state.admin.lastName}
                 />
@@ -157,7 +157,7 @@ class EditAdmin extends React.Component {
                   value="Save"
                   onClick={() => {
                     const url =
-                      "http://10.29.163.20:8081/api/user/" +
+                      process.env.REACT_APP_SERVER_URL + "user/" +
                       this.state.admin.userId;
 
                     if (this.state.password != this.state.admin.password) {

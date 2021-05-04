@@ -24,7 +24,7 @@ class EditNurse extends React.Component {
     var nurse = [];
     var id = sessionStorage.getItem("userId");
     axios
-      .get("http://10.29.163.20:8081/api/user/getUserByUserId/" + id)
+      .get(process.env.REACT_APP_SERVER_URL + "user/getUserByUserId/" + id)
       .then((response) => {
         nurse = response.data;
         const password = nurse.password;
@@ -35,7 +35,7 @@ class EditNurse extends React.Component {
 
   deleteNurse() {
     const url =
-      "http://10.29.163.20:8081/api/user/" + sessionStorage.getItem("userId");
+      process.env.REACT_APP_SERVER_URL + "user/" + sessionStorage.getItem("userId");
     console.log(url);
     axios.delete(url);
     setTimeout(this.deletePermission, 2000);
@@ -43,7 +43,7 @@ class EditNurse extends React.Component {
 
   deletePermission() {
     const url =
-      "http://10.29.163.20:8081/api/permission/" +
+      process.env.REACT_APP_SERVER_URL + "permission/" +
       sessionStorage.getItem("userId");
     axios.delete(url);
     window.location.href = "/view_nurse";
@@ -57,14 +57,14 @@ class EditNurse extends React.Component {
           <div class="form-style">
             <div class="form-style-heading"> Edit Nurse Information</div>
             <form action="" method="post">
-              <label for="fname">
+              <label for="firstName">
                 <span>
                   First Name <span class="required">*</span>
                 </span>
                 <input
                   type="text"
                   class="input-field"
-                  name="fname"
+                  name="firstName"
                   onChange={this.handleChange}
                   defaultValue={this.state.nurse.firstName}
                 />
@@ -79,14 +79,14 @@ class EditNurse extends React.Component {
                   defaultValue={this.state.nurse.middleName}
                 />
               </label>
-              <label for="lname">
+              <label for="lastName">
                 <span>
                   Last Name <span class="required">*</span>
                 </span>
                 <input
                   type="text"
                   class="input-field"
-                  name="lname"
+                  name="lastName"
                   onChange={this.handleChange}
                   defaultValue={this.state.nurse.lastName}
                 />
@@ -156,7 +156,7 @@ class EditNurse extends React.Component {
                   value="Save"
                   onClick={() => {
                     const url =
-                      "http://10.29.163.20:8081/api/user/" +
+                      process.env.REACT_APP_SERVER_URL + "user/" +
                       this.state.nurse.userId;
                     if (this.state.password != this.state.nurse.password) {
                       axios.put(url, this.state.nurse);

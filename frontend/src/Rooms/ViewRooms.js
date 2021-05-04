@@ -3,6 +3,7 @@ import Nav from "../Nav";
 import "../TableStyles.css";
 import "../UserPages/UserStyles.css";
 import "../Settings.css";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 class ViewRooms extends React.Component {
@@ -18,21 +19,25 @@ class ViewRooms extends React.Component {
   }
 
   componentDidMount() {
-    axios.get("http://10.29.163.20:8081/api/location/").then((response) => {
+    axios.get(process.env.REACT_APP_SERVER_URL + "location/").then((response) => {
       this.setState({
         locationList: this.state.locationList.concat(response.data),
       });
     });
 
-    axios.get("http://10.29.163.20:8081/api/room").then((response) => {
+    axios.get(process.env.REACT_APP_SERVER_URL + "room").then((response) => {
       this.setState({ roomList: this.state.roomList.concat(response.data) });
     });
   }
 
   updateRoom(event) {
     this.setState({ [event.target.name]: event.target.value });
-    var id = event.target.value;
+  }
+
+  getRoomList(event)  {
+    var id = this.state.locationId;
     var rooms = [];
+    if (id != null)
     this.state.roomList.forEach(function (room) {
       if (id == room.locationId) {
         rooms.push(
@@ -42,9 +47,25 @@ class ViewRooms extends React.Component {
               <button
                 class="iconButton"
                 onClick={() => {
+                  console.log()
+                  const r = {
+                  number: room.number,
+                  locationId: id
+                  }
                   const url =
-                    "http://10.29.163.20:8081/api/room/" + room.number;
-                  axios.delete(url);
+                    process.env.REACT_APP_SERVER_URL + "room/deleteRoom/";
+                  axios.post(url, r)
+                  .then((response) => {
+                    console.log(response.data);
+                    axios.get(process.env.REACT_APP_SERVER_URL + "room").then((response2) => {
+                      const rooms = response2.data;
+                      event.setState({ roomList: rooms });
+                    });
+                  })
+                  .catch((error) => {
+                      console.log("Error caught");
+                      console.log(error);
+                  });
                 }}
               >
                 <img
@@ -58,7 +79,7 @@ class ViewRooms extends React.Component {
         );
       }
     });
-    this.setState({ rooms });
+    return rooms;
   }
 
   render() {
@@ -78,12 +99,12 @@ class ViewRooms extends React.Component {
 
     return (
       <div>
-        <Nav />
         <div class="userHeaderRow">
           <h2>Rooms</h2>
           <div class="dropdown">
             <select
               class="dropbtn"
+              name="locationId"
               value={this.state.locationId}
               onChange={this.updateRoom}
             >
@@ -91,11 +112,8 @@ class ViewRooms extends React.Component {
             </select>
           </div>
 
-          <button
+          <button onClick={() => {if (this.state.locationId != null) { sessionStorage.setItem("locationId", this.state.locationId); window.location.href = "add_room"}}}
             class="iconAddUserButton"
-            onClick={() => {
-              window.location.href = "/add_room";
-            }}
           >
             <img
               src={require("../Icons/icons8-plus-48.png")}
@@ -111,7 +129,7 @@ class ViewRooms extends React.Component {
               <th>Delete</th>
             </tr>
           </thead>
-          <tbody>{this.state.rooms}</tbody>
+          <tbody>{this.getRoomList(this)}</tbody>
         </table>
       </div>
     );

@@ -1,80 +1,98 @@
 import React from "react";
 import "../Dashboard.css";
 import "../ViewMetrics.css";
+import axios from "axios";
 import { ResponsiveBar } from '@nivo/bar'
 
 class PatientMetrics extends React.Component {
+constructor(props) {
+    super(props);
+    this.state = {
+        appointments: [],
+        patients: []
+    }
+}
+
+componentDidMount() {
+
+        axios
+        .get(process.env.REACT_APP_SERVER_URL + "patient")
+        .then((response) => {
+            const patients = [];
+            response.data.forEach(patient => {
+                    patients.push(patient);
+            });
+            this.setState({ patients });
+        });
+}
+
+    getData()   {
+        const data = [];
+        this.state.patients.forEach(patient => {
+            if (this.props.location == patient.locationId)
+            {
+                const dataEntry = {
+                    patient: patient.firstName + " " + patient.lastName,
+                    Sunday: 0,
+                    Monday: 0,
+                    Tuesday: 0,
+                    Wednesday: 0,
+                    Thursday: 0,
+                    Friday: 0,
+                    Saturday: 0,
+                }
+                var total = 0;
+                this.props.appointments.forEach(appointment => {
+                    if (appointment.patientId == patient.patientId)
+                    {
+                        let start = new Date(appointment.startTime);
+                        let end = new Date(appointment.endTime);
+                        switch (start.getDay())
+                        {
+                            case 0:
+                                dataEntry.Sunday += Math.round((Math.abs(end - start) / 36e5) * 100) / 100;
+                                break;
+                            case 1:
+                                dataEntry.Monday += Math.round((Math.abs(end - start) / 36e5) * 100) / 100;
+                                break;
+                            case 2:
+                                dataEntry.Tuesday += Math.round((Math.abs(end - start) / 36e5) * 100) / 100;
+                                break;
+                            case 3:
+                                dataEntry.Wednesday += Math.round((Math.abs(end - start) / 36e5) * 100) / 100;
+                                break;
+                            case 4:
+                                dataEntry.Thursday += Math.round((Math.abs(end - start) / 36e5) * 100) / 100;
+                                break;
+                            case 5:
+                                dataEntry.Friday += Math.round((Math.abs(end - start) / 36e5) * 100) / 100;
+                                break;
+                            case 6:
+                                dataEntry.Saturday += Math.round((Math.abs(end - start) / 36e5) * 100) / 100;
+                                break;
+                        }
+                        total += Math.round((Math.abs(end - start) / 36e5) * 100) / 100;
+                    }
+                });
+                dataEntry.patient += " - " + Math.round(total * 100) / 100;
+                data.push(dataEntry);
+        }});
+        console.log(data);
+        return data;
+    }
 
   render() {
-
-    const data = ([
-        {
-        "patient": "Spongebob Squarepants",
-          "sunday": 2,
-          "monday": 3,
-          "tuesday": 4,
-          "wednesday": 3,
-          "thursday": 2,
-          "friday": 3,
-          "saturday": 3,
-        },
-        {
-            "patient": "Patrick Star",
-              "sunday": 4,
-              "monday": 2,
-              "tuesday": 3,
-              "wednesday": 0,
-              "thursday": 2,
-              "friday": 3,
-              "saturday": 3,
-        },
-        {
-            "patient": "Squidward Tentacles",
-              "sunday": 3,
-              "monday": 2,
-              "tuesday": 1,
-              "wednesday": 6,
-              "thursday": 3,
-              "friday": 2,
-              "saturday": 4,
-            },
-            {
-                "patient": "Sandy Cheeks",
-                  "sunday": 5,
-                  "monday": 2,
-                  "tuesday": 6,
-                  "wednesday": 3,
-                  "thursday": 7,
-                  "friday": 4,
-                  "saturday": 2,
-            },
-            {
-                "patient": "Mr.Krabs",
-                  "sunday": 1,
-                  "monday": 2,
-                  "tuesday": 1,
-                  "wednesday": 4,
-                  "thursday": 3,
-                  "friday": 5,
-                  "saturday": 4,
-                },
-                {
-                    "patient": "Mrs. Puff",
-                      "sunday": 6,
-                      "monday": 4,
-                      "tuesday": 5,
-                      "wednesday": 6,
-                      "thursday": 3,
-                      "friday": 2,
-                      "saturday": 3,
-                }
-      ]);
+    const data = this.getData();
+      const style = {
+          minWidth: 200 * data.length
+      }
 
     return (   
         <div id="chart">
+        <div id="innerChartContainer" style={style}>
         <ResponsiveBar
         data={data}
-        keys={[ 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday' ]}
+        keys={[ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ]}
         indexBy="patient"
         margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
         padding={0.3}
@@ -110,7 +128,7 @@ class PatientMetrics extends React.Component {
             tickSize: 5,
             tickPadding: 5,
             tickRotation: 0,
-            legend: 'Patient',
+            legend: '',
             legendPosition: 'middle',
             legendOffset: 32
         }}
@@ -153,6 +171,7 @@ class PatientMetrics extends React.Component {
         motionStiffness={90}
         motionDamping={15}
     />
+    </div>
     </div>
     );
     }

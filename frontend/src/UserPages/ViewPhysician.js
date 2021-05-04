@@ -5,12 +5,12 @@ import "./UserStyles.css";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
-class ViewNurse extends React.Component {
+class ViewPhysician extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       userList: [],
-      nurseList: [],
+      physicianList: [],
     };
   }
 
@@ -22,28 +22,27 @@ class ViewNurse extends React.Component {
     });
 
     axios.get(process.env.REACT_APP_SERVER_URL + "permission").then((response) => {
-      this.setState({ nurseList: this.state.nurseList.concat(response.data) });
+      this.setState({ physicianList: this.state.physicianList.concat(response.data) });
     });
   }
   render() {
     var rows = [];
-    //Iterate throught the list of nurses and render each one on it's own row in the table
-    this.state.nurseList.forEach(
+    this.state.physicianList.forEach(
       function (permission) {
-        if (permission.role === "nurse") {
-          this.state.userList.forEach(function (nurse) {
-            if (nurse.userId === permission.userId) {
+        if (permission.role === "physician") {
+          this.state.userList.forEach(function (physician) {
+            if (physician.userId === permission.userId) {
               rows.push(
                 <tr>
-                  <td>{nurse.firstName}</td>
-                  <td>{nurse.lastName}</td>
-                  <td>{nurse.username}</td>
+                  <td>{physician.firstName}</td>
+                  <td>{physician.lastName}</td>
+                  <td>{physician.username}</td>
                   <td>
                     <button
                       class="iconButton"
                       onClick={() => {
-                        sessionStorage.setItem("userId", nurse.userId);
-                        window.location.href = "/edit_nurse";
+                        sessionStorage.setItem("userId", physician.userId);
+                        window.location.href = "/edit_physician";
                       }}
                     >
                       <img
@@ -64,8 +63,8 @@ class ViewNurse extends React.Component {
     return (
       <div>
         <div class="userHeaderRow">
-          <h2>Nurses</h2>
-          <Link to="/add_nurse"><button
+          <h2>Physicians</h2>
+          <Link to="/add_physician"><button
             class="iconAddUserButton"
           >
             <img
@@ -90,4 +89,4 @@ class ViewNurse extends React.Component {
     );
   }
 }
-export default ViewNurse;
+export default ViewPhysician;

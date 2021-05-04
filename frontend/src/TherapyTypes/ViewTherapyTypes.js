@@ -3,6 +3,7 @@ import Nav from "../Nav";
 import "../TableStyles.css";
 import "../UserPages/UserStyles.css";
 import "../Settings.css";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 class ViewTherapyTypes extends React.Component {
@@ -14,11 +15,62 @@ class ViewTherapyTypes extends React.Component {
   }
 
   componentDidMount() {
-    const url = "http://10.29.163.20:8081/api/therapy";
+    this.updateTherapistList();
+  }
+
+  updateTherapistList() {
+    const url = process.env.REACT_APP_SERVER_URL + "therapy";
     axios.get(url).then((response) => {
-      const therapyList = response.data;
-      this.setState({ therapyList });
+      axios.get(process.env.REACT_APP_SERVER_URL + "therapymain").then((response2) => {
+        const adlList = response.data;
+        const therapyList = response2.data;
+        const therapies = [];
+        adlList.forEach(adl => {
+          therapyList.forEach(therapy => {
+            if (adl.type == therapy.type)
+              therapies.push(adl);
+          })
+        })
+        this.setState({ therapyList: therapies });
+      });
     });
+  }
+
+  deleteTherapy(key) {
+    console.log(key);
+    const url = process.env.REACT_APP_SERVER_URL + "therapymain/" + key;
+        axios.delete(url)
+        .then((response) => {
+          console.log(response.data);
+          this.updateTherapistList();
+        })
+        .catch((error) => {
+            console.log("Error caught");
+            console.log(error);
+        });
+
+      axios.get(process.env.REACT_APP_SERVER_URL + "therapy")
+      .then((response) => {
+        const therapies = response.data;
+        therapies.forEach(therapy => {
+          if (therapy.type == key)
+          {
+            axios.delete(process.env.REACT_APP_SERVER_URL + "therapy/" + therapy.adl)
+            .then((response2) => {
+              console.log(response2.data);
+              this.updateTherapistList();
+            })
+            .catch((error) => {
+                console.log("Error caught");
+                console.log(error);
+            });
+          }
+        });
+      })
+      .catch((error) => {
+          console.log("Error caught");
+          console.log(error);
+      });
   }
 
   render() {
@@ -62,6 +114,18 @@ class ViewTherapyTypes extends React.Component {
                 />
               </button>
             </td>
+            <td>
+              <button
+                class="iconButton"
+                onClick={() => {this.deleteTherapy(key)}}
+              >
+                <img
+                  src={require("../Icons/icons8-delete-64.png")}
+                  alt="edit"
+                  className="icon"
+                />
+              </button>
+            </td>
           </tr>
         );
       }.bind(this)
@@ -69,21 +133,17 @@ class ViewTherapyTypes extends React.Component {
 
     return (
       <div>
-        <Nav />
         <div class="userHeaderRow">
           <h2>Therapy Types</h2>
-          <button
+          <Link to="/add_therapy_types"><button
             class="iconAddUserButton"
-            onClick={() => {
-              window.location.href = "/add_therapy_types";
-            }}
           >
             <img
               src={require("../Icons/icons8-plus-48.png")}
               alt="add"
               className="iconAddLocation"
             />
-          </button>
+          </button></Link>
         </div>
         <table class="user-table">
           <thead>
@@ -91,6 +151,7 @@ class ViewTherapyTypes extends React.Component {
               <th>Name</th>
               <th>Subtype</th>
               <th>Edit</th>
+              <th>Delete</th>
             </tr>
           </thead>
           <tbody>{rows}</tbody>

@@ -22,38 +22,47 @@ class AddPatient extends React.Component {
       pmrPhysicianId: null,
       therapistId: null,
       rooms: [],
+      patients: [],
+      physicians: []
     };
     this.handleChange = this.handleChange.bind(this);
     this.submitPatient = this.submitPatient.bind(this);
     this.updateRoom = this.updateRoom.bind(this);
   }
 
-  componentDidMount() {
-    const url = "http://10.29.163.20:8081/api/";
-    axios.get(url + "user").then((response) => {
-      const userList = response.data;
-      this.setState({ userList });
-    });
-
-    axios.get("http://10.29.163.20:8081/api/permission").then((response) => {
-      this.setState({
-        therapistList: this.state.therapistList.concat(response.data),
+    componentDidMount() {
+      const url = process.env.REACT_APP_SERVER_URL + "";
+      axios.get(url + "user").then((response) => {
+        const userList = response.data;
+        this.setState({ userList });
+        axios.get(process.env.REACT_APP_SERVER_URL + "permission").then((response) => {
+        this.setState({
+          therapistList: this.state.therapistList.concat(response.data),
+        });
+        const physicians = [];
+        this.state.therapistList.forEach(permission => {
+            this.state.userList.forEach(user => {
+              if (user.userId == permission.userId && permission.role == 'physician')
+                physicians.push(user);
+            });
+        });
+        this.setState({physicians});
       });
-    });
+      });
 
-    axios.get("http://10.29.163.20:8081/api/location").then((response) => {
+    axios.get(process.env.REACT_APP_SERVER_URL + "location").then((response) => {
       this.setState({
         locationList: this.state.locationList.concat(response.data),
       });
     });
 
-    axios.get("http://10.29.163.20:8081/api/room").then((response) => {
+    axios.get(process.env.REACT_APP_SERVER_URL + "room").then((response) => {
       this.setState({ roomList: this.state.roomList.concat(response.data) });
     });
   }
 
   submitPatient(e) {
-    const url = "http://10.29.163.20:8081/api/patient";
+    const url = process.env.REACT_APP_SERVER_URL + "patient";
     e.preventDefault();
     const active = 1;
     const roomNumber = 401;
@@ -161,7 +170,12 @@ class AddPatient extends React.Component {
     );
 
     var users = [];
-    this.state.userList.forEach(function (user) {
+    this.state.physicians.forEach(function (user) {
+      users.push(
+        <option hidden disabled selected value>
+        Select a Physician
+        </option>
+      );
       users.push(
         <option value={user.userId}>
           {user.firstName} {user.lastName}

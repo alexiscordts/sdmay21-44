@@ -5,7 +5,7 @@ import axios from "axios";
 
 function deleteLocation() {
   const url =
-    "http://10.29.163.20:8081/api/location/" +
+    process.env.REACT_APP_SERVER_URL + "location/" +
     sessionStorage.getItem("locationId");
   axios.delete(url);
   setTimeout(function () {
@@ -16,7 +16,6 @@ function deleteLocation() {
 const EditLocation = () => {
   return (
     <div>
-      <Nav />
       <div class="formScreen">
         <div class="form-style">
           <div class="form-style-heading"> Edit Location</div>

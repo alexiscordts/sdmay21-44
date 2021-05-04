@@ -17,8 +17,8 @@ const AddNurse = () => {
     const nurse = { firstName, lastName, username, password, active };
     console.log(nurse);
     const getUserUrl =
-      "http://10.29.163.20:8081/api/user/getUserByUsername/" + username;
-    const url = "http://10.29.163.20:8081/api/user";
+      process.env.REACT_APP_SERVER_URL + "user/getUserByUsername/" + username;
+    const url = process.env.REACT_APP_SERVER_URL + "user";
     axios.post(url, nurse).catch(function (error) {
       if (error.response) {
         console.log(error.response.data);
@@ -52,7 +52,7 @@ const AddNurse = () => {
   }
 
   function postPermission(userId) {
-    const permUrl = "http://10.29.163.20:8081/api/permission/";
+    const permUrl = process.env.REACT_APP_SERVER_URL + "permission/";
     const role = "nurse";
     const permission = { userId, role };
     axios.post(permUrl, permission);

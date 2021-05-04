@@ -3,6 +3,7 @@ import "../TableStyles.css";
 import "./UserStyles.css";
 import Nav from "../Nav";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 class ViewAdmin extends React.Component {
   constructor(props) {
@@ -14,14 +15,14 @@ class ViewAdmin extends React.Component {
   }
 
   componentDidMount() {
-    const url = "http://10.29.163.20:8081/api/";
+    const url = process.env.REACT_APP_SERVER_URL + "";
 
     axios.get(url + "user").then((response) => {
       const userList = response.data;
       this.setState({ userList });
     });
 
-    axios.get("http://10.29.163.20:8081/api/permission").then((response) => {
+    axios.get(process.env.REACT_APP_SERVER_URL + "permission").then((response) => {
       this.setState({ adminList: this.state.adminList.concat(response.data) });
     });
   }
@@ -40,12 +41,11 @@ class ViewAdmin extends React.Component {
                   <td>{admin.lastName}</td>
                   <td>{admin.username}</td>
                   <td>
-                    <button
+                    <Link to="/edit_admin"><button
                       class="iconButton"
                       onClick={() => {
                         sessionStorage.setItem("userId", admin.userId);
                         // sessionStorage.setItem("email", admin.email);
-                        window.location.href = "/edit_admin";
                       }}
                     >
                       <img
@@ -53,7 +53,7 @@ class ViewAdmin extends React.Component {
                         alt="edit"
                         className="icon"
                       />
-                    </button>
+                    </button></Link>
                   </td>
                 </tr>
               );
@@ -65,7 +65,6 @@ class ViewAdmin extends React.Component {
 
     return (
       <div>
-        <Nav />
         <div class="userHeaderRow">
           <h2>Admins</h2>
           <button

@@ -1,49 +1,51 @@
 import React from "react";
 import Nav from "./Nav";
 import "./Settings.css";
+import { Link } from "react-router-dom";
 
-//This is a page with buttons linking to different settings pages
-const Settings = () => {
-  return (
-    <div>
-      <Nav />
-      <div class="settingsPageContainer">
-        <button
-          className="linkButton"
-          onClick={() => {
-            window.location.href = "/manage_locations";
-          }}
-        >
-          Manage Locations
-        </button>
-        <button
-          className="linkButton"
-          onClick={() => {
-            window.location.href = "/manage_rooms";
-          }}
-        >
-          Manage Rooms
-        </button>
-        <button
-          className="linkButton"
-          onClick={() => {
-            window.location.href = "/view_therapy_types";
-          }}
-        >
-          Manage Therapy Types
-        </button>
-        <button
-          className="linkButton"
-          onClick={() => {
-            console.log('here');
-            window.location.href = "/change_password";
-          }}
-        >
-          Change Password
-        </button>
+class Settings extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+getLinks()
+{
+  const items = [];
+  if(this.props.role == "admin")
+    items.push(
+      <Link to="/manage_locations"><button
+            className="linkButton"
+          >
+            Manage Locations
+          </button></Link>,
+          <Link to="/manage_rooms"><button
+            className="linkButton"
+          >
+            Manage Rooms
+          </button></Link>,
+          <Link to="/view_therapy_types"><button
+            className="linkButton"
+          >
+            Manage Therapy Types
+          </button></Link>
+    )
+    return items;
+}
+
+render() {
+    return (
+      <div>
+        <div class="settingsPageContainer">
+          {this.getLinks()}
+          <Link to="/change_password"><button
+            className="linkButton"
+          >
+            Change Password
+          </button></Link>
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  };
+}
 
 export default Settings;

@@ -9,24 +9,49 @@ const AddTherapyTypes = () => {
   const [subtypes, setSubtypes] = useState('');
 
   const handleAdd = ()  => {
-    subtypes.split(',').forEach((adl) => {
-      const url = "http://10.29.163.20:8081/api/therapy/"; 
-      const abbreviation = adl.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'');
-      axios
-        .post(url, {
-          adl,
+
+    const url = process.env.REACT_APP_SERVER_URL + "therapymain/"; 
+      const abbreviation = name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'');
+      const type = {
           type: name,
-          abbreviation
-        })
-        .then(function (response) {
+          abbreviation: name,
+          active: true
+      }
+      console.log(type);
+      axios
+        .post(url, type)
+        .then((response) => {
           console.log(response);
+          addADLs(subtypes);
         })
-        .catch(function (error) {
+        .catch((error) => {
           console.log(error.response)
         });
-    })
+  }
+
+  function addADLs(subtypes)  {
+    const adls = subtypes.split(',');
+    console.log(adls.length);
+    adls.forEach((adl) => {
+      const url = process.env.REACT_APP_SERVER_URL + "therapy/"; 
+      const abbreviation = adl.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'');
+      const type = {
+          adl,
+          type: name,
+          abbreviation: adl
+      }
+      console.log(type);
+      axios
+        .post(url, type)
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error.response)
+        });
+    });
     setTimeout(function () {
-     window.location.href = "/view_therapy_types";
+      window.location.href = "/view_therapy_types";  
     }, 2000);
   }
 

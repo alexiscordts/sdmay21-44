@@ -13,6 +13,7 @@ class EditPatient extends React.Component {
       locationList: [],
       rooms: [],
       patient: [],
+      physicians: []
     };
     this.deletePatient = this.deletePatient.bind(this);
     this.updateRoom = this.updateRoom.bind(this);
@@ -28,33 +29,40 @@ class EditPatient extends React.Component {
     });
   }
   componentDidMount() {
-    const url = "http://10.29.163.20:8081/api/";
+    const url = process.env.REACT_APP_SERVER_URL + "";
     axios.get(url + "user").then((response) => {
       const userList = response.data;
       this.setState({ userList });
-    });
-
-    axios.get("http://10.29.163.20:8081/api/permission").then((response) => {
+      axios.get(process.env.REACT_APP_SERVER_URL + "permission").then((response) => {
       this.setState({
         therapistList: this.state.therapistList.concat(response.data),
       });
+      const physicians = [];
+      this.state.therapistList.forEach(permission => {
+          this.state.userList.forEach(user => {
+            if (user.userId == permission.userId && permission.role == 'physician')
+              physicians.push(user);
+          });
+      });
+      this.setState({physicians});
+    });
     });
 
-    axios.get("http://10.29.163.20:8081/api/location").then((response) => {
+    axios.get(process.env.REACT_APP_SERVER_URL + "location").then((response) => {
       this.setState({
         locationList: this.state.locationList.concat(response.data),
       });
     });
 
-    axios.get("http://10.29.163.20:8081/api/room").then((response) => {
-      this.setState({ roomList: this.state.roomList.concat(response.data) });
-    });
-
     var patient = [];
     var id = sessionStorage.getItem("patientId");
-    axios.get("http://10.29.163.20:8081/api/patient/" + id).then((response) => {
+    axios.get(process.env.REACT_APP_SERVER_URL + "patient/" + id).then((response) => {
       patient = response.data;
       this.setState({ patient });
+      axios.get(process.env.REACT_APP_SERVER_URL + "room").then((response) => {
+      this.setState({ roomList: this.state.roomList.concat(response.data) });
+      this.getRooms(patient.locationId);
+    });
     });
   }
   updateRoom(event) {
@@ -79,10 +87,20 @@ class EditPatient extends React.Component {
     this.setState({ rooms });
   }
 
+  getRooms(id)  {
+    var rooms = [];
+    this.state.roomList.forEach(function (room) {
+      if (id == room.locationId) {
+        rooms.push(<option value={room.number}>{room.number}</option>);
+      }
+    });
+    this.setState({rooms});
+  }
+
   deletePatient() {
     if (window.confirm("Are you sure you want to delete this patient?")) {
       const url =
-        "http://10.29.163.20:8081/api/patient/" + this.state.patient.patientId;
+        process.env.REACT_APP_SERVER_URL + "patient/" + this.state.patient.patientId;
       axios.delete(url);
       setTimeout(() => {
         window.location.href = "/view_patient";
@@ -133,7 +151,7 @@ class EditPatient extends React.Component {
         Select a Physician
       </option>
     );
-    this.state.userList.forEach(function (user) {
+    this.state.physicians.forEach(function (user) {
       users.push(
         <option value={user.userId}>
           {user.firstName} {user.lastName}
@@ -207,7 +225,7 @@ class EditPatient extends React.Component {
                   class="input-field"
                   onChange={this.updateRoom}
                   name="locationId"
-                  defaultValue={this.state.patient.locationId}
+                  value={this.state.patient.locationId}
                 >
                   {locations}
                 </select>
@@ -219,7 +237,7 @@ class EditPatient extends React.Component {
                   class="input-field"
                   onChange={this.handleChange}
                   name="roomNumber"
-                  defaultValue={this.state.roomNumber}
+                  value={this.state.roomNumber}
                 >
                   {this.state.rooms}
                 </select>
@@ -231,7 +249,7 @@ class EditPatient extends React.Component {
                   class="input-field"
                   onChange={this.handleChange}
                   name="pmrPhysicianId"
-                  defaultValue={this.state.patient.pmrPhysicianId}
+                  value={this.state.patient.pmrPhysicianId}
                 >
                   {users}
                 </select>
@@ -243,7 +261,7 @@ class EditPatient extends React.Component {
                   type="number"
                   class="input-field"
                   name="therapistId"
-                  defaultValue={this.state.patient.therapistId}
+                  value={this.state.patient.therapistId}
                   onChange={this.handleChange}
                 >
                   {therapists}
@@ -261,7 +279,7 @@ class EditPatient extends React.Component {
                   onClick={() => {
                     console.log(this.state.patient);
                     const url =
-                      "http://10.29.163.20:8081/api/patient/" +
+                      process.env.REACT_APP_SERVER_URL + "patient/" +
                       this.state.patient.patientId;
                     axios.put(url, this.state.patient);
                   }}

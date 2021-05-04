@@ -3,6 +3,7 @@ import Nav from "../Nav";
 import "./UserStyles.css";
 import "../TableStyles.css";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 class ViewPatient extends React.Component {
   constructor(props) {
@@ -14,7 +15,7 @@ class ViewPatient extends React.Component {
   }
 
   componentDidMount() {
-    const url = "http://10.29.163.20:8081/api/patient";
+    const url = process.env.REACT_APP_SERVER_URL + "patient";
 
     axios.get(url).then((response) => {
       const patientList = response.data;
@@ -82,21 +83,17 @@ class ViewPatient extends React.Component {
 
     return (
       <div>
-        <Nav />
         <div class="userHeaderRow">
           <h2>Patients</h2>
-          <button
+          <Link to="/add_patient"><button
             class="iconAddUserButton"
-            onClick={() => {
-              window.location.href = "/add_patient";
-            }}
           >
             <img
               src={require("../Icons/icons8-add-user-male-48.png")}
               alt="edit"
               className="iconAddUser"
             />
-          </button>
+          </button></Link>
         </div>
         <table class="user-table">
           <thead>

@@ -3,6 +3,7 @@ import Nav from "../Nav";
 import "./UserStyles.css";
 import "../TableStyles.css";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 class ViewTherapist extends React.Component {
   constructor(props) {
@@ -14,13 +15,13 @@ class ViewTherapist extends React.Component {
   }
 
   componentDidMount() {
-    const url = "http://10.29.163.20:8081/api/";
+    const url = process.env.REACT_APP_SERVER_URL + "";
     axios.get(url + "user").then((response) => {
       const userList = response.data;
       this.setState({ userList });
     });
 
-    axios.get("http://10.29.163.20:8081/api/permission").then((response) => {
+    axios.get(process.env.REACT_APP_SERVER_URL + "permission").then((response) => {
       this.setState({
         therapistList: this.state.therapistList.concat(response.data),
       });
@@ -69,21 +70,17 @@ class ViewTherapist extends React.Component {
     );
     return (
       <div>
-        <Nav />
         <div class="userHeaderRow">
           <h2>Therapists</h2>
-          <button
+          <Link to="/add_therapist"><button
             class="iconAddUserButton"
-            onClick={() => {
-              window.location.href = "/add_therapist";
-            }}
           >
             <img
               src={require("../Icons/icons8-add-user-male-48.png")}
               alt="edit"
               className="iconAddUser"
             />
-          </button>
+          </button></Link>
         </div>
         <table class="user-table">
           <thead>

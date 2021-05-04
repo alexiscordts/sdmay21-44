@@ -1,6 +1,13 @@
 #chart  {
     height: calc(80vh - 150px);
     width: 100%;
+    overflow-y: hidden;
+    overflow-x: scroll;
+}
+
+#innerChartContainer    {
+    height: calc(80vh - 150px);
+    width: 100%;
 }
 
 #mystats    {
@@ -20,6 +27,41 @@
 
 #mystats .col    {
     display: inline-block;
-    width: 31%;
+    width: 45%;
     padding: 1%;
+    text-align: center;
 }
+
+.metricLocations  {
+    display: none;
+    position: absolute;
+    background-color: white;
+    width: 200px;
+    left: 160px;
+    box-shadow: 10px 8px 16px 0px rgba(0,0,0,0.2);
+    top: 84px;
+}
+
+.link.byRoom:hover .metricLocations {
+    display: block;
+}
+
+.link.byPatient:hover .metricLocations {
+    display: block;
+    top: 42px;
+}
+
+::-webkit-scrollbar {
+    width: 15px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888; 
+    border-radius: 7px;
+  }

@@ -3,6 +3,7 @@ import Nav from "./Nav";
 import "./TableStyles.css";
 import "./UserPages/UserStyles.css";
 import "./Settings.css";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 class ViewLocations extends React.Component {
@@ -14,7 +15,7 @@ class ViewLocations extends React.Component {
   }
 
   componentDidMount() {
-    const url = "http://10.29.163.20:8081/api/Location";
+    const url = process.env.REACT_APP_SERVER_URL + "Location";
 
     axios
       .get(url)
@@ -60,21 +61,17 @@ class ViewLocations extends React.Component {
 
     return (
       <div>
-        <Nav />
         <div class="userHeaderRow">
           <h2>Locations</h2>
-          <button
+          <Link to="/add_location"><button
             class="iconAddUserButton"
-            onClick={() => {
-              window.location.href = "/add_location";
-            }}
           >
             <img
               src={require("./Icons/icons8-plus-48.png")}
               alt="add"
               className="iconAddLocation"
             />
-          </button>
+          </button></Link>
         </div>
         <table class="user-table">
           <thead>

@@ -1,22 +1,25 @@
 import { getQueriesForElement } from "@testing-library/react";
 import React from "react";
 import "./RoomSchedule.css";
+import axios from "axios";
 
 class AllTherapistSchedule extends React.Component {
   constructor(props) {
     super(props);
-    this.lines = {values: this.loadLines()};
-    this.hours = {values: loadHours()};
+    this.numAppointments = 0;
     var d = new Date();
     this.time = {value: loadTimeLine()};
-    this.rooms = {values: getPatients()};
-    var appointments = getAppointments(d);
     var d = new Date();
     while (d.getDay() != 1) //get Monday
     {
         d.setDate(d.getDate() - 1);
     }
-    this.tuesday = {values: getAppointmentElements(appointments)}
+    this.state = {
+        patients: [],
+        therapistList: [],
+        userList: [],
+
+    }
   }
 
   updateDimensions = () => {
@@ -28,17 +31,35 @@ class AllTherapistSchedule extends React.Component {
              });
         }
   };
-  
-  load = () => {
-    document.getElementById("scheduleContainer").scrollTop = getPositionForTimeLine() - 200;
-    console.log("loaded");
-  };
 
   componentDidMount() {
     window.addEventListener('resize', this.updateDimensions);
-    window.addEventListener('load', this.load);
     this.interval = setInterval(() => this.setState({ time: Date.now() }), 60000); //Render every minute
     toggleDay(new Intl.DateTimeFormat('en-US', {weekday: 'long'}).format(this.props.date));
+    const url = process.env.REACT_APP_SERVER_URL + "";
+        axios.get(url + "user").then((response) => {
+            console.log(response);
+          const userList = response.data;
+          this.setState({ userList });
+            axios.get(process.env.REACT_APP_SERVER_URL + "permission").then((response) => {
+            const therapistList = [];
+            const permissions = response.data;
+            this.state.userList.forEach(user =>{
+                permissions.forEach(permission => {
+                    if (permission.userId == user.userId && permission.role == "therapist")
+                        therapistList.push(user);
+                })
+            this.setState({therapistList});  
+                axios
+                .get(process.env.REACT_APP_SERVER_URL + "patient")
+                .then((response) => {
+                    const patients = response.data;
+                    this.setState({ patients });
+                    this.props.getAppointments();
+                });       
+                });
+        });
+        });
   }
 
   componentWillUnmount() {
@@ -47,65 +68,137 @@ class AllTherapistSchedule extends React.Component {
     clearInterval(this.interval);
   }
 
+  getPatients() {
+      const items = [];
+      this.state.patients.forEach(patient => {
+          if (this.props.location != null && patient.locationId == this.props.location.locationId)
+            items.push(patient);
+      })
+      return items;
+    }
+
   loadPatients()
     {
-        var hours = loadHours();
-        const rooms = getPatients();
+        var hours = this.loadHours(this.props.date);
+        const patients = this.getPatients();
         const roomElements = [];
         var appointments = getAppointments(new Date());
-        const tuesday = getAppointmentElements(appointments);
-        for (let i = 0; i < rooms.length; i++)
+        for (let i = 0; i < patients.length; i++)
         {
-            let lines = this.loadLines(i + 1);
+            let lines = this.loadLines(patients[i]);
             let percent = Math.floor(Math.random() * 100);
             var color = getColor(percent);
+            const appointments = [];
+            for(let j = 0; j < this.props.appointments.length; j++) //get appointments for this therapist
+            {
+                if (this.props.appointments[j].patientId == patients[i].patientId)
+                    appointments.push(this.props.appointments[j]);
+            }
             if (i % 10 == 0)
                 roomElements.push(<div class="printHours">{hours}</div>);
-            if (i == 3)
-                roomElements.push(
-                    <div class="therapist">
-                        <div class="roomLabel">{rooms[i]}</div>
-                        <div class="therapistMetrics" style={color}>{percent} %</div>
-                        {lines}
-                        {tuesday}
-                    </div>
-                );
-                else
-                roomElements.push(
-                    <div class="therapist">
-                        <div class="roomLabel">{rooms[i]}</div>
-                        <div class="therapistMetrics" style={color}>{percent} %</div>
-                        {lines}
-                    </div>
-                );            
+            roomElements.push(
+                <div class="therapist">
+                    <div class="roomLabel">{patients[i].firstName + ' ' + patients[i].lastName}</div>
+                    <div class="therapistMetrics" style={color}>{percent} %</div>
+                    {lines}
+                    {this.getAppointmentElements(appointments, patients[i])}
+                </div>
+            );            
         }
         return roomElements;
     }
 
-  loadLines(patientIndex)
+    showAddAppointment(hour, minute, date, patient)   {
+        document.getElementById("addAppointment").style.display = "block";
+        let time = "";
+        if (hour < 10)
+            time = "0" + hour + ":" + minute;
+        else
+            time = hour + ":" + minute;
+        var startElements = document.getElementsByClassName("startTime");
+        for (let i = 0; i < startElements.length; i++)
+        {
+            startElements[i].value = time;
+        }
+        let endTime = "";
+        if (hour + 1 < 10)
+            endTime = "0" + (hour + 1) + ":" + minute;
+        else
+            endTime = (hour + 1) + ":" + minute;
+        var endElements = document.getElementsByClassName("endTime");
+        for (let i = 0; i < startElements.length; i++)
+        {
+            endElements[i].value = endTime;
+        }
+        var dateElements = document.getElementsByClassName("date");
+        for (let i = 0; i < dateElements.length; i++)
+        {
+            let year = date.getFullYear();
+            let month = date.getMonth() + 1;
+            if (month < 10)
+                month = '0' + month;
+            let day = date.getDate();
+            if (day < 10)
+                day = '0' + day;
+            dateElements[i].value = year + "-" + month + "-" + day;
+        }
+        document.getElementById("location").value = this.props.location.locationId;
+        document.getElementById("room").value = patient.roomNumber;
+        document.getElementById("patient").value = patient.patientId;
+        document.getElementById("appointmentTherapist").value = patient.therapistId;
+        document.getElementById("physician").value = patient.pmrPhysicianId;
+        this.props.appointment.locationId = this.props.location.locationId;
+        this.props.appointment.roomNumber = patient.roomNumber;
+        this.props.appointment.patientId = patient.patientId;
+        this.props.appointment.therapistId = patient.therapistId;
+        this.props.appointment.pmrPhysicianId = patient.pmrPhysicianId;
+        if(this.props.role == "therapist")
+        {
+            this.props.appointment.therapistId = sessionStorage.getItem("id");
+            document.getElementById("appointmentTherapist").selectedIndex = 1;
+        }
+    }
+
+  loadLines(patient)
     {
         const items = [];
         for (var i = 0; i < 15; i++)
         {
             let time = (i + 5);
-            if (i % 2)
+            if (this.props.role == "admin" || this.props.role == "therapist")
             {
-                items.push(
-                    <div onClick={() => showAddAppointment(time, "00", this.props.date, patientIndex)} class="halfHour"><div class="hide">+</div></div>
-                );
-                items.push(
-                    <div onClick={() => showAddAppointment(time, "30", this.props.date, patientIndex)} class="halfHour"><div class="hide">+</div></div>
-                );
+                if (i % 2)
+                {
+                    items.push(
+                        <div onClick={() => {this.showAddAppointment(time, "00", this.props.date, patient); this.props.setTimes(this.props.date, time, 0)}} class="halfHour"><div class="hide">+</div></div>
+                    );
+                    items.push(
+                        <div onClick={() => {this.showAddAppointment(time, "30", this.props.date, patient); this.props.setTimes(this.props.date, time, 30)}} class="halfHour"><div class="hide">+</div></div>
+                    );
+                }
+                else
+                {
+                    items.push(
+                        <div onClick={() => {this.showAddAppointment(time, "00", this.props.date, patient); this.props.setTimes(this.props.date, time, 0)}} class="halfHour printGrey"><div class="hide">+</div></div>
+                    );
+                    items.push(
+                        <div onClick={() => {this.showAddAppointment(time, "30", this.props.date, patient); this.props.setTimes(this.props.date, time, 30)}} class="halfHour printGrey"><div class="hide">+</div></div>
+                    );
+
+                }
             }
             else
             {
+                if (i % 2)
                 items.push(
-                    <div onClick={() => showAddAppointment(time, "00", this.props.date, patientIndex)} class="halfHour printGrey"><div class="hide">+</div></div>
+                    <div class="halfHour"></div>,
+                    <div class="halfHour"></div>
                 );
+                else
                 items.push(
-                    <div onClick={() => showAddAppointment(time, "30", this.props.date, patientIndex)} class="halfHour printGrey"><div class="hide">+</div></div>
+                    <div class="halfHour printGrey"></div>,
+                    <div class="halfHour printGrey"></div>
                 );
-
             }
         }
         return items;
@@ -113,8 +206,7 @@ class AllTherapistSchedule extends React.Component {
 
   setDay(day)    
     {
-        console.log(this.props.date.getDay());
-        console.log(day);
+        console.log(this.props.date);
         while(this.props.date.getDay() != day)
         {
             if (this.props.date.getDay() > day)
@@ -122,13 +214,113 @@ class AllTherapistSchedule extends React.Component {
             else
                 this.props.date.setDate(this.props.date.getDate() + 1);
         }
+        this.props.getAppointments();
+    }
+
+    loadHours(date)
+    {
+        const hours = [];
+        hours.push(<div id="topSpace">{date.toLocaleDateString('en-US')}</div>);
+        var AMPM = "AM"
+        for (var i = 5; i < 20; i++)
+        {
+            var time = i;
+            if (i == 12)
+                AMPM = "PM"
+            else if (i > 12)
+                time = i - 12;
+            
+            if(i % 2 == 0)
+                hours.push(
+                    <div class="hour">{time} {AMPM}</div>
+                );
+            else 
+                hours.push(
+                    <div class="hour printGrey">{time} {AMPM}</div>
+                );
+        }
+        return hours;
+    }
+
+    getColor(id)
+    {
+        for (let i = 0; i < this.state.therapistList.length; i++)
+        {
+            let therapist = this.state.therapistList[i];
+            if (therapist.userId == id && therapist.color != null)
+                return therapist.color;
+        }
+        return "#00529b";
+    }
+
+    getAppointmentElements(appointments, patient)   {
+        var appointmentElements = []; 
+        appointments.forEach(appointment => {
+            var start = new Date(appointment.startTime);
+            var end = new Date(appointment.endTime);
+            var position = (start.getHours() - 5) * 52 + start.getMinutes() * 52/60 + 36;
+            var id = "appointment" + this.numAppointments.toString();
+            var num = this.numAppointments.toString();
+            var therapist = this.getTherapist(appointment.therapistId);
+            if(therapist != null)
+            {
+                var style = {
+                    top: position,
+                    height: Math.abs(end - start) / 36e5 * 52, 
+                    minHeight: Math.abs(end - start) / 36e5 * 52,
+                    backgroundColor: this.getColor(patient.therapistId)
+                };
+                appointmentElements.push(
+                    <div class="appointment" style={style} id={id} onClick={() => seeNotes(num)}>
+                        <div class="hidden" id={id + "Height"}>{Math.abs(end - start) / 36e5 * 52}px</div>
+                        <div class="name">{therapist.firstName + " " + therapist.lastName}</div>
+                        <div class="name">Room {appointment.roomNumber}</div>
+                        <div class="time">{appointment.adl}</div>
+                        <div class="notes" id={"notes" + num}>Notes: {appointment.notes}</div>
+                        {this.getAppointmentButtons(num, appointment.appointmentId)}
+                    </div>
+                );
+                this.numAppointments++;
+            }
+        });
+        return appointmentElements;
+}
+
+getTherapist(id) {
+    console.log("therapists");
+    console.log(this.state.therapistList);
+    console.log(this.state.therapistList);
+    for(let i = 0; i < this.state.therapistList.length; i++)
+        if (this.state.therapistList[i].userId == id)
+            return this.state.therapistList[i];
+}
+
+getAppointmentButtons(num, id)
+    {
+        const items = [];
+        if (this.props.role == "admin")
+        items.push(
+            <button class="editAppointmentButton" id={"copyAppointmentButton" + num} onClick={() => this.props.copyAppointment(id)}>Copy</button>,
+            <button class="editAppointmentButton" id={"deleteAppointmentButton" + num} onClick={() => this.deleteAppointment(id)}>Delete</button>
+        )
+        return items;
+    }
+
+    deleteAppointment(id)
+    {
+        axios.delete(process.env.REACT_APP_SERVER_URL + "appointment/" + id).then((response) => {
+            console.log(response);
+            this.props.getAppointments();
+        }).catch((error) => {
+            console.log("Error caught");
+            console.log(error);
+        });
     }
 
   render() {
     this.time = {value: loadTimeLine()} //Update timeline
     var roomSchedules = this.loadPatients();
     toggleDay(new Intl.DateTimeFormat('en-US', {weekday: 'long'}).format(this.props.date));
-    var roomNumbers = loadRoomNumbers();
     return (
         <div>
         <div id="roomSchedule">
@@ -136,7 +328,7 @@ class AllTherapistSchedule extends React.Component {
                 
                 {this.time.value}
                 <div id="hourColumn">
-                    {this.hours.values}
+                    {this.loadHours(this.props.date)}
                 </div>
                 <div id="rooms">
                     
@@ -187,18 +379,11 @@ class AllTherapistSchedule extends React.Component {
             <input type = "checkbox" id="scrollCheck" onChange={() => showScroll()}/>
             </label>
 
-            <label class="metricLabel" for="metricCheck">
-            show metrics
-            <input type = "checkbox" id="metricCheck" onChange={() => showMetrics()}/>
-            </label>
+            
             </div>
         </div>
     );
   }
-}
-
-function getPatients() {
-    return ['Beatrice Coleman', 'Vivian Allison', 'Marsha Morgan', 'Al Carr', 'Jesus Sutton', 'Pearl Robertson', 'Marion Hammond', 'Jim Chandler', 'Kimberly Rodriquez', 'Joel Ramsey'];
 }
 
 function getColor(percent) {
@@ -210,44 +395,6 @@ function getColor(percent) {
         return {backgroundColor: "#FEEB51"};
     else
         return {backgroundColor: "#9BCA3E"};
-}
-
-function loadRoomNumbers()
-{
-    const rooms = getPatients();
-    const roomNumberElements = [];
-    for (let i = 0; i < rooms.length; i++)
-    {
-            roomNumberElements.push(
-                    <div class="roomLabel2">{rooms[i]}</div>
-            );            
-    }
-    return roomNumberElements;
-}
-
-function loadHours()
-{
-    const hours = [];
-    hours.push(<div id="topSpace"></div>);
-    var AMPM = "AM"
-    for (var i = 5; i < 20; i++)
-    {
-        var time = i;
-        if (i == 12)
-            AMPM = "PM"
-        else if (i > 12)
-            time = i - 12;
-        
-        if(i % 2 == 0)
-            hours.push(
-                <div class="hour">{time} {AMPM}</div>
-            );
-        else 
-            hours.push(
-                <div class="hour printGrey">{time} {AMPM}</div>
-            );
-    }
-    return hours;
 }
 
 function loadTimeLine()  
@@ -291,61 +438,9 @@ function getAppointments(date) {
     return appointments;
 }
 
-var numAppointments = 0;
-function getAppointmentElements(appointments)   {
-    var appointmentElements = []; 
-    appointments.forEach(appointment => {
-        var start = appointment.date.getHours();
-        var end = appointment.date.getHours() + appointment.length;
-        var position = (start - 5) * 52 + appointment.date.getMinutes() * 52/60 + 36;
-        var style;
-        if (appointment.type == "1")
-            style = {
-                top: position,
-                height: appointment.length * 52, 
-                minHeight: appointment.length * 52,
-                backgroundColor: "#EA7600"
-            };
-        else
-        style = {
-            top: position,
-            height: appointment.length * 52, 
-            minHeight: appointment.length * 52
-        };
-        var startAMOrPM = "AM";
-        var endAMOrPM = "AM";
-        if (start >= 12)
-            startAMOrPM = "PM";
-        if (start > 12)
-            start -= 12;
-        if (end >= 12)
-            endAMOrPM = "PM";
-        if (end > 12)
-            end -= 12;
-        var time = start + " " + startAMOrPM + " - " + end + " " + endAMOrPM;
-        var id = "appointment" + numAppointments.toString();
-        var num = numAppointments.toString();
-        appointmentElements.push(
-            <div class="appointment" style={style} id={id} onClick={() => seeNotes(num)}>
-                <div class="hidden" id={id + "Height"}>{appointment.length * 52}px</div>
-                <div class="name">{appointment.therapist}</div>
-                <div class="time">{appointment.type}: {appointment.subtype}</div>
-                <div class="time">Room {appointment.room}</div>
-                <div class="notes" id={"notes" + num}>Notes: {appointment.notes}</div>
-                <button class="editAppointmentButton" id={"editAppointmentButton" + num} onClick={() => showEditAppointment()}>Edit</button>
-                <button class="editAppointmentButton" id={"copyAppointmentButton" + num} onClick={() => showAddAppointment()}>Copy</button>
-                <button class="editAppointmentButton" id={"deleteAppointmentButton" + num}>Delete</button>             
-            </div>
-        );
-        numAppointments++;
-    });
-    return appointmentElements;
-}
-
 var idExpanded = null;
 function seeNotes(id)   {
     let notes = "notes" + id;
-    let edit = "editAppointmentButton" + id;
     let copy = "copyAppointmentButton" + id;
     let deleteApp = "deleteAppointmentButton" + id;
     id = "appointment" + id;
@@ -353,31 +448,30 @@ function seeNotes(id)   {
     {
         document.getElementById(id).style.height = "auto";
         document.getElementById(id).style.width = "150%";
-        document.getElementById(id).style.backgroundColor = "#003e74";
         document.getElementById(id).style.zIndex = 4;
         document.getElementById(notes).style.display = "block";
-        document.getElementById(edit).style.display = "block";
-        document.getElementById(copy).style.display = "block";
-        document.getElementById(deleteApp).style.display = "block";
+        if (document.getElementById(copy))
+            document.getElementById(copy).style.display = "block";
+        if (document.getElementById(deleteApp))
+            document.getElementById(deleteApp).style.display = "block";
         idExpanded = id;
     }
     else if (idExpanded == id)
     {
         document.getElementById(id).style.height = document.getElementById(id + "Height").innerHTML;
         document.getElementById(id).style.width = "100%";
-        document.getElementById(id).style.backgroundColor = "#00529b";
         document.getElementById(id).style.zIndex = 2;
         document.getElementById(notes).style.display = "none";
-        document.getElementById(edit).style.display = "none";
-        document.getElementById(copy).style.display = "none";
-        document.getElementById(deleteApp).style.display = "none";
+        if (document.getElementById(copy))  
+            document.getElementById(copy).style.display = "none";
+        if (document.getElementById(deleteApp))
+            document.getElementById(deleteApp).style.display = "none";
         idExpanded = null;
     }
 }
 
 function toggleDay(toggleDay)
 {
-    console.log(toggleDay);
     const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     days.forEach(day => {
         if (day != toggleDay)
@@ -409,56 +503,6 @@ function rightScroll()
         left: w,
         behavior: 'smooth'
       });
-}
-
-function showAddAppointment(hour, minute, date, patientIndex)   {
-    document.getElementById("addAppointment").style.display = "block";
-    document.getElementById("editAppointment").style.display = "none";
-    let time = "";
-    if (hour < 10)
-        time = "0" + hour + ":" + minute;
-    else
-        time = hour + ":" + minute;
-    console.log(time);
-    var selectElements = document.getElementsByClassName("select-field");
-    for (var i = 0; i < selectElements.length; i++)
-    {
-        selectElements[i].selectedIndex = 0;
-    }
-    var startElements = document.getElementsByClassName("startTime");
-    for (var i = 0; i < startElements.length; i++)
-    {
-        startElements[i].value = time;
-    }
-    let endTime = "";
-    if (hour + 1 < 10)
-        endTime = "0" + (hour + 1) + ":" + minute;
-    else
-        endTime = (hour + 1) + ":" + minute;
-    var endElements = document.getElementsByClassName("endTime");
-    for (var i = 0; i < startElements.length; i++)
-    {
-        endElements[i].value = endTime;
-    }
-    var dateElements = document.getElementsByClassName("date");
-    for (let i = 0; i < dateElements.length; i++)
-    {
-        let year = date.getFullYear();
-        let month = date.getMonth() + 1;
-        if (month < 10)
-            month = '0' + month;
-        let day = date.getDate();
-        if (day < 10)
-            day = '0' + day;
-        dateElements[i].value = year + "-" + month + "-" + day;
-    }
-    document.getElementById("room").selectedIndex = patientIndex;
-    document.getElementById("patient").selectedIndex = patientIndex;
-}
-
-function showEditAppointment()   {
-    document.getElementById("editAppointment").style.display = "block";
-    document.getElementById("addAppointment").style.display = "none";
 }
 
 function showScroll()   {
@@ -508,10 +552,10 @@ function decColWidth()  {
     var cols = document.getElementsByClassName("therapist");
     for (var i = 0; i < cols.length; i++)
     {
-        if (cols[i].getBoundingClientRect().width > 150)
+        if (cols[i].getBoundingClientRect().width > 100)
         {
             cols[i].style.minWidth = (cols[i].getBoundingClientRect().width - 10) + "px";
-            cols[i].style.width = (cols[i].getBoundingClientRect().width + 10) + "px";
+            cols[i].style.width = (cols[i].getBoundingClientRect().width - 10) + "px";
         }
     }
 }
