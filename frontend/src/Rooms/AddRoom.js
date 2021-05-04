@@ -37,7 +37,7 @@ const AddRoom = () => {
                   active: true
                   }
                   const url =
-                    "http://10.29.163.20:8081/api/room/";
+                    process.env.REACT_APP_SERVER_URL + "room/";
                   axios.post(url, r)
                   .then(function (response) {
                     console.log(response);

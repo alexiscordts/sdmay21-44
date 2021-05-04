@@ -19,13 +19,13 @@ class ViewRooms extends React.Component {
   }
 
   componentDidMount() {
-    axios.get("http://10.29.163.20:8081/api/location/").then((response) => {
+    axios.get(process.env.REACT_APP_SERVER_URL + "location/").then((response) => {
       this.setState({
         locationList: this.state.locationList.concat(response.data),
       });
     });
 
-    axios.get("http://10.29.163.20:8081/api/room").then((response) => {
+    axios.get(process.env.REACT_APP_SERVER_URL + "room").then((response) => {
       this.setState({ roomList: this.state.roomList.concat(response.data) });
     });
   }
@@ -53,11 +53,11 @@ class ViewRooms extends React.Component {
                   locationId: id
                   }
                   const url =
-                    "http://10.29.163.20:8081/api/room/deleteRoom/";
+                    process.env.REACT_APP_SERVER_URL + "room/deleteRoom/";
                   axios.post(url, r)
                   .then((response) => {
                     console.log(response.data);
-                    axios.get("http://10.29.163.20:8081/api/room").then((response2) => {
+                    axios.get(process.env.REACT_APP_SERVER_URL + "room").then((response2) => {
                       const rooms = response2.data;
                       event.setState({ roomList: rooms });
                     });

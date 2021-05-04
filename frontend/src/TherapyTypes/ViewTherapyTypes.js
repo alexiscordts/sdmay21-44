@@ -19,9 +19,9 @@ class ViewTherapyTypes extends React.Component {
   }
 
   updateTherapistList() {
-    const url = "http://10.29.163.20:8081/api/therapy";
+    const url = process.env.REACT_APP_SERVER_URL + "therapy";
     axios.get(url).then((response) => {
-      axios.get("http://10.29.163.20:8081/api/therapymain").then((response2) => {
+      axios.get(process.env.REACT_APP_SERVER_URL + "therapymain").then((response2) => {
         const adlList = response.data;
         const therapyList = response2.data;
         const therapies = [];
@@ -38,7 +38,7 @@ class ViewTherapyTypes extends React.Component {
 
   deleteTherapy(key) {
     console.log(key);
-    const url = "http://10.29.163.20:8081/api/therapymain/" + key;
+    const url = process.env.REACT_APP_SERVER_URL + "therapymain/" + key;
         axios.delete(url)
         .then((response) => {
           console.log(response.data);
@@ -49,13 +49,13 @@ class ViewTherapyTypes extends React.Component {
             console.log(error);
         });
 
-      axios.get("http://10.29.163.20:8081/api/therapy")
+      axios.get(process.env.REACT_APP_SERVER_URL + "therapy")
       .then((response) => {
         const therapies = response.data;
         therapies.forEach(therapy => {
           if (therapy.type == key)
           {
-            axios.delete("http://10.29.163.20:8081/api/therapy/" + therapy.adl)
+            axios.delete(process.env.REACT_APP_SERVER_URL + "therapy/" + therapy.adl)
             .then((response2) => {
               console.log(response2.data);
               this.updateTherapistList();

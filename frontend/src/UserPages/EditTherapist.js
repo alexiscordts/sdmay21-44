@@ -22,7 +22,7 @@ class EditTherapist extends React.Component {
     var therapist = [];
     var id = sessionStorage.getItem("userId");
     axios
-      .get("http://10.29.163.20:8081/api/user/getUserByUserId/" + id)
+      .get(process.env.REACT_APP_SERVER_URL + "user/getUserByUserId/" + id)
       .then((response) => {
         therapist = response.data;
         var password = therapist.password;
@@ -33,14 +33,14 @@ class EditTherapist extends React.Component {
 
   deleteTherapist() {
     const url =
-      "http://10.29.163.20:8081/api/user/" + this.state.therapist.userId;
+      process.env.REACT_APP_SERVER_URL + "user/" + this.state.therapist.userId;
     console.log(url);
     axios.delete(url);
     setTimeout(this.deletePermission, 2000);
   }
   deletePermission() {
     const url =
-      "http://10.29.163.20:8081/api/permission/" + this.state.therapist.userId;
+      process.env.REACT_APP_SERVER_URL + "permission/" + this.state.therapist.userId;
     window.location.href = "/view_therapist";
   }
 
@@ -163,7 +163,7 @@ class EditTherapist extends React.Component {
                   value="Save"
                   onClick={() => {
                     const url =
-                      "http://10.29.163.20:8081/api/user/" +
+                      process.env.REACT_APP_SERVER_URL + "user/" +
                       this.state.therapist.userId;
                     if (this.state.password != this.state.therapist.password) {
                       axios.put(url, this.state.therapist);

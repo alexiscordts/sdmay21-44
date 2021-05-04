@@ -38,17 +38,17 @@ class RoomSchedule extends React.Component {
     window.addEventListener('resize', this.updateDimensions);
     this.interval = setInterval(() => this.setState({ time: Date.now() }), 60000); //Render every minute
     toggleDay(new Intl.DateTimeFormat('en-US', {weekday: 'long'}).format(this.props.date));
-    const url = "http://10.29.163.20:8081/api/";
+    const url = process.env.REACT_APP_SERVER_URL + "";
         axios.get(url + "user").then((response) => {
             console.log(response);
           const userList = response.data;
           this.setState({ userList });
           axios
-        .get("http://10.29.163.20:8081/api/room")
+        .get(process.env.REACT_APP_SERVER_URL + "room")
         .then((response) => {
             const rooms = response.data;
             this.setState({ rooms });
-            axios.get("http://10.29.163.20:8081/api/permission").then((response) => {
+            axios.get(process.env.REACT_APP_SERVER_URL + "permission").then((response) => {
             const therapistList = [];
             const permissions = response.data;
             this.state.userList.forEach(user =>{
@@ -59,7 +59,7 @@ class RoomSchedule extends React.Component {
             })
             this.setState({therapistList});  
                 axios
-                .get("http://10.29.163.20:8081/api/patient")
+                .get(process.env.REACT_APP_SERVER_URL + "patient")
                 .then((response) => {
                     const patients = response.data;
                     this.setState({ patients });
@@ -281,7 +281,7 @@ class RoomSchedule extends React.Component {
 
     deleteAppointment(id)
     {
-        axios.delete("http://10.29.163.20:8081/api/appointment/" + id).then((response) => {
+        axios.delete(process.env.REACT_APP_SERVER_URL + "appointment/" + id).then((response) => {
             console.log(response);
             this.props.getAppointments();
         }).catch((error) => {

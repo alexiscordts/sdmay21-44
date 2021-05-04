@@ -61,7 +61,7 @@ export default class App extends React.Component {
     this.username = data.username;
     data.password = password;
     axios //see if password matches
-      .post("http://10.29.163.20:8081/api/user/login/", data)
+      .post(process.env.REACT_APP_SERVER_URL + "user/login/", data)
       .then((response) => {
         console.log("log in success!");
         this.setState({
@@ -83,7 +83,7 @@ export default class App extends React.Component {
     console.log("Parent handled login");
 
     axios //get permission of user
-      .get("http://10.29.163.20:8081/api/permission/" + data.userId)
+      .get(process.env.REACT_APP_SERVER_URL + "permission/" + data.userId)
       .then((response) => {
         this.role = response.data.role;
         sessionStorage.setItem('role', response.data.role);

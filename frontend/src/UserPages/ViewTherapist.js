@@ -15,13 +15,13 @@ class ViewTherapist extends React.Component {
   }
 
   componentDidMount() {
-    const url = "http://10.29.163.20:8081/api/";
+    const url = process.env.REACT_APP_SERVER_URL + "";
     axios.get(url + "user").then((response) => {
       const userList = response.data;
       this.setState({ userList });
     });
 
-    axios.get("http://10.29.163.20:8081/api/permission").then((response) => {
+    axios.get(process.env.REACT_APP_SERVER_URL + "permission").then((response) => {
       this.setState({
         therapistList: this.state.therapistList.concat(response.data),
       });

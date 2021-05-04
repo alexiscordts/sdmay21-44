@@ -10,7 +10,7 @@ const AddTherapyTypes = () => {
 
   const handleAdd = ()  => {
 
-    const url = "http://10.29.163.20:8081/api/therapymain/"; 
+    const url = process.env.REACT_APP_SERVER_URL + "therapymain/"; 
       const abbreviation = name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'');
       const type = {
           type: name,
@@ -33,7 +33,7 @@ const AddTherapyTypes = () => {
     const adls = subtypes.split(',');
     console.log(adls.length);
     adls.forEach((adl) => {
-      const url = "http://10.29.163.20:8081/api/therapy/"; 
+      const url = process.env.REACT_APP_SERVER_URL + "therapy/"; 
       const abbreviation = adl.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'');
       const type = {
           adl,

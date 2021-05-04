@@ -16,7 +16,7 @@ constructor(props) {
 componentDidMount() {
 
         axios
-        .get("http://10.29.163.20:8081/api/patient")
+        .get(process.env.REACT_APP_SERVER_URL + "patient")
         .then((response) => {
             const patients = [];
             response.data.forEach(patient => {

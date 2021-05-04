@@ -9,7 +9,7 @@ const EditTherapyTypes = () => {
   const [newAdl, setNewAdl] = useState('');
 
   const deleteAdl = async (adl) => {
-    const url = "http://10.29.163.20:8081/api/therapy/"+adl; 
+    const url = process.env.REACT_APP_SERVER_URL + "therapy/"+adl; 
   
      await axios
       .delete(url)
@@ -23,7 +23,7 @@ const EditTherapyTypes = () => {
   }
 
   const updateAdl = async(subtypeName, adl) => {
-    const url = "http://10.29.163.20:8081/api/therapy/"+subtypeName; 
+    const url = process.env.REACT_APP_SERVER_URL + "therapy/"+subtypeName; 
   
      await axios
       .delete(url)
@@ -60,7 +60,7 @@ const EditTherapyTypes = () => {
   )};
 
   const addAdl = async(adl) => {
-    const url = "http://10.29.163.20:8081/api/therapy/"; 
+    const url = process.env.REACT_APP_SERVER_URL + "therapy/"; 
     await axios
     .post(url, {
       adl,

@@ -32,7 +32,7 @@ class AddTherapist extends React.Component {
     });
   }
   // postPermission(userId) {
-  //   const permUrl = "http://10.29.163.20:8081/api/permission/";
+  //   const permUrl = process.env.REACT_APP_SERVER_URL + "permission/";
   //   const role = "therapist";
   //   const permission = { userId, role };
   //   console.log(permission);
@@ -46,8 +46,8 @@ class AddTherapist extends React.Component {
     // let therapist = this.state.therapist;
     const username = this.state.therapist.username;
     const getUserUrl =
-      "http://10.29.163.20:8081/api/user/getUserByUsername/" + username;
-    const url = "http://10.29.163.20:8081/api/user";
+      process.env.REACT_APP_SERVER_URL + "user/getUserByUsername/" + username;
+    const url = process.env.REACT_APP_SERVER_URL + "user";
     console.log(this.state.therapist.username);
     axios.post(url, this.state.therapist).catch(function (error) {
       if (error.response) {
@@ -68,7 +68,7 @@ class AddTherapist extends React.Component {
         var userId = parseInt(response.data.userId);
         setTimeout(
           () => {
-            const permUrl = "http://10.29.163.20:8081/api/permission/";
+            const permUrl = process.env.REACT_APP_SERVER_URL + "permission/";
             const role = "therapist";
             const permission = { userId, role };
             axios.post(permUrl, permission).catch((error) => {

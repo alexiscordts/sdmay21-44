@@ -35,7 +35,7 @@ class ViewMetrics extends React.Component {
             this.setState({metrics: 2});
 
             axios
-            .get("http://10.29.163.20:8081/api/Location")
+            .get(process.env.REACT_APP_SERVER_URL + "Location")
             .then((response) => {
               const locations = response.data;
               this.setState({ locations });
@@ -69,7 +69,7 @@ class ViewMetrics extends React.Component {
             })
 
             axios
-            .post("http://10.29.163.20:8081/api/appointment/getAppointments", event)
+            .post(process.env.REACT_APP_SERVER_URL + "appointment/getAppointments", event)
             .then((response) => {
                 console.log(response.data);
                 const appointments = response.data;
@@ -90,7 +90,7 @@ class ViewMetrics extends React.Component {
             })
 
             axios
-            .post("http://10.29.163.20:8081/api/appointment/getAppointmentsByTherapistId", event)
+            .post(process.env.REACT_APP_SERVER_URL + "appointment/getAppointmentsByTherapistId", event)
             .then((response) => {
                 console.log(response.data);
                 const appointments = response.data;
@@ -117,7 +117,7 @@ class ViewMetrics extends React.Component {
         {
             let newDate = new Date(d.getTime());
             elements.push(
-                <div class="link" onClick={() => {this.setState({date: newDate}); this.week = newDate.toLocaleDateString('en-US'); console.log(newDate); this.getAppointments(newDate) }}>{newDate.toLocaleDateString('en-US')}</div>
+                <div class="link" onClick={() => {this.setState({date: newDate}); this.week = newDate.toLocaleDateString('en-US'); this.getAppointments(newDate) }}>{newDate.toLocaleDateString('en-US')}</div>
             );
             d.setDate(d.getDate() + 7);
         }

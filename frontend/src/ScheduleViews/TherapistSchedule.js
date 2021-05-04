@@ -42,12 +42,12 @@ class TherapistSchedule extends React.Component {
     window.addEventListener('load', this.load);
     this.interval = setInterval(() => this.setState({ time: Date.now() }), 60000); //Render every minute
 
-    const url = "http://10.29.163.20:8081/api/";
+    const url = process.env.REACT_APP_SERVER_URL + "";
         axios.get(url + "user").then((response) => {
             console.log(response);
           const userList = response.data;
           this.setState({ userList });
-            axios.get("http://10.29.163.20:8081/api/permission").then((response) => {
+            axios.get(process.env.REACT_APP_SERVER_URL + "permission").then((response) => {
             const therapistList = [];
             const permissions = response.data;
             this.state.userList.forEach(user =>{
@@ -57,11 +57,11 @@ class TherapistSchedule extends React.Component {
                 })
             this.setState({therapistList});  
                 axios
-                .get("http://10.29.163.20:8081/api/patient")
+                .get(process.env.REACT_APP_SERVER_URL + "patient")
                 .then((response) => {
                     const patients = response.data;
                     this.setState({ patients });
-                    axios.get("http://10.29.163.20:8081/api/Location")
+                    axios.get(process.env.REACT_APP_SERVER_URL + "Location")
                     .then((response) => {
                         const locations = response.data;
                         this.setState({ locations });
@@ -304,7 +304,7 @@ class TherapistSchedule extends React.Component {
 
     deleteTherapistEvent(id)
     {
-        axios.delete("http://10.29.163.20:8081/api/therapistevent/" + id).then((response) => {
+        axios.delete(process.env.REACT_APP_SERVER_URL + "therapistevent/" + id).then((response) => {
             console.log(response);
             this.props.getTherapistEvents(sessionStorage.getItem("id"));
         }).catch((error) => {
@@ -315,7 +315,7 @@ class TherapistSchedule extends React.Component {
 
     deleteAppointment(id)
     {
-        axios.delete("http://10.29.163.20:8081/api/appointment/" + id).then((response) => {
+        axios.delete(process.env.REACT_APP_SERVER_URL + "appointment/" + id).then((response) => {
             console.log(response);
             this.props.getAppointments(sessionStorage.getItem("id"));
         }).catch((error) => {

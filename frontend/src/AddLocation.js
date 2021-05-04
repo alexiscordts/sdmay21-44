@@ -18,7 +18,7 @@ class AddLocation extends React.Component {
 
   handlePost(event) {
     event.preventDefault();
-    const url = "http://10.29.163.20:8081/api/location/";
+    const url = process.env.REACT_APP_SERVER_URL + "location/";
     axios
       .post(url, this.state)
       .then(function (response) {
@@ -88,7 +88,7 @@ class AddLocation extends React.Component {
         {/* <button
         onClick={() => {
           console.log("submitted");
-          const url = "http://10.29.163.20:8081/api/location/";
+          const url = process.env.REACT_APP_SERVER_URL + "location/";
           axios
             .post(url, {
               locationID: "7",

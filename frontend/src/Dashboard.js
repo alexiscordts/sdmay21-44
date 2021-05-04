@@ -119,7 +119,7 @@ class Dashboard extends React.Component {
 
     //
     componentDidMount() {
-        const url = "http://10.29.163.20:8081/api/Location";
+        const url = process.env.REACT_APP_SERVER_URL + "Location";
         
         axios
         .get(url)
@@ -131,7 +131,7 @@ class Dashboard extends React.Component {
         });
 
         axios
-        .get("http://10.29.163.20:8081/api/room")
+        .get(process.env.REACT_APP_SERVER_URL + "room")
         .then((response) => {
             const rooms = response.data;
             this.setState({ rooms });
@@ -174,7 +174,7 @@ class Dashboard extends React.Component {
             })
 
             axios
-            .post("http://10.29.163.20:8081/api/therapistevent/getTherapistEvent", event)
+            .post(process.env.REACT_APP_SERVER_URL + "therapistevent/getTherapistEvent", event)
             .then((response) => {
                 console.log(response.data);
                 const therapistEvents = response.data;
@@ -219,7 +219,7 @@ class Dashboard extends React.Component {
             })
 
             axios
-            .post("http://10.29.163.20:8081/api/therapistevent/getTherapistEventsByTherapistId", event)
+            .post(process.env.REACT_APP_SERVER_URL + "therapistevent/getTherapistEventsByTherapistId", event)
             .then((response) => {
                 console.log(response.data);
                 const therapistEvents = response.data;
@@ -259,7 +259,7 @@ class Dashboard extends React.Component {
             })
 
             axios
-            .post("http://10.29.163.20:8081/api/appointment/getAppointments", event)
+            .post(process.env.REACT_APP_SERVER_URL + "appointment/getAppointments", event)
             .then((response) => {
                 console.log(response.data);
                 const appointments = response.data;
@@ -305,7 +305,7 @@ class Dashboard extends React.Component {
             })
 
             axios
-            .post("http://10.29.163.20:8081/api/appointment/getAppointmentsByTherapistId", event)
+            .post(process.env.REACT_APP_SERVER_URL + "appointment/getAppointmentsByTherapistId", event)
             .then((response) => {
                 console.log(response.data);
                 const appointments = response.data;
@@ -457,7 +457,7 @@ class Dashboard extends React.Component {
             endTime: end,
             adl: "null"
         })
-        axios.post("http://10.29.163.20:8081/api/appointment/getAppointments", event)
+        axios.post(process.env.REACT_APP_SERVER_URL + "appointment/getAppointments", event)
         .then((response) => {
             const appointments = response.data;
             console.log(appointments);
@@ -481,7 +481,7 @@ class Dashboard extends React.Component {
                 appointment.startTime.setHours(appointment.startTime.getHours() - 5); //account for timezone
                 appointment.endTime.setHours(appointment.endTime.getHours() - 5);
                 delete appointment.appointmentId;
-                axios.post("http://10.29.163.20:8081/api/appointment", appointment)
+                axios.post(process.env.REACT_APP_SERVER_URL + "appointment", appointment)
                     .then((response) => {
                     console.log("Success");
                     console.log(response);

@@ -5,7 +5,7 @@ import axios from "axios";
 
 function deleteLocation() {
   const url =
-    "http://10.29.163.20:8081/api/location/" +
+    process.env.REACT_APP_SERVER_URL + "location/" +
     sessionStorage.getItem("locationId");
   axios.delete(url);
   setTimeout(function () {

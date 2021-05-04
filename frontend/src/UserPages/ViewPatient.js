@@ -15,7 +15,7 @@ class ViewPatient extends React.Component {
   }
 
   componentDidMount() {
-    const url = "http://10.29.163.20:8081/api/patient";
+    const url = process.env.REACT_APP_SERVER_URL + "patient";
 
     axios.get(url).then((response) => {
       const patientList = response.data;

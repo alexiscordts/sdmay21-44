@@ -28,7 +28,7 @@ class copyAppointment extends React.Component {
     appointment.startTime.setHours(appointment.startTime.getHours() - 5); //account for timezone
     appointment.endTime.setHours(appointment.endTime.getHours() - 5);
     axios
-      .post("http://10.29.163.20:8081/api/appointment", appointment)
+      .post(process.env.REACT_APP_SERVER_URL + "appointment", appointment)
       .then((response) => {
         console.log("Success");
         console.log(response);

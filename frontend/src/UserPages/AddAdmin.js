@@ -18,8 +18,8 @@ const AddAdmin = () => {
     const admin = { firstName, lastName, username, password, active };
     console.log(admin);
     const getUserUrl =
-      "http://10.29.163.20:8081/api/user/getUserByUsername/" + username;
-    const url = "http://10.29.163.20:8081/api/user";
+      process.env.REACT_APP_SERVER_URL + "user/getUserByUsername/" + username;
+    const url = process.env.REACT_APP_SERVER_URL + "user";
     axios.post(url, admin).catch(function (error) {
       if (error.response) {
         console.log(error.response.data);
@@ -48,7 +48,7 @@ const AddAdmin = () => {
   }
 
   function postPermission(userId) {
-    const permUrl = "http://10.29.163.20:8081/api/permission/";
+    const permUrl = process.env.REACT_APP_SERVER_URL + "permission/";
     const role = "admin";
     const permission = { userId, role };
 

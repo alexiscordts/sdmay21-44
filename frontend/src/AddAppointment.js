@@ -23,27 +23,27 @@ class AddAppointment extends React.Component {
   }
 
   componentDidMount() {
-    const url = "http://10.29.163.20:8081/api/";
+    const url = process.env.REACT_APP_SERVER_URL + "";
     axios.get(url + "user").then((response) => {
       const userList = response.data;
       this.setState({ userList });
     });
 
-    axios.get("http://10.29.163.20:8081/api/permission").then((response) => {
+    axios.get(process.env.REACT_APP_SERVER_URL + "permission").then((response) => {
       this.setState({
         permissions: this.state.permissions.concat(response.data),
       });
     });
 
     axios
-      .get("http://10.29.163.20:8081/api/Location")
+      .get(process.env.REACT_APP_SERVER_URL + "Location")
       .then((response) => {
         const locations = response.data;
         this.setState({ locations });
       });
 
       axios
-      .get("http://10.29.163.20:8081/api/therapymain")
+      .get(process.env.REACT_APP_SERVER_URL + "therapymain")
       .then((response) => {
         const therapyTypes = [];
         response.data.forEach(therapy => {
@@ -53,28 +53,28 @@ class AddAppointment extends React.Component {
       });
 
       axios
-      .get("http://10.29.163.20:8081/api/therapy/adl")
+      .get(process.env.REACT_APP_SERVER_URL + "therapy/adl")
       .then((response) => {
         const ADLs = response.data;
         this.setState({ ADLs });
       });
 
       axios
-      .get("http://10.29.163.20:8081/api/therapy")
+      .get(process.env.REACT_APP_SERVER_URL + "therapy")
       .then((response) => {
         const therapies = response.data;
         this.setState({ therapies });
       });
 
       axios
-      .get("http://10.29.163.20:8081/api/patient")
+      .get(process.env.REACT_APP_SERVER_URL + "patient")
       .then((response) => {
         const patients = response.data;
         this.setState({ patients });
       });
 
       axios
-      .get("http://10.29.163.20:8081/api/room")
+      .get(process.env.REACT_APP_SERVER_URL + "room")
       .then((response) => {
         const rooms = response.data;
         this.setState({ rooms });
@@ -196,7 +196,7 @@ class AddAppointment extends React.Component {
     console.log(therapistEvent);
     console.log(this.props.therapistEvent);
     axios
-      .post("http://10.29.163.20:8081/api/therapistevent/", therapistEvent)
+      .post(process.env.REACT_APP_SERVER_URL + "therapistevent/", therapistEvent)
       .then((response) => {
         console.log("Success");
         console.log(response);
@@ -232,7 +232,7 @@ class AddAppointment extends React.Component {
     console.log(this.props.appointment);
     
     axios
-      .post("http://10.29.163.20:8081/api/appointment", appointment)
+      .post(process.env.REACT_APP_SERVER_URL + "appointment", appointment)
       .then((response) => {
         console.log("Success");
         console.log(response);

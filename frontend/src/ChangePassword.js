@@ -20,19 +20,19 @@ const ChangePassword = () => {
       return;
     }
 
-    const url = "http://10.29.163.20:8081/api/user/getUserByUsername/";
+    const url = process.env.REACT_APP_SERVER_URL + "user/getUserByUsername/";
     axios
       .get(url + sessionStorage.getItem('username'))
       .then((response) => {
           response.data.password = existingPassword;
           axios //see if password matches
-            .post("http://10.29.163.20:8081/api/user/login/", response.data)
+            .post(process.env.REACT_APP_SERVER_URL + "user/login/", response.data)
             .then((response2) => {
               
               if (CheckPassword(newPassword))
               {
                   response.data.password = newPassword;
-                  axios.put("http://10.29.163.20:8081/api/user/" + response.data.userId, response.data)
+                  axios.put(process.env.REACT_APP_SERVER_URL + "user/" + response.data.userId, response.data)
                   .then((response) => {
                     setErrorMessage( "Success! Password changed");
                   })
