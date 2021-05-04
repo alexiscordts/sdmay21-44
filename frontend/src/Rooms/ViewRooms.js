@@ -32,8 +32,12 @@ class ViewRooms extends React.Component {
 
   updateRoom(event) {
     this.setState({ [event.target.name]: event.target.value });
-    var id = event.target.value;
+  }
+
+  getRoomList(event)  {
+    var id = this.state.locationId;
     var rooms = [];
+    if (id != null)
     this.state.roomList.forEach(function (room) {
       if (id == room.locationId) {
         rooms.push(
@@ -43,9 +47,25 @@ class ViewRooms extends React.Component {
               <button
                 class="iconButton"
                 onClick={() => {
+                  console.log()
+                  const r = {
+                  number: room.number,
+                  locationId: id
+                  }
                   const url =
-                    "http://10.29.163.20:8081/api/room/" + room.number;
-                  axios.delete(url);
+                    "http://10.29.163.20:8081/api/room/deleteRoom/";
+                  axios.post(url, r)
+                  .then((response) => {
+                    console.log(response.data);
+                    axios.get("http://10.29.163.20:8081/api/room").then((response2) => {
+                      const rooms = response2.data;
+                      event.setState({ roomList: rooms });
+                    });
+                  })
+                  .catch((error) => {
+                      console.log("Error caught");
+                      console.log(error);
+                  });
                 }}
               >
                 <img
@@ -59,7 +79,7 @@ class ViewRooms extends React.Component {
         );
       }
     });
-    this.setState({ rooms });
+    return rooms;
   }
 
   render() {
@@ -84,6 +104,7 @@ class ViewRooms extends React.Component {
           <div class="dropdown">
             <select
               class="dropbtn"
+              name="locationId"
               value={this.state.locationId}
               onChange={this.updateRoom}
             >
@@ -91,7 +112,7 @@ class ViewRooms extends React.Component {
             </select>
           </div>
 
-          <Link to="/add_room"><button
+          <button onClick={() => {if (this.state.locationId != null) { sessionStorage.setItem("locationId", this.state.locationId); window.location.href = "add_room"}}}
             class="iconAddUserButton"
           >
             <img
@@ -99,7 +120,7 @@ class ViewRooms extends React.Component {
               alt="add"
               className="iconAddLocation"
             />
-          </button></Link>
+          </button>
         </div>
         <table class="user-table">
           <thead>
@@ -108,7 +129,7 @@ class ViewRooms extends React.Component {
               <th>Delete</th>
             </tr>
           </thead>
-          <tbody>{this.state.rooms}</tbody>
+          <tbody>{this.getRoomList(this)}</tbody>
         </table>
       </div>
     );

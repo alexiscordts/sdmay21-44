@@ -148,11 +148,19 @@ class Dashboard extends React.Component {
         this.weeks = this.getDropdownDates();
     }
 
-    getTherapistEvents(therapistId) {
+    getTherapistEvents(therapistId, date) {
         if (!therapistId) //get for 3 views
         {
-            var start = new Date(this.state.date);
-            var end = new Date(this.state.date);
+            if (!date)
+            {
+                var start = new Date(this.state.date);
+                var end = new Date(this.state.date);
+            }
+            else
+            {
+                var start = new Date(date);
+                var end = new Date(date);
+            }
             start.setHours(0);
             start.setMinutes(0);
             start.setMinutes(0);
@@ -179,8 +187,16 @@ class Dashboard extends React.Component {
         } 
         else 
         {
-            var start = new Date(this.state.date);
-            var end = new Date(this.state.date);
+            if (!date)
+            {
+                var start = new Date(this.state.date);
+                var end = new Date(this.state.date);
+            }
+            else
+            {
+                var start = new Date(date);
+                var end = new Date(date);
+            }
             start.setHours(0);
             start.setMinutes(0);
             start.setMinutes(0);
@@ -216,11 +232,19 @@ class Dashboard extends React.Component {
         } 
     }
 
-    getAppointments(therapistId) {
+    getAppointments(therapistId, date) {
         if (!therapistId) //get for 3 views
         {
-            var start = new Date(this.state.date);
-            var end = new Date(this.state.date);
+            if (!date)
+            {
+                var start = new Date(this.state.date);
+                var end = new Date(this.state.date);
+            }
+            else
+            {
+                var start = new Date(date);
+                var end = new Date(date);
+            }
             start.setHours(0);
             start.setMinutes(0);
             start.setMinutes(0);
@@ -248,8 +272,16 @@ class Dashboard extends React.Component {
         }
         else //get for therapistview / my schedule view
         {
-            var start = new Date(this.state.date);
-            var end = new Date(this.state.date);
+            if (!date)
+            {
+                var start = new Date(this.state.date);
+                var end = new Date(this.state.date);
+            }
+            else
+            {
+                var start = new Date(date);
+                var end = new Date(date);
+            }
             start.setHours(0);
             start.setMinutes(0);
             start.setMinutes(0);
@@ -308,17 +340,17 @@ class Dashboard extends React.Component {
         return elements;
     }
 
-    updateAppointments()  {
+    updateAppointments(date)  {
 
         if (this.state.schedule != 1)
         {
-            this.getAppointments();
-            this.getTherapistEvents();
+            this.getAppointments(null, date);
+            this.getTherapistEvents(null, date);
         }
         else
         {
-            this.getAppointments(sessionStorage.getItem("id"));
-            this.getTherapistEvents(sessionStorage.getItem("id"));
+            this.getAppointments(sessionStorage.getItem("id"), date);
+            this.getTherapistEvents(sessionStorage.getItem("id"), date);
         }
     }
     
@@ -337,7 +369,7 @@ class Dashboard extends React.Component {
         {
             let newDate = new Date(d);
             elements.push(
-                <div class="link" onClick={() => {this.setState({date: new Date(newDate)}); this.week=newDate.toLocaleDateString('en-US'); this.updateAppointments() }}>{newDate.toLocaleDateString('en-US')}</div>
+                <div class="link" onClick={() => {this.setState({date: new Date(newDate)}); this.week=newDate.toLocaleDateString('en-US'); this.updateAppointments(new Date(newDate)) }}>{newDate.toLocaleDateString('en-US')}</div>
             );
             d.setDate(d.getDate() + 7);
         }

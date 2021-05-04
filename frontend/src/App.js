@@ -177,8 +177,9 @@ export default class App extends React.Component {
           <Switch>
             <Route path="/dashboard" component={() => <Dashboard role={this.role} />} />
             <Route path="/view_Metrics" component={ViewMetrics} />
-            <Route path="/change_password" component={ChangePassword} />>
+            <Route path="/change_password" component={ChangePassword} />
             <Route exact path="/" component={() => <Dashboard role={this.role} />} />
+            <Route path="/settings" component={() => <Settings role={this.role} />} />
           </Switch>
         </Router>
         </div>

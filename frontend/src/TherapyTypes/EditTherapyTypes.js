@@ -83,7 +83,7 @@ const EditTherapyTypes = () => {
         <div className="form-style">
           <div className="form-style-heading"> Edit Therapy Types</div>
             <form >
-              <label for="name"><span>Name<span className="required">*</span></span><input type="text" className="input-field" name="name" defaultValue={sessionStorage.getItem("name")} /></label>
+              <label for="name"><span>Name</span>{sessionStorage.getItem("name")}</label>
               <label for="subtypes">
                 <span>Subtypes
                   <span className="required">*</span>

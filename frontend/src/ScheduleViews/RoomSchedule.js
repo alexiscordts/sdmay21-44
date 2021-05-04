@@ -98,7 +98,7 @@ class RoomSchedule extends React.Component {
             const appointments = [];
             for(let j = 0; j < this.props.appointments.length; j++) //get appointments for this therapist
             {
-                if (this.props.appointments[j].roomNumber == rooms[i].number)
+                if (this.props.appointments[j].roomNumber == rooms[i].number && this.props.appointments[j].locationId == rooms[i].locationId)
                     appointments.push(this.props.appointments[j]);
             }
             if (i % 10 == 0)

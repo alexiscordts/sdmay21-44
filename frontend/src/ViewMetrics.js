@@ -29,7 +29,6 @@ class ViewMetrics extends React.Component {
     
     componentDidMount()
     {
-        this.getAppointments(this.state.date);
         if (sessionStorage.getItem("role") == "therapist")
             this.setState({metrics: 1});
         else if (sessionStorage.getItem("role") == "admin")
@@ -40,44 +39,68 @@ class ViewMetrics extends React.Component {
             .then((response) => {
               const locations = response.data;
               this.setState({ locations });
+              this.getAppointments(this.state.date);
             });
     }
 
     getAppointments(date)   {
         var start = new Date(date);
-        var end = new Date(date);
-        start.setHours(0);
-        start.setMinutes(0);
-        start.setMinutes(0);
-        end.setHours(15);
-        end.setMinutes(0);
-        end.setMinutes(0);
-        while (start.getDay() != 0) //get Sunday
+            var end = new Date(date);
+            start.setHours(0);
+            start.setMinutes(0);
+            start.setMinutes(0);
+            end.setHours(15);
+            end.setMinutes(0);
+            end.setMinutes(0);
+            while (start.getDay() != 0) //get Sunday
+            {
+                start.setDate(start.getDate() - 1);
+            }
+            while (end.getDay() != 6) //get Saturday
+            {
+                end.setDate(end.getDate() + 1);
+            }
+        if (this.state.metrics == 2 || this.state.metrics == 3)
         {
-            start.setDate(start.getDate() - 1);
+            const event = ({
+                startTime: start,
+                endTime: end,
+                adl: "null"
+            })
+
+            axios
+            .post("http://10.29.163.20:8081/api/appointment/getAppointments", event)
+            .then((response) => {
+                console.log(response.data);
+                const appointments = response.data;
+                this.setState({ appointments });
+            })
+            .catch((error) => {
+                console.log("Error caught");
+                console.log(error);
+            }); 
         }
-        while (end.getDay() != 6) //get Saturday
+        else if (this.state.metrics == 1)
         {
-            end.setDate(end.getDate() + 1);
+            const event = ({
+                startTime: start,
+                endTime: end,
+                therapistId: sessionStorage.getItem("id"),
+                adl: "null"
+            })
+
+            axios
+            .post("http://10.29.163.20:8081/api/appointment/getAppointmentsByTherapistId", event)
+            .then((response) => {
+                console.log(response.data);
+                const appointments = response.data;
+                this.setState({ appointments });
+            })
+            .catch((error) => {
+                console.log("Error caught");
+                console.log(error);
+            });
         }
-
-        const event = ({
-            startTime: start,
-            endTime: end,
-            adl: "null"
-        })
-
-        axios
-        .post("http://10.29.163.20:8081/api/appointment/getAppointments", event)
-        .then((response) => {
-            console.log(response.data);
-            const appointments = response.data;
-            this.setState({ appointments });
-        })
-        .catch((error) => {
-            console.log("Error caught");
-            console.log(error);
-        }); 
     }
 
     getDropdownDates()  {
@@ -129,7 +152,7 @@ class ViewMetrics extends React.Component {
       getMetricsView()
       {
         switch(this.state.metrics) {
-            case 1: return (<MyMetrics date={this.state.date} />);
+            case 1: return (<MyMetrics date={this.state.date} appointments={this.state.appointments} />);
             case 2: return (<TherapistMetrics date={this.state.date} appointments={this.state.appointments} />);
             case 3: return (<PatientMetrics date={this.state.date} appointments={this.state.appointments} location={this.state.location}/>);
         }

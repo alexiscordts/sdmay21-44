@@ -54,15 +54,15 @@ class EditPatient extends React.Component {
       });
     });
 
-    axios.get("http://10.29.163.20:8081/api/room").then((response) => {
-      this.setState({ roomList: this.state.roomList.concat(response.data) });
-    });
-
     var patient = [];
     var id = sessionStorage.getItem("patientId");
     axios.get("http://10.29.163.20:8081/api/patient/" + id).then((response) => {
       patient = response.data;
       this.setState({ patient });
+      axios.get("http://10.29.163.20:8081/api/room").then((response) => {
+      this.setState({ roomList: this.state.roomList.concat(response.data) });
+      this.getRooms(patient.locationId);
+    });
     });
   }
   updateRoom(event) {
@@ -85,6 +85,16 @@ class EditPatient extends React.Component {
       }
     });
     this.setState({ rooms });
+  }
+
+  getRooms(id)  {
+    var rooms = [];
+    this.state.roomList.forEach(function (room) {
+      if (id == room.locationId) {
+        rooms.push(<option value={room.number}>{room.number}</option>);
+      }
+    });
+    this.setState({rooms});
   }
 
   deletePatient() {
@@ -215,7 +225,7 @@ class EditPatient extends React.Component {
                   class="input-field"
                   onChange={this.updateRoom}
                   name="locationId"
-                  defaultValue={this.state.patient.locationId}
+                  value={this.state.patient.locationId}
                 >
                   {locations}
                 </select>
@@ -227,7 +237,7 @@ class EditPatient extends React.Component {
                   class="input-field"
                   onChange={this.handleChange}
                   name="roomNumber"
-                  defaultValue={this.state.roomNumber}
+                  value={this.state.roomNumber}
                 >
                   {this.state.rooms}
                 </select>
@@ -239,7 +249,7 @@ class EditPatient extends React.Component {
                   class="input-field"
                   onChange={this.handleChange}
                   name="pmrPhysicianId"
-                  defaultValue={this.state.patient.pmrPhysicianId}
+                  value={this.state.patient.pmrPhysicianId}
                 >
                   {users}
                 </select>
@@ -251,7 +261,7 @@ class EditPatient extends React.Component {
                   type="number"
                   class="input-field"
                   name="therapistId"
-                  defaultValue={this.state.patient.therapistId}
+                  value={this.state.patient.therapistId}
                   onChange={this.handleChange}
                 >
                   {therapists}

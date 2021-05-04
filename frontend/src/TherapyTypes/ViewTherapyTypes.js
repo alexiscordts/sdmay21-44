@@ -15,11 +15,62 @@ class ViewTherapyTypes extends React.Component {
   }
 
   componentDidMount() {
+    this.updateTherapistList();
+  }
+
+  updateTherapistList() {
     const url = "http://10.29.163.20:8081/api/therapy";
     axios.get(url).then((response) => {
-      const therapyList = response.data;
-      this.setState({ therapyList });
+      axios.get("http://10.29.163.20:8081/api/therapymain").then((response2) => {
+        const adlList = response.data;
+        const therapyList = response2.data;
+        const therapies = [];
+        adlList.forEach(adl => {
+          therapyList.forEach(therapy => {
+            if (adl.type == therapy.type)
+              therapies.push(adl);
+          })
+        })
+        this.setState({ therapyList: therapies });
+      });
     });
+  }
+
+  deleteTherapy(key) {
+    console.log(key);
+    const url = "http://10.29.163.20:8081/api/therapymain/" + key;
+        axios.delete(url)
+        .then((response) => {
+          console.log(response.data);
+          this.updateTherapistList();
+        })
+        .catch((error) => {
+            console.log("Error caught");
+            console.log(error);
+        });
+
+      axios.get("http://10.29.163.20:8081/api/therapy")
+      .then((response) => {
+        const therapies = response.data;
+        therapies.forEach(therapy => {
+          if (therapy.type == key)
+          {
+            axios.delete("http://10.29.163.20:8081/api/therapy/" + therapy.adl)
+            .then((response2) => {
+              console.log(response2.data);
+              this.updateTherapistList();
+            })
+            .catch((error) => {
+                console.log("Error caught");
+                console.log(error);
+            });
+          }
+        });
+      })
+      .catch((error) => {
+          console.log("Error caught");
+          console.log(error);
+      });
   }
 
   render() {
@@ -63,6 +114,18 @@ class ViewTherapyTypes extends React.Component {
                 />
               </button>
             </td>
+            <td>
+              <button
+                class="iconButton"
+                onClick={() => {this.deleteTherapy(key)}}
+              >
+                <img
+                  src={require("../Icons/icons8-delete-64.png")}
+                  alt="edit"
+                  className="icon"
+                />
+              </button>
+            </td>
           </tr>
         );
       }.bind(this)
@@ -88,6 +151,7 @@ class ViewTherapyTypes extends React.Component {
               <th>Name</th>
               <th>Subtype</th>
               <th>Edit</th>
+              <th>Delete</th>
             </tr>
           </thead>
           <tbody>{rows}</tbody>

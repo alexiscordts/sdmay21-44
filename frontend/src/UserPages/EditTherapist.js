@@ -141,7 +141,7 @@ class EditTherapist extends React.Component {
                   type="color"
                   name="color"
                   onChange={this.handleChange}
-                  defaultValue={this.state.therapist.color}
+                  value={this.state.therapist.color}
                 ></input>
               </label>
               <div class="buttonContainer">

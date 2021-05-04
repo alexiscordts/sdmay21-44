@@ -43,9 +43,12 @@ class AddAppointment extends React.Component {
       });
 
       axios
-      .get("http://10.29.163.20:8081/api/therapy/type")
+      .get("http://10.29.163.20:8081/api/therapymain")
       .then((response) => {
-        const therapyTypes = response.data;
+        const therapyTypes = [];
+        response.data.forEach(therapy => {
+            therapyTypes.push(therapy.type);
+        });
         this.setState({ therapyTypes });
       });
 

@@ -22,7 +22,8 @@ class AddPatient extends React.Component {
       pmrPhysicianId: null,
       therapistId: null,
       rooms: [],
-      patients: []
+      patients: [],
+      physicians: []
     };
     this.handleChange = this.handleChange.bind(this);
     this.submitPatient = this.submitPatient.bind(this);
@@ -170,6 +171,11 @@ class AddPatient extends React.Component {
 
     var users = [];
     this.state.physicians.forEach(function (user) {
+      users.push(
+        <option hidden disabled selected value>
+        Select a Physician
+        </option>
+      );
       users.push(
         <option value={user.userId}>
           {user.firstName} {user.lastName}
