@@ -27,6 +27,7 @@ class ViewNurse extends React.Component {
   }
   render() {
     var rows = [];
+    //Iterate throught the list of nurses and render each one on it's own row in the table
     this.state.nurseList.forEach(
       function (permission) {
         if (permission.role === "nurse") {

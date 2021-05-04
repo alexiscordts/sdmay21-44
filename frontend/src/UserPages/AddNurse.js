@@ -58,6 +58,7 @@ const AddNurse = () => {
     axios.post(permUrl, permission);
   }
 
+  //Form for adding a nurse
   return (
     <div>
       <Nav />

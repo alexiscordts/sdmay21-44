@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using InpatientTherapySchedulingProgram.Exceptions.PatientExceptions;
+using System.Reflection;
 
 namespace InpatientTherapySchedulingProgram.Services
 {
@@ -91,13 +92,22 @@ namespace InpatientTherapySchedulingProgram.Services
                 throw new PatientDoesNotExistException();
             }
 
-            var local = _context.Set<Patient>()
+            var local = await _context.Patient.FindAsync(patientId);
+
+            if (local is null)
+            {
+                throw new PatientDoesNotExistException();
+            }
+
+            UpdateNonNullAndNonEmptyFields(local, patient);
+
+            /*var local = _context.Set<Patient>()
                 .Local
-                .FirstOrDefault(p => p.PatientId == patient.PatientId);
+                .FirstOrDefault(p => p.PatientId == patient.PatientId);*/
 
-            _context.Entry(local).State = EntityState.Detached;
+            _context.Entry(local).State = EntityState.Modified;
 
-            _context.Entry(patient).State = EntityState.Modified;
+            //_context.Entry(patient).State = EntityState.Modified;
 
             try
             {
@@ -109,6 +119,17 @@ namespace InpatientTherapySchedulingProgram.Services
             }
 
             return patient;
+        }
+
+        private void UpdateNonNullAndNonEmptyFields(Patient local, Patient patient)
+        {
+            foreach (PropertyInfo prop in typeof(Patient).GetProperties())
+            {
+                if (prop.GetValue(patient) != null && (prop.PropertyType != typeof(string) || !prop.GetValue(patient).Equals("")))
+                {
+                    prop.SetValue(local, prop.GetValue(patient));
+                }
+            }
         }
 
         private async Task<bool> PatientExists(int patientId)

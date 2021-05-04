@@ -6,6 +6,7 @@ using InpatientTherapySchedulingProgram.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace InpatientTherapySchedulingProgram.Services
@@ -167,9 +168,11 @@ namespace InpatientTherapySchedulingProgram.Services
                 throw new TherapistEventDoesNotExistException();
             }
 
-            _context.Entry(local).State = EntityState.Detached;
+            UpdateNonNullAndNonEmptyFields(local, therapistEvent);
 
-            _context.Entry(therapistEvent).State = EntityState.Modified;
+            _context.Entry(local).State = EntityState.Modified;
+
+            //_context.Entry(therapistEvent).State = EntityState.Modified;
 
             try
             {
@@ -181,6 +184,22 @@ namespace InpatientTherapySchedulingProgram.Services
             }
 
             return therapistEvent;
+        }
+
+        /// <summary>
+        /// Updates all fields from passed therapistEvent object to local copy in database
+        /// </summary>
+        /// <param name="local">Local copy of object to be modified in database</param>
+        /// <param name="therapistEvent">New object that holds updated fields</param>
+        private void UpdateNonNullAndNonEmptyFields(TherapistEvent local, TherapistEvent therapistEvent)
+        {
+            foreach (PropertyInfo prop in typeof(TherapistEvent).GetProperties())
+            {
+                if (prop.GetValue(therapistEvent) != null && (prop.PropertyType != typeof(string) || !prop.GetValue(therapistEvent).Equals("")))
+                {
+                    prop.SetValue(local, prop.GetValue(therapistEvent));
+                }
+            }
         }
 
         /// <summary>

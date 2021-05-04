@@ -5,6 +5,7 @@ using InpatientTherapySchedulingProgram.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace InpatientTherapySchedulingProgram.Services
@@ -125,16 +126,18 @@ namespace InpatientTherapySchedulingProgram.Services
                 throw new AppointmentCannotEndBeforeStartTimeException();
             }
 
-            var local = _context.Appointment.FirstOrDefault(a => a.AppointmentId == appointmentId && a.Active);
+            var local = await _context.Appointment.FindAsync(appointmentId);
 
-            if (local == null)
+            if (local is null)
             {
                 throw new AppointmentDoesNotExistException();
             }
 
-            _context.Entry(local).State = EntityState.Detached;
+            UpdateNonNullAndNonEmptyFields(local, appointment);
 
-            _context.Entry(appointment).State = EntityState.Modified;
+            _context.Entry(local).State = EntityState.Modified;
+
+            //_context.Entry(appointment).State = EntityState.Modified;
 
             try
             {
@@ -146,6 +149,17 @@ namespace InpatientTherapySchedulingProgram.Services
             }
 
             return appointment;
+        }
+
+        private void UpdateNonNullAndNonEmptyFields(Appointment local, Appointment appointment)
+        {
+            foreach (PropertyInfo prop in typeof(Appointment).GetProperties())
+            {
+                if (prop.GetValue(appointment) != null && (prop.PropertyType != typeof(string) || !prop.GetValue(appointment).Equals("")))
+                {
+                    prop.SetValue(local, prop.GetValue(appointment));
+                }
+            }
         }
 
         private async Task<bool> AppointmentExistsById(int appointmentId)

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using InpatientTherapySchedulingProgram.Models;
@@ -70,8 +68,6 @@ namespace InpatientTherapySchedulingProgram.Controllers
             return NoContent();
         }
 
-
-        // POST: api/room/{JSONObject}
         [HttpPost]
         public async Task<ActionResult<Room>> PostRoom(Room room)
         {
@@ -88,24 +84,24 @@ namespace InpatientTherapySchedulingProgram.Controllers
                 throw;
             }
 
-            return CreatedAtAction("GetRoom", new { number = room.Number }, room);
+            return CreatedAtAction("GetRooms", new { number = room.Number }, room);
         }
 
-        [HttpDelete]
+        [HttpPost("deleteRoom/")]
         public async Task<ActionResult<Room>> DeleteRoom(Room room)
         {
-            if (room == null)
-            {
-                return NotFound();
-            }
-
             try
             {
-                await _service.DeleteRoom(room);
+                room = await _service.DeleteRoom(room);
             }
             catch (DbUpdateException)
             {
                 throw;
+            }
+
+            if (room == null)
+            {
+                return NotFound();
             }
 
             return Ok(room);
